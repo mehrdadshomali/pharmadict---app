@@ -12,6 +12,7 @@ import type { PharmacyTerm } from '../types/models';
 import TermCard from '../components/TermCard';
 import MiniQuizCard from '../components/MiniQuizCard';
 import CategoryCarousel from '../components/CategoryCarousel';
+import LivingBackground from '../components/LivingBackground';
 import TermService from '../services/TermService';
 
 const HomeView = () => {
@@ -154,6 +155,9 @@ const HomeView = () => {
 
   return (
     <View style={styles.container}>
+      {/* Living Background / Aurora Effect - En arkada */}
+      <LivingBackground />
+      
       {/* Sticky Header with Glassmorphism */}
       <BlurView
         intensity={50}
@@ -188,9 +192,9 @@ const HomeView = () => {
         </View>
       </BlurView>
 
-      {/* ScrollView Content */}
+      {/* ScrollView Content - LivingBackground'ın üzerinde */}
       <ScrollView
-        style={styles.scrollView}
+        style={[styles.scrollView, { zIndex: 1 }]}
         contentContainerStyle={[
           styles.scrollContent,
           { paddingTop: HEADER_HEIGHT + 20, paddingBottom: 100 },
@@ -315,7 +319,7 @@ const HomeView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F8FAFC', // Very light gray background to show LivingBackground
   },
   stickyHeader: {
     position: 'absolute',
@@ -337,9 +341,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    backgroundColor: 'transparent', // Transparent to show LivingBackground
   },
   scrollContent: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent', // Transparent to show LivingBackground
   },
   headerLogoContainer: {
     width: 36,
