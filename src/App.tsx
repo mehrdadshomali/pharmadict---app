@@ -39,15 +39,19 @@ function MainTabs() {
 
           return <Ionicons name={iconName} size={focused ? 24 : 22} color={color} />;
         },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: '#3B82F6',
+        tabBarInactiveTintColor: '#9CA3AF',
         headerShown: false,
         tabBarStyle: {
+          backgroundColor: '#F9FAFB',
           borderTopWidth: 0.5,
-          borderTopColor: '#e5e7eb',
+          borderTopColor: '#E5E7EB',
           height: 58,
           paddingBottom: 16,
           paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
         },
       })}
     >

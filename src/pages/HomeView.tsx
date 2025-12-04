@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
     gap: 10,
+    paddingHorizontal: 20,
   },
   scrollView: {
     flex: 1,
@@ -341,16 +342,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   headerLogoContainer: {
+    width: 36,
+    height: 36,
     backgroundColor: 'transparent',
-    borderWidth: 0,
-    elevation: 0,
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    shadowOffset: { width: 0, height: 0 },
-    padding: 0,
-    marginRight: 10,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTextContainer: {
     flexDirection: 'row',
