@@ -15,6 +15,7 @@ import CategoriesView from "./pages/CategoriesView";
 import BookmarksView from "./pages/BookmarksView";
 import TermDetailView from "./pages/TermDetailView";
 import CategoryDetailView from "./pages/CategoryDetailView";
+import AdminView from "./pages/AdminView";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -274,6 +275,11 @@ function AppContent() {
         <Stack.Screen
           name="CategoryDetail"
           component={CategoryDetailView}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Admin"
+          component={AdminView}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

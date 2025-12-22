@@ -53,7 +53,10 @@ const HomeView = () => {
   const HEADER_HEIGHT = insets.top + 64;
 
   const loadData = async () => {
+    console.log("🏠 HomeView loadData - terms count:", terms?.length || 0);
+
     if (!terms || terms.length === 0) {
+      console.log("⚠️ HomeView - No terms available");
       setRecentTerms([]);
       setFeaturedTerms([]);
       return;
@@ -258,13 +261,25 @@ const HomeView = () => {
             </Animated.View>
             <Text style={styles.logoText}>Pharmadict</Text>
           </View>
-          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
-            <Ionicons
-              name={isDark ? "sunny-outline" : "moon-outline"}
-              size={22}
-              color={colors.textSecondary}
-            />
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              onPress={() => (navigation as any).navigate("Admin")}
+              style={styles.adminButton}
+            >
+              <Ionicons
+                name="add-circle-outline"
+                size={22}
+                color={colors.primary}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+              <Ionicons
+                name={isDark ? "sunny-outline" : "moon-outline"}
+                size={22}
+                color={colors.textSecondary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </BlurView>
 
@@ -392,17 +407,33 @@ const HomeView = () => {
               <Text style={styles.sectionTitle}>Son Eklenenler</Text>
             </View>
           </View>
-          <View style={styles.recentList}>
-            {recentTerms.map((term) => (
-              <TermCard
-                key={term.id}
-                term={term}
-                onPress={() =>
-                  (navigation as any).navigate("TermDetail", { id: term.id })
-                }
-              />
-            ))}
-          </View>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : recentTerms.length > 0 ? (
+            <View style={styles.recentList}>
+              {recentTerms.map((term, index) => (
+                <View
+                  key={term.id}
+                  style={index > 0 ? { marginTop: 12 } : undefined}
+                >
+                  <TermCard
+                    term={term}
+                    onPress={() =>
+                      (navigation as any).navigate("TermDetail", {
+                        id: term.id,
+                      })
+                    }
+                  />
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>Henüz terim eklenmemiş</Text>
+            </View>
+          )}
         </View>
 
         <View style={{ height: 100 }} />
@@ -479,6 +510,21 @@ const createStyles = (colors: any, isDark: boolean) =>
       justifyContent: "center",
       borderWidth: 1,
       borderColor: colors.border,
+    },
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    adminButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: colors.primaryGlow,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.primary,
     },
     scrollView: {
       flex: 1,
@@ -596,7 +642,6 @@ const createStyles = (colors: any, isDark: boolean) =>
     },
     recentList: {
       paddingHorizontal: 20,
-      gap: 12,
     },
   });
 
