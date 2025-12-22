@@ -1,671 +1,603 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet, TextInput, Animated, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFonts, Nunito_800ExtraBold, Nunito_700Bold } from '@expo-google-fonts/nunito';
-import { usePharmacy } from '../context/PharmacyContext';
-import { TermCategory, TermCategoryConfig } from '../types/models';
-import type { PharmacyTerm } from '../types/models';
-import TermCard from '../components/TermCard';
-import MiniQuizCard from '../components/MiniQuizCard';
-import CategoryCarousel from '../components/CategoryCarousel';
-import LivingBackground from '../components/LivingBackground';
-import TermService from '../services/TermService';
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+  Animated,
+  Easing,
+  Platform,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
+import { Poppins_700Bold } from "@expo-google-fonts/poppins";
+import { usePharmacy } from "../context/PharmacyContext";
+import { useTheme } from "../context/ThemeContext";
+import type { PharmacyTerm } from "../types/models";
+import TermCard from "../components/TermCard";
+import MiniQuizCard from "../components/MiniQuizCard";
+import CategoryCarousel from "../components/CategoryCarousel";
 
 const HomeView = () => {
   const navigation = useNavigation();
+  const { colors, isDark, toggleTheme } = useTheme();
   const { terms, isLoading, setSearchText, searchTerms } = usePharmacy();
   const [recentTerms, setRecentTerms] = useState<PharmacyTerm[]>([]);
   const [featuredTerms, setFeaturedTerms] = useState<PharmacyTerm[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
-  
-  // Load Nunito font (rounded, clean font)
+
   const [fontsLoaded] = useFonts({
-    Nunito_800ExtraBold,
-    Nunito_700Bold,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Poppins_700Bold,
   });
-  
-  // Header height calculation (compact design: logo + minimal padding)
-  const HEADER_HEIGHT = insets.top + 60;
-  
-  
+
+  const HEADER_HEIGHT = insets.top + 64;
 
   useEffect(() => {
     loadData();
   }, [terms]);
 
   useEffect(() => {
-    // Sürekli 360 derece dönen animasyon - program çalıştıkça döner
-    rotateAnim.setValue(0);
     const animation = Animated.loop(
-      Animated.timing(rotateAnim, {
-        toValue: 1,
-        duration: 3000,
-        useNativeDriver: true,
-      }),
-      { iterations: -1 } // Sonsuz döngü
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
     );
     animation.start();
-    
-    return () => {
-      animation.stop();
-      animation.reset();
-    };
+    return () => animation.stop();
   }, []);
 
+  // Logo rotation animation
+  useEffect(() => {
+    const startRotation = () => {
+      rotateAnim.setValue(0);
+      Animated.loop(
+        Animated.timing(rotateAnim, {
+          toValue: 1,
+          duration: 3000,
+          easing: Easing.linear,
+          useNativeDriver: Platform.OS !== "web",
+        })
+      ).start();
+    };
+    startRotation();
+  }, [rotateAnim]);
+
+  const spin = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
+
+  // Wait for fonts to load
+  if (!fontsLoaded) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   const loadData = async () => {
-    console.log('🔍 HomeView - Total terms:', terms?.length || 0);
     if (!terms || terms.length === 0) {
-      console.log('⚠️ HomeView - No terms available');
       setRecentTerms([]);
       setFeaturedTerms([]);
       return;
     }
-    
-    // Get recent terms (sorted by date)
+
     const allTerms = [...terms].sort((a, b) => {
-      const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt).getTime();
-      const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt).getTime();
+      const dateA =
+        a.createdAt instanceof Date
+          ? a.createdAt.getTime()
+          : new Date(a.createdAt).getTime();
+      const dateB =
+        b.createdAt instanceof Date
+          ? b.createdAt.getTime()
+          : new Date(b.createdAt).getTime();
       return dateB - dateA;
     });
     setRecentTerms(allTerms.slice(0, 5));
-    
-    // Get most visited terms for featured section using PharmacyContext terms
+
     try {
-      // Get visit counts from AsyncStorage
-      const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-      const visitsData = await AsyncStorage.getItem('term_visits');
+      const AsyncStorage =
+        require("@react-native-async-storage/async-storage").default;
+      const visitsData = await AsyncStorage.getItem("term_visits");
       const visits = visitsData ? JSON.parse(visitsData) : {};
-      
-      // Map terms with visit counts and sort by visits
+
       const termsWithVisits = terms
-        .map(term => ({
-          ...term,
-          visitCount: visits[term.id] || 0,
-        }))
-        .filter(term => term.visitCount > 0) // Only include visited terms
-        .sort((a, b) => b.visitCount - a.visitCount) // Sort by visit count descending
-        .slice(0, 5); // Get top 5
-      
+        .map((term) => ({ ...term, visitCount: visits[term.id] || 0 }))
+        .filter((term) => term.visitCount > 0)
+        .sort((a, b) => b.visitCount - a.visitCount)
+        .slice(0, 5);
+
       if (termsWithVisits.length > 0) {
-        // Normalize terms
-        const normalizedFeatured = termsWithVisits.map(term => ({
-          ...term,
-          components: term.components || [],
-          relatedTerms: term.relatedTerms || [],
-          synonyms: term.synonyms || [],
-          isBookmarked: Boolean(term.isBookmarked),
-          createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-          updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
-        }));
-        setFeaturedTerms(normalizedFeatured);
-        console.log('⭐ HomeView - Setting featured terms (most visited):', normalizedFeatured.map(t => t.latinName));
+        setFeaturedTerms(
+          termsWithVisits.map((term) => ({
+            ...term,
+            components: term.components || [],
+            relatedTerms: term.relatedTerms || [],
+            synonyms: term.synonyms || [],
+            isBookmarked: Boolean(term.isBookmarked),
+            createdAt:
+              term.createdAt instanceof Date
+                ? term.createdAt
+                : new Date(term.createdAt),
+            updatedAt:
+              term.updatedAt instanceof Date
+                ? term.updatedAt
+                : new Date(term.updatedAt),
+          }))
+        );
       } else {
-        // Fallback to random terms if no visits yet
-        const randomTerms = [...terms].sort(() => Math.random() - 0.5).slice(0, 3).map(term => ({
-          ...term,
-          components: term.components || [],
-          relatedTerms: term.relatedTerms || [],
-          synonyms: term.synonyms || [],
-          isBookmarked: Boolean(term.isBookmarked),
-          createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-          updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
-        }));
+        const randomTerms = [...terms]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3)
+          .map((term) => ({
+            ...term,
+            components: term.components || [],
+            relatedTerms: term.relatedTerms || [],
+            synonyms: term.synonyms || [],
+            isBookmarked: Boolean(term.isBookmarked),
+            createdAt:
+              term.createdAt instanceof Date
+                ? term.createdAt
+                : new Date(term.createdAt),
+            updatedAt:
+              term.updatedAt instanceof Date
+                ? term.updatedAt
+                : new Date(term.updatedAt),
+          }));
         setFeaturedTerms(randomTerms);
-        console.log('⭐ HomeView - Setting featured terms (random fallback):', randomTerms.map(t => t.latinName));
       }
     } catch (error) {
-      console.error('Error loading featured terms:', error);
-      // Fallback to random terms on error
-      const randomTerms = [...terms].sort(() => Math.random() - 0.5).slice(0, 3).map(term => ({
-        ...term,
-        components: term.components || [],
-        relatedTerms: term.relatedTerms || [],
-        synonyms: term.synonyms || [],
-        isBookmarked: Boolean(term.isBookmarked),
-        createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-        updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
-      }));
+      const randomTerms = [...terms]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map((term) => ({
+          ...term,
+          components: term.components || [],
+          relatedTerms: term.relatedTerms || [],
+          synonyms: term.synonyms || [],
+          isBookmarked: Boolean(term.isBookmarked),
+          createdAt:
+            term.createdAt instanceof Date
+              ? term.createdAt
+              : new Date(term.createdAt),
+          updatedAt:
+            term.updatedAt instanceof Date
+              ? term.updatedAt
+              : new Date(term.updatedAt),
+        }));
       setFeaturedTerms(randomTerms);
     }
   };
-
-  const categories = Object.values(TermCategory).slice(0, 4);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setSearchText(query);
     if (query.trim()) {
       searchTerms(query);
-      navigation.navigate('Search' as never);
+      navigation.navigate("Search" as never);
     }
   };
 
-  const categoryColors: { [key: string]: { bg: string; icon: string; border: string } } = {
-    [TermCategory.DRUG]: { bg: '#EFF6FF', icon: '#3B82F6', border: '#DBEAFE' }, // Pastel Mavi
-    [TermCategory.PLANT]: { bg: '#ECFDF5', icon: '#10B981', border: '#D1FAE5' }, // Pastel Yeşil
-    [TermCategory.VITAMIN]: { bg: '#FFF7ED', icon: '#F59E0B', border: '#FFEDD5' }, // Pastel Turuncu
-    [TermCategory.MINERAL]: { bg: '#F3E8FF', icon: '#A855F7', border: '#E9D5FF' }, // Pastel Mor
-  };
+  const styles = createStyles(colors, isDark);
 
   return (
     <View style={styles.container}>
-      {/* Living Background / Aurora Effect - En arkada */}
-      <LivingBackground />
-      
-      {/* Sticky Header with Glassmorphism */}
+      {/* Ambient Background Gradient */}
+      <LinearGradient
+        colors={
+          isDark
+            ? ["#0A0E14", "#0F1419", "#151B23"]
+            : ["#FAFBFC", "#F3F4F6", "#E5E7EB"]
+        }
+        style={StyleSheet.absoluteFill}
+      />
+
+      {/* Decorative Orbs */}
+      <Animated.View
+        style={[styles.orb, styles.orb1, { transform: [{ scale: pulseAnim }] }]}
+      />
+      <Animated.View
+        style={[styles.orb, styles.orb2, { transform: [{ scale: pulseAnim }] }]}
+      />
+
+      {/* Header */}
       <BlurView
-        intensity={50}
-        tint="light"
+        intensity={isDark ? 40 : 60}
+        tint={isDark ? "dark" : "light"}
         style={[
-          styles.stickyHeader,
-          {
-            paddingTop: insets.top,
-            height: HEADER_HEIGHT,
-          },
+          styles.header,
+          { paddingTop: insets.top, height: HEADER_HEIGHT },
         ]}
       >
-        <View style={styles.appHeader}>
-          <Animated.View 
-            style={[
-              styles.headerLogoContainer,
-              {
-                transform: [
-                  {
-                    rotate: rotateAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0deg', '360deg'],
-                    }),
-                  },
-                ],
-              },
-            ]}
-          >
-            <Ionicons name="medical" size={32} color="#3B82F6" />
-          </Animated.View>
-          <Text style={[styles.appName, !fontsLoaded && styles.appNameFallback]}>Pharmadict</Text>
+        <View style={styles.headerContent}>
+          <View style={styles.logoContainer}>
+            <Animated.View style={{ transform: [{ rotate: spin }] }}>
+              <LinearGradient
+                colors={colors.gradientPrimary as [string, string]}
+                style={styles.logoGradient}
+              >
+                <Ionicons name="medical" size={22} color="#FFFFFF" />
+              </LinearGradient>
+            </Animated.View>
+            <Text style={styles.logoText}>Pharmadict</Text>
+          </View>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+            <Ionicons
+              name={isDark ? "sunny-outline" : "moon-outline"}
+              size={22}
+              color={colors.textSecondary}
+            />
+          </TouchableOpacity>
         </View>
       </BlurView>
 
-      {/* ScrollView Content - LivingBackground'ın üzerinde */}
       <ScrollView
-        style={[styles.scrollView, { zIndex: 1 }]}
+        style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: HEADER_HEIGHT + 20, paddingBottom: 100 },
+          { paddingTop: HEADER_HEIGHT + 16 },
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Main Content Card */}
-      <LinearGradient
-        colors={['#EFF6FF', '#DBEAFE', '#BFDBFE']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.mainCard}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.pillIconContainer}>
-            {/* Glow Effect Behind Icons */}
-            <View style={styles.iconGlow} />
-            {/* Two Pills Icons */}
-            <View style={styles.pillsWrapper}>
-              {/* Top Pill - Capsule (diagonal, upward right) */}
-              <View style={[styles.pillIcon, styles.pillCapsule]}>
-                <Ionicons name="ellipse" size={24} color="#00BFFF" />
+        {/* Hero Card */}
+        <View style={styles.heroContainer}>
+          <LinearGradient
+            colors={colors.gradientHero as [string, string, string]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.heroCard}
+          >
+            <View style={styles.heroContent}>
+              <View style={styles.heroTextContainer}>
+                <Text style={styles.heroTitle}>Pharmadict İle</Text>
+                <Text style={styles.heroTitleAccent}>Keşfet</Text>
+                <Text style={styles.heroSubtitle}>
+                  1000'den fazla terim ile eczacılık dünyasını keşfet
+                </Text>
               </View>
-              {/* Bottom Pill - Tablet (round with line) */}
-              <View style={[styles.pillIcon, styles.pillTablet]}>
-                <Ionicons name="ellipse" size={20} color="#00BFFF" />
+              <View style={styles.heroIconContainer}>
+                <Ionicons
+                  name="flask"
+                  size={64}
+                  color="rgba(255,255,255,0.3)"
+                />
               </View>
             </View>
-          </View>
-          <View style={styles.cardText}>
-            <Text style={[styles.cardTitle, !fontsLoaded && styles.cardTitleFallback]}>
-              <Text style={[styles.cardTitleMain, !fontsLoaded && styles.cardTitleFallback]}>Pharmadict</Text>{' '}
-              ile{' '}
-              <Text style={[styles.cardTitleHighlight, !fontsLoaded && styles.cardTitleFallback]}>keşfet</Text>
-            </Text>
-            <Text style={[styles.cardSubtitle, !fontsLoaded && styles.cardSubtitleFallback]}>
-              Güncel terimlere kolayca{' '}
-              <Text style={[styles.cardSubtitleHighlight, !fontsLoaded && styles.cardSubtitleFallback]}>eriş</Text>
-            </Text>
-          </View>
+          </LinearGradient>
         </View>
-      </LinearGradient>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputContainer}>
-          <Ionicons name="search" size={20} color="#9ca3af" />
-          <TextInput
-            style={styles.searchInput}
-            value={searchQuery}
-            onChangeText={handleSearch}
-            placeholder="Terim ara..."
-            placeholderTextColor="#9ca3af"
-            onSubmitEditing={() => {
-              if (searchQuery.trim()) {
-                navigation.navigate('Search' as never);
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={20} color={colors.textTertiary} />
+            <TextInput
+              style={styles.searchInput}
+              value={searchQuery}
+              onChangeText={handleSearch}
+              placeholder="Terim, ilaç veya bitki ara..."
+              placeholderTextColor={colors.placeholder}
+              onSubmitEditing={() =>
+                searchQuery.trim() && navigation.navigate("Search" as never)
               }
-            }}
-          />
-        </View>
-      </View>
-
-      {/* Categories Carousel */}
-      <View style={styles.categoriesSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Kategoriler</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Categories' as never)}>
-            <Text style={styles.linkText}>Tümünü Gör</Text>
-          </TouchableOpacity>
-        </View>
-        <CategoryCarousel />
-      </View>
-
-      {/* Featured Terms - Most Visited */}
-      <View style={styles.featuredSection}>
-        <Text style={styles.sectionTitle}>Öne Çıkanlar</Text>
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#3b82f6" />
+            />
+            <TouchableOpacity style={styles.searchButton}>
+              <Ionicons
+                name="options-outline"
+                size={20}
+                color={colors.textTertiary}
+              />
+            </TouchableOpacity>
           </View>
-        ) : featuredTerms.length > 0 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-            {featuredTerms.map((term) => (
-              <React.Fragment key={term.id}>
-                <View style={{ width: 300, marginRight: 12 }}>
+        </View>
+
+        {/* Categories */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Kategoriler</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Categories" as never)}
+            >
+              <Text style={styles.seeAllText}>Tümü</Text>
+            </TouchableOpacity>
+          </View>
+          <CategoryCarousel />
+        </View>
+
+        {/* Featured Terms */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionTitleContainer}>
+              <Ionicons name="star" size={18} color={colors.warning} />
+              <Text style={styles.sectionTitle}>Öne Çıkanlar</Text>
+            </View>
+          </View>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : featuredTerms.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.horizontalScroll}
+            >
+              {featuredTerms.map((term) => (
+                <View key={term.id} style={styles.featuredCardWrapper}>
                   <TermCard
                     term={term}
-                    onPress={() => (navigation as any).navigate('TermDetail', { id: term.id })}
+                    onPress={() =>
+                      (navigation as any).navigate("TermDetail", {
+                        id: term.id,
+                      })
+                    }
+                    variant="featured"
                   />
                 </View>
-              </React.Fragment>
-            ))}
-          </ScrollView>
-        ) : (
-          <View style={styles.emptyFeaturedContainer}>
-            <Text style={styles.emptyFeaturedText}>Henüz ziyaret edilen terim yok</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Mini Quiz Widget */}
-      <MiniQuizCard />
-
-      {/* Son Eklenenler Section */}
-      <View style={styles.recentSection}>
-        <Text style={styles.sectionTitle}>Son Eklenenler</Text>
-        <View style={styles.recentList}>
-          {recentTerms.map((term) => (
-            <TermCard
-              key={term.id}
-              term={term}
-              onPress={() => (navigation as any).navigate('TermDetail', { id: term.id })}
-            />
-          ))}
+              ))}
+            </ScrollView>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                Henüz ziyaret edilen terim yok
+              </Text>
+            </View>
+          )}
         </View>
-      </View>
+
+        {/* Quiz Widget */}
+        <MiniQuizCard />
+
+        {/* Recent Terms */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionTitleContainer}>
+              <Ionicons name="time-outline" size={18} color={colors.primary} />
+              <Text style={styles.sectionTitle}>Son Eklenenler</Text>
+            </View>
+          </View>
+          <View style={styles.recentList}>
+            {recentTerms.map((term) => (
+              <TermCard
+                key={term.id}
+                term={term}
+                onPress={() =>
+                  (navigation as any).navigate("TermDetail", { id: term.id })
+                }
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={{ height: 100 }} />
       </ScrollView>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8FAFC', // Very light gray background to show LivingBackground
-  },
-  stickyHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
-  },
-  appHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 8,
-    paddingBottom: 8,
-    gap: 10,
-    paddingHorizontal: 20,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: 'transparent', // Transparent to show LivingBackground
-  },
-  scrollContent: {
-    backgroundColor: 'transparent', // Transparent to show LivingBackground
-  },
-  headerLogoContainer: {
-    width: 36,
-    height: 36,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 8,
-  },
-  appName: {
-    fontSize: 24,
-    fontFamily: 'Nunito_800ExtraBold',
-    color: '#00BFFF',
-    letterSpacing: 0.5,
-    textShadowColor: 'rgba(0, 191, 255, 0.35)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 25,
-  },
-  appNameFallback: {
-    fontWeight: '800',
-    ...(Platform.OS === 'ios' ? {} : { fontFamily: 'System' }),
-  },
-  termsCounter: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginLeft: 8,
-  },
-  debugText: {
-    fontSize: 10,
-    color: '#9ca3af',
-    marginTop: 4,
-  },
-  mainCard: {
-    marginHorizontal: 20,
-    marginTop: 0,
-    marginBottom: 30,
-    borderRadius: 24,
-    padding: 20,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#93C5FD',
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 15,
-    elevation: 5,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  pillIconContainer: {
-    width: 64,
-    height: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  iconGlow: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    backgroundColor: '#60A5FA',
-    opacity: 0.2,
-    borderRadius: 30,
-    shadowColor: '#60A5FA',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 25,
-    elevation: 5,
-  },
-  pillsWrapper: {
-    position: 'relative',
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  pillIcon: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pillCapsule: {
-    top: 0,
-    left: 0,
-    transform: [{ rotate: '15deg' }],
-  },
-  pillTablet: {
-    bottom: 2,
-    right: 2,
-    transform: [{ rotate: '-10deg' }],
-  },
-  cardText: {
-    flex: 1,
-  },
-  cardTitle: {
-    fontSize: 22,
-    fontFamily: 'Nunito_700Bold',
-    color: '#00BFFF',
-    marginBottom: 4,
-  },
-  cardTitleMain: {
-    fontSize: 22,
-    fontFamily: 'Nunito_700Bold',
-    color: '#00BFFF',
-  },
-  cardTitleHighlight: {
-    fontSize: 22,
-    fontFamily: 'Nunito_700Bold',
-    color: '#00BFFF',
-  },
-  cardSubtitle: {
-    fontSize: 14,
-    fontFamily: 'Nunito_700Bold',
-    color: '#00BFFF',
-    marginTop: 4,
-  },
-  cardSubtitleHighlight: {
-    fontSize: 14,
-    fontFamily: 'Nunito_700Bold',
-    color: '#00BFFF',
-  },
-  cardTitleFallback: {
-    fontWeight: '700',
-    ...(Platform.OS === 'ios' ? {} : { fontFamily: 'System' }),
-  },
-  cardSubtitleFallback: {
-    fontWeight: '700',
-    ...(Platform.OS === 'ios' ? {} : { fontFamily: 'System' }),
-  },
-  searchContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-    borderWidth: 0,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#111827',
-  },
-  categoriesSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#3b82f6',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  categoryCard: {
-    borderRadius: 24, // rounded-3xl
-    padding: 20,
-    width: '47%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    minHeight: 160,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  categoryIconContainer: {
-    marginBottom: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  categoryName: {
-    fontSize: 15,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: '#111827',
-    marginTop: 8,
-  },
-  featuredSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  horizontalScroll: {
-    marginHorizontal: -20,
-    paddingHorizontal: 20,
-  },
-  featuredCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
-    padding: 16,
-    width: 200,
-    marginRight: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  featuredIcon: {
-    marginBottom: 8,
-  },
-  featuredContent: {
-    marginTop: 0,
-  },
-  termTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginTop: 8,
-  },
-  termSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  categoryBadgeGray: {
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: 8,
-  },
-  categoryBadgeTextGray: {
-    fontSize: 11,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  recentSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  recentList: {
-    gap: 12,
-    marginTop: 16,
-  },
-  recentItem: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  recentIcon: {
-    marginRight: 12,
-  },
-  recentContent: {
-    flex: 1,
-  },
-  recentTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  recentSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
-  recentBadge: {
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20, // rounded-full
-  },
-  recentBadgeText: {
-    fontSize: 12,
-    color: '#6b7280',
-    fontWeight: '500',
-  },
-  loadingContainer: {
-    paddingVertical: 32,
-    alignItems: 'center',
-  },
-  emptyFeaturedContainer: {
-    paddingVertical: 24,
-    alignItems: 'center',
-  },
-  emptyFeaturedText: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    textAlign: 'center',
-  },
-});
+const createStyles = (colors: any, isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    orb: {
+      position: "absolute",
+      borderRadius: 999,
+      opacity: isDark ? 0.12 : 0.08,
+    },
+    orb1: {
+      width: 300,
+      height: 300,
+      backgroundColor: colors.primary,
+      top: -100,
+      right: -100,
+    },
+    orb2: {
+      width: 250,
+      height: 250,
+      backgroundColor: colors.accent,
+      bottom: 200,
+      left: -100,
+    },
+    header: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 100,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    headerContent: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+    },
+    logoContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    logoGradient: {
+      width: 38,
+      height: 38,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    logoText: {
+      fontSize: 21,
+      fontFamily: "Poppins_700Bold",
+      color: colors.text,
+      letterSpacing: 0.2,
+    },
+    themeToggle: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingBottom: 20,
+    },
+    heroContainer: {
+      paddingHorizontal: 20,
+      marginBottom: 24,
+    },
+    heroCard: {
+      borderRadius: 24,
+      padding: 24,
+      overflow: "hidden",
+    },
+    heroContent: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    heroTextContainer: {
+      flex: 1,
+    },
+    heroTitle: {
+      fontSize: 26,
+      fontFamily: "Inter_700Bold",
+      color: "#FFFFFF",
+      letterSpacing: -0.3,
+    },
+    heroTitleAccent: {
+      fontSize: 30,
+      fontFamily: "Inter_700Bold",
+      color: "rgba(255,255,255,0.95)",
+      letterSpacing: -0.3,
+      marginBottom: 10,
+    },
+    heroSubtitle: {
+      fontSize: 14,
+      fontFamily: "Inter_400Regular",
+      color: "rgba(255,255,255,0.85)",
+      lineHeight: 21,
+    },
+    heroIconContainer: {
+      marginLeft: 16,
+    },
+    searchContainer: {
+      paddingHorizontal: 20,
+      marginBottom: 24,
+    },
+    searchBar: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      borderWidth: 1,
+      borderColor: colors.border,
+      gap: 12,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 15,
+      fontFamily: "Inter_400Regular",
+      color: colors.text,
+    },
+    searchButton: {
+      padding: 4,
+    },
+    section: {
+      marginBottom: 24,
+    },
+    sectionHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 20,
+      marginBottom: 16,
+    },
+    sectionTitleContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    sectionTitle: {
+      fontSize: 17,
+      fontFamily: "Inter_600SemiBold",
+      color: colors.text,
+    },
+    seeAllText: {
+      fontSize: 14,
+      fontFamily: "Inter_500Medium",
+      color: colors.primary,
+    },
+    horizontalScroll: {
+      paddingLeft: 20,
+    },
+    featuredCardWrapper: {
+      width: 300,
+      marginRight: 16,
+    },
+    loadingContainer: {
+      paddingVertical: 40,
+      alignItems: "center",
+    },
+    emptyContainer: {
+      paddingVertical: 32,
+      alignItems: "center",
+    },
+    emptyText: {
+      fontSize: 14,
+      fontFamily: "Inter_400Regular",
+      color: colors.textTertiary,
+    },
+    recentList: {
+      paddingHorizontal: 20,
+      gap: 12,
+    },
+  });
 
 export default HomeView;
-

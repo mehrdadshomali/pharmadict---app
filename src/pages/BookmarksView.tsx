@@ -1,17 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { usePharmacy } from '../context/PharmacyContext';
-import type { PharmacyTerm } from '../types/models';
-import { TermCategoryConfig } from '../types/models';
-import TermCard from '../components/TermCard';
+// BookmarksView.tsx - Premium Favorites Screen
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { usePharmacy } from "../context/PharmacyContext";
+import { useTheme } from "../context/ThemeContext";
+import type { PharmacyTerm } from "../types/models";
+import TermCard from "../components/TermCard";
 
 const BookmarksView = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const { colors, isDark } = useTheme();
   const { getBookmarkedTerms } = usePharmacy();
   const [bookmarkedTerms, setBookmarkedTerms] = useState<PharmacyTerm[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const HEADER_HEIGHT = insets.top + 60;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -22,133 +36,223 @@ const BookmarksView = () => {
   const loadBookmarks = async () => {
     setIsLoading(true);
     const terms = await getBookmarkedTerms();
-    // Ensure isBookmarked is always boolean and dates are Date objects
-    const normalizedTerms = terms.map(term => ({
+    const normalizedTerms = terms.map((term) => ({
       ...term,
       isBookmarked: Boolean(term.isBookmarked),
-      createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-      updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+      createdAt:
+        term.createdAt instanceof Date
+          ? term.createdAt
+          : new Date(term.createdAt),
+      updatedAt:
+        term.updatedAt instanceof Date
+          ? term.updatedAt
+          : new Date(term.updatedAt),
       components: Array.isArray(term.components) ? term.components : [],
       relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-      synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+      synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
     }));
     setBookmarkedTerms(normalizedTerms);
     setIsLoading(false);
   };
 
+  const styles = createStyles(colors, isDark);
+
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2563eb" />
-      </View>
-    );
-  }
-
-  if (bookmarkedTerms.length === 0) {
-    return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Favoriler</Text>
-        </View>
-        <View style={styles.emptyContainer}>
-          <Ionicons name="heart" size={64} color="#d1d5db" />
-          <Text style={styles.emptyText}>Henüz favori terim eklenmemiş</Text>
+        <LinearGradient
+          colors={isDark ? ["#0A0E14", "#0F1419"] : ["#FAFBFC", "#F3F4F6"]}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Favoriler</Text>
-      </View>
-      <View style={styles.termsList}>
-        {bookmarkedTerms.map((term) => (
-          <TermCard
-            key={term.id}
-            term={term}
-            onPress={() => navigation.navigate('TermDetail' as never, { id: term.id } as never)}
-          />
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <LinearGradient
+        colors={isDark ? ["#0A0E14", "#0F1419"] : ["#FAFBFC", "#F3F4F6"]}
+        style={StyleSheet.absoluteFill}
+      />
+
+      {/* Header */}
+      <BlurView
+        intensity={isDark ? 40 : 60}
+        tint={isDark ? "dark" : "light"}
+        style={[
+          styles.header,
+          { paddingTop: insets.top, height: HEADER_HEIGHT },
+        ]}
+      >
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>Favoriler</Text>
+          {bookmarkedTerms.length > 0 && (
+            <View style={styles.countBadge}>
+              <Text style={styles.countText}>{bookmarkedTerms.length}</Text>
+            </View>
+          )}
+        </View>
+      </BlurView>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: HEADER_HEIGHT + 16 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {bookmarkedTerms.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <View style={styles.emptyIconContainer}>
+              <LinearGradient
+                colors={["#EC4899", "#DB2777"]}
+                style={styles.emptyIconGradient}
+              >
+                <Ionicons name="heart" size={40} color="#FFFFFF" />
+              </LinearGradient>
+            </View>
+            <Text style={styles.emptyTitle}>Henüz favori yok</Text>
+            <Text style={styles.emptySubtext}>
+              Beğendiğiniz terimleri favorilere ekleyerek buradan hızlıca
+              erişebilirsiniz.
+            </Text>
+          </View>
+        ) : (
+          <>
+            {/* Stats Card */}
+            <View style={styles.statsCard}>
+              <LinearGradient
+                colors={["#EC4899", "#DB2777"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statsGradient}
+              >
+                <View style={styles.statsContent}>
+                  <View style={styles.statsIconContainer}>
+                    <Ionicons
+                      name="heart"
+                      size={24}
+                      color="rgba(255,255,255,0.9)"
+                    />
+                  </View>
+                  <View style={styles.statsTextContainer}>
+                    <Text style={styles.statsTitle}>
+                      {bookmarkedTerms.length} Favori Terim
+                    </Text>
+                    <Text style={styles.statsSubtitle}>
+                      Kaydettiğiniz terimler burada
+                    </Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </View>
+
+            {/* Terms List */}
+            <View style={styles.termsList}>
+              {bookmarkedTerms.map((term) => (
+                <TermCard
+                  key={term.id}
+                  term={term}
+                  onPress={() =>
+                    navigation.navigate(
+                      "TermDetail" as never,
+                      { id: term.id } as never
+                    )
+                  }
+                />
+              ))}
+            </View>
+          </>
+        )}
+
+        <View style={{ height: 100 }} />
+      </ScrollView>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  header: {
-    paddingTop: 60,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#111827',
-  },
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: 48,
-    paddingHorizontal: 20,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#6b7280',
-    marginTop: 16,
-  },
-  termsList: {
-    gap: 12,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  termCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  termIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  termContent: {
-    flex: 1,
-  },
-  termTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  termSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginTop: 4,
-  },
-  termDescription: {
-    fontSize: 12,
-    color: '#9ca3af',
-    marginTop: 4,
-  },
-});
+const createStyles = (colors: any, isDark: boolean) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: colors.background },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    header: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 100,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      justifyContent: "flex-end",
+      paddingBottom: 12,
+      paddingHorizontal: 20,
+    },
+    headerContent: { flexDirection: "row", alignItems: "center", gap: 12 },
+    headerTitle: {
+      fontSize: 28,
+      fontWeight: "800",
+      color: colors.text,
+      letterSpacing: -0.5,
+    },
+    countBadge: {
+      backgroundColor: "rgba(236, 72, 153, 0.15)",
+      paddingHorizontal: 12,
+      paddingVertical: 5,
+      borderRadius: 12,
+    },
+    countText: { fontSize: 14, fontWeight: "700", color: "#EC4899" },
+    scrollView: { flex: 1 },
+    scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
+    emptyContainer: { alignItems: "center", paddingVertical: 80 },
+    emptyIconContainer: { marginBottom: 24 },
+    emptyIconGradient: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emptyTitle: {
+      fontSize: 22,
+      fontWeight: "700",
+      color: colors.text,
+      marginBottom: 10,
+    },
+    emptySubtext: {
+      fontSize: 15,
+      color: colors.textSecondary,
+      textAlign: "center",
+      paddingHorizontal: 40,
+      lineHeight: 22,
+    },
+    statsCard: { marginBottom: 24, borderRadius: 20, overflow: "hidden" },
+    statsGradient: { padding: 20 },
+    statsContent: { flexDirection: "row", alignItems: "center", gap: 16 },
+    statsIconContainer: {
+      width: 50,
+      height: 50,
+      borderRadius: 14,
+      backgroundColor: "rgba(255,255,255,0.2)",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    statsTextContainer: { flex: 1 },
+    statsTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: "#FFFFFF",
+      marginBottom: 4,
+    },
+    statsSubtitle: { fontSize: 13, color: "rgba(255,255,255,0.8)" },
+    termsList: { gap: 12 },
+  });
 
 export default BookmarksView;

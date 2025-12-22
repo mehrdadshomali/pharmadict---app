@@ -1,7 +1,15 @@
-// SmartFilterBar.tsx - Smart Filter Bar Component
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+// SmartFilterBar.tsx - Premium Smart Filter Bar
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "../context/ThemeContext";
 
 export interface FilterOption {
   id: string;
@@ -21,6 +29,8 @@ const SmartFilterBar: React.FC<SmartFilterBarProps> = ({
   activeFilters,
   onFilterToggle,
 }) => {
+  const { colors, isDark } = useTheme();
+
   if (filters.length === 0) return null;
 
   return (
@@ -35,42 +45,58 @@ const SmartFilterBar: React.FC<SmartFilterBarProps> = ({
         return (
           <TouchableOpacity
             key={filter.id}
-            style={[
-              styles.chip,
-              isActive && styles.chipActive,
-            ]}
             onPress={() => onFilterToggle(filter.id)}
-            activeOpacity={0.7}
+            activeOpacity={0.8}
           >
-            <Ionicons
-              name={filter.icon as any}
-              size={16}
-              color={isActive ? '#FFFFFF' : '#64748B'}
-              style={styles.icon}
-            />
-            <Text
-              style={[
-                styles.chipText,
-                isActive && styles.chipTextActive,
-              ]}
-            >
-              {filter.label}
-            </Text>
-            {filter.count !== undefined && (
+            {isActive ? (
+              <LinearGradient
+                colors={colors.gradientPrimary as [string, string]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.chip}
+              >
+                <Ionicons name={filter.icon as any} size={16} color="#FFFFFF" />
+                <Text style={styles.chipTextActive}>{filter.label}</Text>
+                {filter.count !== undefined && (
+                  <View style={styles.countBadgeActive}>
+                    <Text style={styles.countTextActive}>{filter.count}</Text>
+                  </View>
+                )}
+              </LinearGradient>
+            ) : (
               <View
                 style={[
-                  styles.countBadge,
-                  isActive && styles.countBadgeActive,
+                  styles.chip,
+                  {
+                    backgroundColor: colors.surface,
+                    borderColor: colors.border,
+                  },
                 ]}
               >
+                <Ionicons
+                  name={filter.icon as any}
+                  size={16}
+                  color={colors.textSecondary}
+                />
                 <Text
-                  style={[
-                    styles.countText,
-                    isActive && styles.countTextActive,
-                  ]}
+                  style={[styles.chipText, { color: colors.textSecondary }]}
                 >
-                  {filter.count}
+                  {filter.label}
                 </Text>
+                {filter.count !== undefined && (
+                  <View
+                    style={[
+                      styles.countBadge,
+                      { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                  >
+                    <Text
+                      style={[styles.countText, { color: colors.textTertiary }]}
+                    >
+                      {filter.count}
+                    </Text>
+                  </View>
+                )}
               </View>
             )}
           </TouchableOpacity>
@@ -81,58 +107,29 @@ const SmartFilterBar: React.FC<SmartFilterBarProps> = ({
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    marginBottom: 16,
-  },
-  container: {
-    paddingHorizontal: 20,
-    gap: 8,
-  },
+  scrollView: { marginBottom: 16 },
+  container: { paddingHorizontal: 20, gap: 10 },
   chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
-    borderRadius: 20,
-    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
     paddingVertical: 10,
     marginRight: 8,
+    gap: 8,
   },
-  chipActive: {
-    backgroundColor: '#1E293B',
-    borderColor: '#1E293B',
-  },
-  icon: {
-    marginRight: 6,
-  },
-  chipText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#64748B',
-  },
-  chipTextActive: {
-    color: '#FFFFFF',
-  },
-  countBadge: {
-    marginLeft: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-    backgroundColor: '#F1F5F9',
-  },
+  chipText: { fontSize: 14, fontWeight: "600" },
+  chipTextActive: { fontSize: 14, fontWeight: "600", color: "#FFFFFF" },
+  countBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   countBadgeActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.25)",
   },
-  countText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#64748B',
-  },
-  countTextActive: {
-    color: '#FFFFFF',
-  },
+  countText: { fontSize: 11, fontWeight: "700" },
+  countTextActive: { fontSize: 11, fontWeight: "700", color: "#FFFFFF" },
 });
 
 export default SmartFilterBar;
-

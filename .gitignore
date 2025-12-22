@@ -66,3 +66,8 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# IDE
+.vscode/
+*.swp
+*.swo

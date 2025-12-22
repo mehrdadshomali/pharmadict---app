@@ -1,8 +1,15 @@
-// AISummaryCard.tsx - AI Summary Card Component
-import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+// AISummaryCard.tsx - Premium AI Summary Card
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../context/ThemeContext";
 
 interface AISummaryCardProps {
   summary: string;
@@ -17,6 +24,7 @@ const AISummaryCard: React.FC<AISummaryCardProps> = ({
   onShare,
   onCopy,
 }) => {
+  const { colors, isDark } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -30,58 +38,101 @@ const AISummaryCard: React.FC<AISummaryCardProps> = ({
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <LinearGradient
-        colors={['#F5F3FF', '#EEF2FF']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
+        colors={isDark ? ["#1A2332", "#151B23"] : ["#F5F3FF", "#EEF2FF"]}
+        style={[
+          styles.card,
+          { borderColor: isDark ? colors.border : "#C7D2FE" },
+        ]}
       >
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>✨ AI Özeti</Text>
+          <View
+            style={[
+              styles.badge,
+              {
+                backgroundColor: isDark ? "rgba(139, 92, 246, 0.2)" : "#EDE9FE",
+              },
+            ]}
+          >
+            <Ionicons name="sparkles" size={14} color={colors.accent} />
+            <Text style={[styles.badgeText, { color: colors.accent }]}>
+              AI Özeti
+            </Text>
           </View>
           <View style={styles.actions}>
             {onCopy && (
               <TouchableOpacity
                 onPress={onCopy}
-                style={styles.actionButton}
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: colors.backgroundSecondary },
+                ]}
                 activeOpacity={0.7}
               >
-                <Ionicons name="copy-outline" size={18} color="#6B7280" />
+                <Ionicons
+                  name="copy-outline"
+                  size={16}
+                  color={colors.textSecondary}
+                />
               </TouchableOpacity>
             )}
             {onShare && (
               <TouchableOpacity
                 onPress={onShare}
-                style={styles.actionButton}
+                style={[
+                  styles.actionBtn,
+                  { backgroundColor: colors.backgroundSecondary },
+                ]}
                 activeOpacity={0.7}
               >
-                <Ionicons name="share-outline" size={18} color="#6B7280" />
+                <Ionicons
+                  name="share-outline"
+                  size={16}
+                  color={colors.textSecondary}
+                />
               </TouchableOpacity>
             )}
           </View>
         </View>
 
         {/* Content */}
-        <Text style={styles.content}>{summary}</Text>
+        <Text style={[styles.content, { color: colors.textSecondary }]}>
+          {summary}
+        </Text>
 
         {/* Sources */}
         {sources.length > 0 && (
-          <View style={styles.sourcesContainer}>
-            <Text style={styles.sourcesLabel}>Kaynaklar:</Text>
+          <View
+            style={[
+              styles.sourcesContainer,
+              { borderTopColor: isDark ? colors.border : "#E0E7FF" },
+            ]}
+          >
+            <Text style={[styles.sourcesLabel, { color: colors.textTertiary }]}>
+              Kaynaklar:
+            </Text>
             <View style={styles.sourcesList}>
               {sources.map((source, index) => (
-                <View key={index} style={styles.sourceIcon}>
+                <View
+                  key={index}
+                  style={[
+                    styles.sourceIcon,
+                    {
+                      backgroundColor: colors.surface,
+                      borderColor: colors.border,
+                    },
+                  ]}
+                >
                   <Ionicons
                     name={
-                      source.toLowerCase().includes('wikipedia')
-                        ? 'library-outline'
-                        : source.toLowerCase().includes('fda')
-                        ? 'shield-checkmark-outline'
-                        : 'document-text-outline'
+                      source.toLowerCase().includes("wikipedia")
+                        ? "library-outline"
+                        : source.toLowerCase().includes("fda")
+                        ? "shield-checkmark-outline"
+                        : "document-text-outline"
                     }
-                    size={16}
-                    color="#6366F1"
+                    size={14}
+                    color={colors.accent}
                   />
                 </View>
               ))}
@@ -94,73 +145,48 @@ const AISummaryCard: React.FC<AISummaryCardProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 24,
-  },
-  gradient: {
-    padding: 20,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#C7D2FE',
-  },
+  container: { marginBottom: 20 },
+  card: { padding: 18, borderRadius: 20, borderWidth: 1 },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 14,
   },
   badge: {
-    backgroundColor: '#EDE9FE',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    gap: 6,
   },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#6366F1',
+  badgeText: { fontSize: 12, fontWeight: "700" },
+  actions: { flexDirection: "row", gap: 8 },
+  actionBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    padding: 4,
-  },
-  content: {
-    fontSize: 15,
-    color: '#475569',
-    lineHeight: 24,
-    marginBottom: 16,
-  },
+  content: { fontSize: 14, lineHeight: 22, marginBottom: 14 },
   sourcesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 14,
     borderTopWidth: 1,
-    borderTopColor: '#E0E7FF',
   },
-  sourcesLabel: {
-    fontSize: 12,
-    color: '#64748B',
-    marginRight: 8,
-    fontWeight: '500',
-  },
-  sourcesList: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+  sourcesLabel: { fontSize: 12, fontWeight: "500", marginRight: 10 },
+  sourcesList: { flexDirection: "row", gap: 8 },
   sourceIcon: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: '#E0E7FF',
   },
 });
 
 export default AISummaryCard;
-
