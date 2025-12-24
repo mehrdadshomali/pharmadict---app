@@ -1,8 +1,12 @@
 // Pharmacy Term Service - TypeScript
-import type { PharmacyTerm, SearchResult, TermFilter } from '../types/models';
-import { TermCategory, MatchType } from '../types/models';
-import { v4 as uuidv4 } from 'uuid';
-import { drugAPIService } from './DrugAPIService';
+import type { PharmacyTerm, SearchResult, TermFilter } from "../types/models";
+import { TermCategory, MatchType } from "../types/models";
+import { v4 as uuidv4 } from "uuid";
+import { drugAPIService } from "./DrugAPIService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { allPlantsData } from "../data/plantsData";
+
+const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
 export interface PharmacyTermServiceProtocol {
   getAllTerms(): Promise<PharmacyTerm[]>;
@@ -27,16 +31,24 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
 
   private async initialize(): Promise<void> {
     if (this.initialized) {
-      console.log("✅ PharmacyTermService - Already initialized. Terms:", this.terms.length);
+      console.log(
+        "✅ PharmacyTermService - Already initialized. Terms:",
+        this.terms.length
+      );
       return;
     }
-    
+
     try {
       console.log("🔄 PharmacyTermService - Starting initialization...");
+      // Load bookmarks from storage first
+      await this.loadBookmarksFromStorage();
       // Load comprehensive data
       await this.loadComprehensiveData();
       this.initialized = true;
-      console.log("✅ PharmacyTermService - Initialization complete. Total terms:", this.terms.length);
+      console.log(
+        "✅ PharmacyTermService - Initialization complete. Total terms:",
+        this.terms.length
+      );
       if (this.terms.length === 0) {
         console.error("❌ WARNING: No terms loaded after initialization!");
       }
@@ -56,7 +68,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       const diseaseTerms = this.createDiseaseTerms();
       const anatomyTerms = this.createAnatomyTerms();
       const vitaminTerms = this.createVitaminTerms();
-      
+
       const localTerms = [
         ...drugTerms,
         ...plantTerms,
@@ -64,7 +76,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         ...componentTerms,
         ...diseaseTerms,
         ...anatomyTerms,
-        ...vitaminTerms
+        ...vitaminTerms,
       ];
 
       const additionalTerms = [
@@ -72,7 +84,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         ...this.createAdditionalPlantTerms(),
         ...this.createAdditionalVitaminTerms(),
         ...this.createAdditionalInsectTerms(),
-        ...this.createAdditionalComponentTerms()
+        ...this.createAdditionalComponentTerms(),
       ];
 
       const manualTerms = await this.loadManualJSONData();
@@ -90,24 +102,31 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       console.log(`📊 Local terms: ${localTerms.length}`);
       console.log(`📊 Additional terms: ${additionalTerms.length}`);
       console.log(`📊 Manual CSV terms: ${manualTerms.length}`);
-      
+
       // Debug: Log first few drug terms
       if (drugTerms.length > 0) {
-        console.log("🔍 Sample drug terms:", drugTerms.slice(0, 3).map(t => t.latinName));
+        console.log(
+          "🔍 Sample drug terms:",
+          drugTerms.slice(0, 3).map((t) => t.latinName)
+        );
       } else {
         console.warn("⚠️ WARNING: No drug terms created!");
       }
 
       // Load online data asynchronously (don't wait for it)
-      this.loadOnlineData().then(onlineTerms => {
-        if (onlineTerms && onlineTerms.length > 0) {
-          this.terms = [...this.terms, ...onlineTerms];
-          console.log(`📊 Online terms loaded: ${onlineTerms.length}`);
-          console.log(`📊 Total terms after online load: ${this.terms.length}`);
-        }
-      }).catch(error => {
-        console.error("❌ Error loading online data:", error);
-      });
+      this.loadOnlineData()
+        .then((onlineTerms) => {
+          if (onlineTerms && onlineTerms.length > 0) {
+            this.terms = [...this.terms, ...onlineTerms];
+            console.log(`📊 Online terms loaded: ${onlineTerms.length}`);
+            console.log(
+              `📊 Total terms after online load: ${this.terms.length}`
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("❌ Error loading online data:", error);
+        });
     } catch (error) {
       console.error("❌ Error in loadComprehensiveData:", error);
       // Set empty array to prevent further errors
@@ -124,66 +143,106 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
     } else if (!this.initialized) {
       await this.initialize();
     }
-    
-    console.log("📋 PharmacyTermService.getAllTerms() - Returning terms:", this.terms.length);
+
+    console.log(
+      "📋 PharmacyTermService.getAllTerms() - Returning terms:",
+      this.terms.length
+    );
     if (this.terms.length === 0) {
-      console.warn("⚠️ PharmacyTermService.getAllTerms() - No terms available! Re-initializing...");
+      console.warn(
+        "⚠️ PharmacyTermService.getAllTerms() - No terms available! Re-initializing..."
+      );
       await this.loadComprehensiveData();
     }
-    
-    return this.terms.map(term => ({
+
+    return this.terms.map((term) => ({
       ...term,
       isBookmarked: this.bookmarkedTermIds.includes(term.id),
-      createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-      updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+      createdAt:
+        term.createdAt instanceof Date
+          ? term.createdAt
+          : new Date(term.createdAt),
+      updatedAt:
+        term.updatedAt instanceof Date
+          ? term.updatedAt
+          : new Date(term.updatedAt),
       components: Array.isArray(term.components) ? term.components : [],
       relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-      synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+      synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
     }));
   }
 
   async getTermsByCategory(category: TermCategory): Promise<PharmacyTerm[]> {
     await this.initialize();
     return this.terms
-      .filter(term => term && term.category === category)
-      .map(term => ({
+      .filter((term) => term && term.category === category)
+      .map((term) => ({
         ...term,
         isBookmarked: this.bookmarkedTermIds.includes(term.id),
-        createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-        updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+        createdAt:
+          term.createdAt instanceof Date
+            ? term.createdAt
+            : new Date(term.createdAt),
+        updatedAt:
+          term.updatedAt instanceof Date
+            ? term.updatedAt
+            : new Date(term.updatedAt),
         components: Array.isArray(term.components) ? term.components : [],
         relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-        synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+        synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
       }));
   }
 
-  async searchTerms(query: string, filter: TermFilter): Promise<SearchResult[]> {
+  async searchTerms(
+    query: string,
+    filter: TermFilter
+  ): Promise<SearchResult[]> {
     await this.initialize();
-    
-    const filteredTerms = this.terms.filter(term => {
-      const matchesCategory = !filter.categories || filter.categories.length === 0 || filter.categories.includes(term.category);
-      const matchesQuery = !query || query.length === 0 || 
-        (term.latinName && term.latinName.toLowerCase().includes(query.toLowerCase())) ||
-        (term.turkishName && term.turkishName.toLowerCase().includes(query.toLowerCase())) ||
-        (term.definition && term.definition.toLowerCase().includes(query.toLowerCase())) ||
-        (term.synonyms && term.synonyms.some(syn => syn && syn.toLowerCase().includes(query.toLowerCase())));
-      
+
+    const filteredTerms = this.terms.filter((term) => {
+      const matchesCategory =
+        !filter.categories ||
+        filter.categories.length === 0 ||
+        filter.categories.includes(term.category);
+      const matchesQuery =
+        !query ||
+        query.length === 0 ||
+        (term.latinName &&
+          term.latinName.toLowerCase().includes(query.toLowerCase())) ||
+        (term.turkishName &&
+          term.turkishName.toLowerCase().includes(query.toLowerCase())) ||
+        (term.definition &&
+          term.definition.toLowerCase().includes(query.toLowerCase())) ||
+        (term.synonyms &&
+          term.synonyms.some(
+            (syn) => syn && syn.toLowerCase().includes(query.toLowerCase())
+          ));
+
       return matchesCategory && matchesQuery;
     });
 
-    return filteredTerms.map(term => ({
+    return filteredTerms.map((term) => ({
       id: uuidv4(),
       term: {
         ...term,
         isBookmarked: this.bookmarkedTermIds.includes(term.id),
-        createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-        updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+        createdAt:
+          term.createdAt instanceof Date
+            ? term.createdAt
+            : new Date(term.createdAt),
+        updatedAt:
+          term.updatedAt instanceof Date
+            ? term.updatedAt
+            : new Date(term.updatedAt),
         components: Array.isArray(term.components) ? term.components : [],
         relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-        synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+        synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
       },
-      matchType: query === term.latinName || query === term.turkishName ? MatchType.EXACT : MatchType.PARTIAL,
-      highlightedText: this.highlightSearchTerm(term.turkishName, query)
+      matchType:
+        query === term.latinName || query === term.turkishName
+          ? MatchType.EXACT
+          : MatchType.PARTIAL,
+      highlightedText: this.highlightSearchTerm(term.turkishName, query),
     }));
   }
 
@@ -192,31 +251,45 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
     if (!id || id.length === 0) {
       return null;
     }
-    const term = this.terms.find(term => term && term.id === id);
+    const term = this.terms.find((term) => term && term.id === id);
     if (!term) return null;
     return {
       ...term,
       isBookmarked: this.bookmarkedTermIds.includes(term.id),
-      createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-      updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+      createdAt:
+        term.createdAt instanceof Date
+          ? term.createdAt
+          : new Date(term.createdAt),
+      updatedAt:
+        term.updatedAt instanceof Date
+          ? term.updatedAt
+          : new Date(term.updatedAt),
       components: Array.isArray(term.components) ? term.components : [],
       relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-      synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+      synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
     };
   }
 
   async getBookmarkedTerms(): Promise<PharmacyTerm[]> {
     await this.initialize();
     return this.terms
-      .filter(term => term && term.id && this.bookmarkedTermIds.includes(term.id))
-      .map(term => ({
+      .filter(
+        (term) => term && term.id && this.bookmarkedTermIds.includes(term.id)
+      )
+      .map((term) => ({
         ...term,
         isBookmarked: true,
-        createdAt: term.createdAt instanceof Date ? term.createdAt : new Date(term.createdAt),
-        updatedAt: term.updatedAt instanceof Date ? term.updatedAt : new Date(term.updatedAt),
+        createdAt:
+          term.createdAt instanceof Date
+            ? term.createdAt
+            : new Date(term.createdAt),
+        updatedAt:
+          term.updatedAt instanceof Date
+            ? term.updatedAt
+            : new Date(term.updatedAt),
         components: Array.isArray(term.components) ? term.components : [],
         relatedTerms: Array.isArray(term.relatedTerms) ? term.relatedTerms : [],
-        synonyms: Array.isArray(term.synonyms) ? term.synonyms : []
+        synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
       }));
   }
 
@@ -227,47 +300,94 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
     const index = this.bookmarkedTermIds.indexOf(termId);
     if (index > -1) {
       this.bookmarkedTermIds.splice(index, 1);
+      await this.saveBookmarksToStorage();
       return false;
     } else {
       this.bookmarkedTermIds.push(termId);
+      await this.saveBookmarksToStorage();
       return true;
+    }
+  }
+
+  private async loadBookmarksFromStorage(): Promise<void> {
+    try {
+      const stored = await AsyncStorage.getItem(BOOKMARKS_STORAGE_KEY);
+      if (stored) {
+        this.bookmarkedTermIds = JSON.parse(stored);
+        console.log(
+          "📚 Bookmarks loaded from storage:",
+          this.bookmarkedTermIds.length
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error loading bookmarks:", error);
+      this.bookmarkedTermIds = [];
+    }
+  }
+
+  private async saveBookmarksToStorage(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(
+        BOOKMARKS_STORAGE_KEY,
+        JSON.stringify(this.bookmarkedTermIds)
+      );
+      console.log(
+        "💾 Bookmarks saved to storage:",
+        this.bookmarkedTermIds.length
+      );
+    } catch (error) {
+      console.error("❌ Error saving bookmarks:", error);
     }
   }
 
   async getRelatedTerms(term: PharmacyTerm): Promise<PharmacyTerm[]> {
     await this.initialize();
-    
+
     if (!term || !term.id) {
       return [];
     }
-    
+
     return this.terms
-      .filter(otherTerm => {
+      .filter((otherTerm) => {
         if (!otherTerm || !otherTerm.id) return false;
         if (otherTerm.id === term.id) return false;
-        
+
         if (otherTerm.category === term.category) return true;
-        
+
         if (term.relatedTerms && term.relatedTerms.length > 0) {
-          return term.relatedTerms.some(relatedTerm => {
+          return term.relatedTerms.some((relatedTerm) => {
             if (!relatedTerm) return false;
             const relatedLower = relatedTerm.toLowerCase();
-            return (otherTerm.latinName && otherTerm.latinName.toLowerCase().includes(relatedLower)) ||
-                   (otherTerm.turkishName && otherTerm.turkishName.toLowerCase().includes(relatedLower));
+            return (
+              (otherTerm.latinName &&
+                otherTerm.latinName.toLowerCase().includes(relatedLower)) ||
+              (otherTerm.turkishName &&
+                otherTerm.turkishName.toLowerCase().includes(relatedLower))
+            );
           });
         }
-        
+
         return false;
       })
       .slice(0, 10)
-      .map(otherTerm => ({
+      .map((otherTerm) => ({
         ...otherTerm,
         isBookmarked: this.bookmarkedTermIds.includes(otherTerm.id),
-        createdAt: otherTerm.createdAt instanceof Date ? otherTerm.createdAt : new Date(otherTerm.createdAt),
-        updatedAt: otherTerm.updatedAt instanceof Date ? otherTerm.updatedAt : new Date(otherTerm.updatedAt),
-        components: Array.isArray(otherTerm.components) ? otherTerm.components : [],
-        relatedTerms: Array.isArray(otherTerm.relatedTerms) ? otherTerm.relatedTerms : [],
-        synonyms: Array.isArray(otherTerm.synonyms) ? otherTerm.synonyms : []
+        createdAt:
+          otherTerm.createdAt instanceof Date
+            ? otherTerm.createdAt
+            : new Date(otherTerm.createdAt),
+        updatedAt:
+          otherTerm.updatedAt instanceof Date
+            ? otherTerm.updatedAt
+            : new Date(otherTerm.updatedAt),
+        components: Array.isArray(otherTerm.components)
+          ? otherTerm.components
+          : [],
+        relatedTerms: Array.isArray(otherTerm.relatedTerms)
+          ? otherTerm.relatedTerms
+          : [],
+        synonyms: Array.isArray(otherTerm.synonyms) ? otherTerm.synonyms : [],
       }));
   }
 
@@ -275,8 +395,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
 
   private highlightSearchTerm(text: string, searchTerm: string): string {
     if (!searchTerm) return text;
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    return text.replace(regex, '**$1**');
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.replace(regex, "**$1**");
   }
 
   // MARK: - Data Creation Methods (Simplified - will be expanded)
@@ -287,7 +407,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Acetylsalicylic acid",
         turkishName: "Asetilsalisilik asit",
         category: TermCategory.DRUG,
-        definition: "Ağrı kesici, ateş düşürücü ve anti-inflamatuar etki gösteren bir ilaç. Aspirin olarak da bilinir.",
+        definition:
+          "Ağrı kesici, ateş düşürücü ve anti-inflamatuar etki gösteren bir ilaç. Aspirin olarak da bilinir.",
         components: ["Salisilik asit", "Asetil grubu"],
         relatedTerms: ["NSAID", "COX inhibitörü"],
         etymology: "Latince acetyl + salicylic",
@@ -296,13 +417,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "325-650 mg, 4-6 saatte bir",
         contraindications: ["Peptic ülser", "Kanama bozuklukları"],
         interactions: ["Warfarin", "Methotrexate"],
-        synonyms: ["Aspirin", "ASA"]
+        synonyms: ["Aspirin", "ASA"],
       }),
       this.createTerm({
         latinName: "Paracetamol",
         turkishName: "Parasetamol",
         category: TermCategory.DRUG,
-        definition: "Ağrı kesici ve ateş düşürücü etkisi olan analjezik ilaç. Mideye daha az zararlıdır.",
+        definition:
+          "Ağrı kesici ve ateş düşürücü etkisi olan analjezik ilaç. Mideye daha az zararlıdır.",
         components: ["Para-aminofenol"],
         relatedTerms: ["Analjezik", "Antipiretik"],
         etymology: "Para-acetyl-amino-phenol",
@@ -311,13 +433,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "500-1000 mg, 4-6 saatte bir",
         contraindications: ["Karaciğer yetmezliği"],
         interactions: ["Warfarin"],
-        synonyms: ["Acetaminophen", "Tylenol"]
+        synonyms: ["Acetaminophen", "Tylenol"],
       }),
       this.createTerm({
         latinName: "Ibuprofen",
         turkishName: "İbuprofen",
         category: TermCategory.DRUG,
-        definition: "Non-steroid anti-inflamatuar ilaç (NSAID). Ağrı, ateş ve inflamasyon tedavisinde kullanılır.",
+        definition:
+          "Non-steroid anti-inflamatuar ilaç (NSAID). Ağrı, ateş ve inflamasyon tedavisinde kullanılır.",
         components: ["Propionic asit türevi"],
         relatedTerms: ["NSAID", "Anti-inflamatuar"],
         etymology: "Isobutyl-phenyl-propionic acid",
@@ -326,13 +449,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "200-400 mg, 6-8 saatte bir",
         contraindications: ["Mide ülseri", "Böbrek yetmezliği"],
         interactions: ["Aspirin", "Diüretikler"],
-        synonyms: ["Advil", "Brufen"]
+        synonyms: ["Advil", "Brufen"],
       }),
       this.createTerm({
         latinName: "Metformin",
         turkishName: "Metformin",
         category: TermCategory.DRUG,
-        definition: "Tip 2 diyabet tedavisinde kullanılan oral antidiabetik ilaç. Kan şekerini düşürür.",
+        definition:
+          "Tip 2 diyabet tedavisinde kullanılan oral antidiabetik ilaç. Kan şekerini düşürür.",
         components: ["Biguanid"],
         relatedTerms: ["Antidiabetik", "Biguanid"],
         etymology: "Methyl-biguanide",
@@ -341,13 +465,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "500-2000 mg/gün",
         contraindications: ["Böbrek yetmezliği", "Karaciğer yetmezliği"],
         interactions: ["Alkol"],
-        synonyms: ["Glucophage"]
+        synonyms: ["Glucophage"],
       }),
       this.createTerm({
         latinName: "Amoxicillin",
         turkishName: "Amoksisilin",
         category: TermCategory.DRUG,
-        definition: "Geniş spektrumlu beta-laktam antibiyotik. Bakteriyel enfeksiyonların tedavisinde kullanılır.",
+        definition:
+          "Geniş spektrumlu beta-laktam antibiyotik. Bakteriyel enfeksiyonların tedavisinde kullanılır.",
         components: ["Beta-laktam halkası", "Amin grubu"],
         relatedTerms: ["Antibiyotik", "Penisilin"],
         etymology: "Amino-hydroxy-benzyl-penicillin",
@@ -356,43 +481,52 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "250-500 mg, 8 saatte bir",
         contraindications: ["Penisilin alerjisi"],
         interactions: ["Oral kontraseptifler"],
-        synonyms: ["Amoxil"]
+        synonyms: ["Amoxil"],
       }),
       this.createTerm({
         latinName: "Omeprazole",
         turkishName: "Omeprazol",
         category: TermCategory.DRUG,
-        definition: "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
+        definition:
+          "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
         components: ["Benzimidazol türevi"],
         relatedTerms: ["Proton pompa inhibitörü", "Antiasit"],
         etymology: "Ome- (omeprazole) + -prazole (benzimidazol sonek)",
-        usage: "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
+        usage:
+          "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
         sideEffects: ["Baş ağrısı", "İshal", "Karın ağrısı"],
         dosage: "20-40 mg/gün, sabah aç karnına",
         contraindications: ["Omeprazole alerjisi"],
         interactions: ["Warfarin", "Diazepam", "Phenytoin"],
-        synonyms: ["Losec", "Prilosec"]
+        synonyms: ["Losec", "Prilosec"],
       }),
       this.createTerm({
         latinName: "Atorvastatin",
         turkishName: "Atorvastatin",
         category: TermCategory.DRUG,
-        definition: "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
+        definition:
+          "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
         components: ["Statin grubu"],
         relatedTerms: ["Statin", "Kolesterol düşürücü"],
-        etymology: "Ato- (atorvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
+        etymology:
+          "Ato- (atorvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
         usage: "Hiperkolesterolemi, kardiyovasküler hastalık önleme",
-        sideEffects: ["Kas ağrısı", "Karaciğer enzim yükselmesi", "Rhabdomiyoliz (nadir)"],
+        sideEffects: [
+          "Kas ağrısı",
+          "Karaciğer enzim yükselmesi",
+          "Rhabdomiyoliz (nadir)",
+        ],
         dosage: "10-80 mg/gün, akşam yemeği ile",
         contraindications: ["Aktif karaciğer hastalığı", "Hamilelik"],
         interactions: ["Eritromisin", "Siklosporin", "Greyfurt suyu"],
-        synonyms: ["Lipitor"]
+        synonyms: ["Lipitor"],
       }),
       this.createTerm({
         latinName: "Lisinopril",
         turkishName: "Lizinopril",
         category: TermCategory.DRUG,
-        definition: "ACE inhibitörü (anjiyotensin dönüştürücü enzim inhibitörü). Kan basıncını düşürür ve kalp yetmezliğinde kullanılır.",
+        definition:
+          "ACE inhibitörü (anjiyotensin dönüştürücü enzim inhibitörü). Kan basıncını düşürür ve kalp yetmezliğinde kullanılır.",
         components: ["ACE inhibitörü"],
         relatedTerms: ["Antihipertansif", "ACE inhibitörü"],
         etymology: "Lysine + -pril (ACE inhibitörü sonek)",
@@ -401,28 +535,31 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "5-40 mg/gün",
         contraindications: ["Hamilelik", "Bilateral renal arter stenozu"],
         interactions: ["Potasyum takviyeleri", "Diüretikler"],
-        synonyms: ["Prinivil", "Zestril"]
+        synonyms: ["Prinivil", "Zestril"],
       }),
       this.createTerm({
         latinName: "Metoprolol",
         turkishName: "Metoprolol",
         category: TermCategory.DRUG,
-        definition: "Beta-1 adrenerjik reseptör blokeri. Kalp hızını yavaşlatır, kan basıncını düşürür ve anjina tedavisinde kullanılır.",
+        definition:
+          "Beta-1 adrenerjik reseptör blokeri. Kalp hızını yavaşlatır, kan basıncını düşürür ve anjina tedavisinde kullanılır.",
         components: ["Beta bloker"],
         relatedTerms: ["Beta bloker", "Antihipertansif"],
         etymology: "Meto- (metoprolol) + -prolol (beta bloker sonek)",
-        usage: "Hipertansiyon, anjina pektoris, kalp ritim bozuklukları, kalp krizi sonrası",
+        usage:
+          "Hipertansiyon, anjina pektoris, kalp ritim bozuklukları, kalp krizi sonrası",
         sideEffects: ["Yorgunluk", "Soğuk el ve ayaklar", "Bradikardi"],
         dosage: "50-200 mg/gün, iki dozda",
         contraindications: ["Astım", "Kalp bloğu", "Şiddetli bradikardi"],
         interactions: ["Verapamil", "Diltiazem"],
-        synonyms: ["Lopressor", "Toprol"]
+        synonyms: ["Lopressor", "Toprol"],
       }),
       this.createTerm({
         latinName: "Amlodipine",
         turkishName: "Amlodipin",
         category: TermCategory.DRUG,
-        definition: "Kalsiyum kanal blokeri. Kan damarlarını genişleterek kan basıncını düşürür ve anjina tedavisinde kullanılır.",
+        definition:
+          "Kalsiyum kanal blokeri. Kan damarlarını genişleterek kan basıncını düşürür ve anjina tedavisinde kullanılır.",
         components: ["Dihidropiridin"],
         relatedTerms: ["Kalsiyum kanal blokeri", "Antihipertansif"],
         etymology: "Amlo- (amlodipine) + -dipine (dihidropiridin sonek)",
@@ -431,118 +568,146 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "5-10 mg/gün",
         contraindications: ["Şiddetli aort stenozu"],
         interactions: ["Greyfurt suyu"],
-        synonyms: ["Norvasc"]
+        synonyms: ["Norvasc"],
       }),
       this.createTerm({
         latinName: "Levothyroxine",
         turkishName: "Levotiroksin",
         category: TermCategory.DRUG,
-        definition: "Tiroid hormonu replasman tedavisi. Hipotiroidizm (tiroid yetmezliği) tedavisinde kullanılır.",
+        definition:
+          "Tiroid hormonu replasman tedavisi. Hipotiroidizm (tiroid yetmezliği) tedavisinde kullanılır.",
         components: ["L-tiroksin"],
         relatedTerms: ["Tiroid hormonu", "Hormon replasmanı"],
         etymology: "Levo- (sol) + thyroxine (tiroksin)",
         usage: "Hipotiroidizm, tiroid kanseri sonrası, guatr",
-        sideEffects: ["Hipertiroidizm belirtileri (aşırı dozda)", "Kalp çarpıntısı"],
+        sideEffects: [
+          "Hipertiroidizm belirtileri (aşırı dozda)",
+          "Kalp çarpıntısı",
+        ],
         dosage: "25-200 mcg/gün, aç karnına",
         contraindications: ["Hipertiroidizm", "Akut miyokard enfarktüsü"],
         interactions: ["Demir", "Kalsiyum", "Soya"],
-        synonyms: ["L-T4", "Synthroid", "Euthyrox"]
+        synonyms: ["L-T4", "Synthroid", "Euthyrox"],
       }),
       this.createTerm({
         latinName: "Azithromycin",
         turkishName: "Azitromisin",
         category: TermCategory.DRUG,
-        definition: "Makrolid grubu antibiyotik. Geniş spektrumlu bakteriyel enfeksiyon tedavisinde kullanılır.",
+        definition:
+          "Makrolid grubu antibiyotik. Geniş spektrumlu bakteriyel enfeksiyon tedavisinde kullanılır.",
         components: ["Makrolid"],
         relatedTerms: ["Antibiyotik", "Makrolid"],
         etymology: "Azi- (azithromycin) + -thromycin (makrolid sonek)",
-        usage: "Solunum yolu enfeksiyonları, cilt enfeksiyonları, cinsel yolla bulaşan hastalıklar",
+        usage:
+          "Solunum yolu enfeksiyonları, cilt enfeksiyonları, cinsel yolla bulaşan hastalıklar",
         sideEffects: ["İshal", "Mide bulantısı", "Karın ağrısı"],
         dosage: "500 mg/gün, 3-5 gün",
         contraindications: ["Makrolid alerjisi", "Karaciğer yetmezliği"],
         interactions: ["Warfarin", "Digoksin"],
-        synonyms: ["Zithromax", "Z-Pak"]
+        synonyms: ["Zithromax", "Z-Pak"],
       }),
       this.createTerm({
         latinName: "Ciprofloxacin",
         turkishName: "Siprofloksasin",
         category: TermCategory.DRUG,
-        definition: "Florokinolon grubu geniş spektrumlu antibiyotik. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır.",
+        definition:
+          "Florokinolon grubu geniş spektrumlu antibiyotik. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır.",
         components: ["Florokinolon"],
         relatedTerms: ["Antibiyotik", "Florokinolon"],
         etymology: "Cipro- (ciprofloxacin) + -floxacin (florokinolon sonek)",
-        usage: "İdrar yolu enfeksiyonları, solunum yolu enfeksiyonları, kemik enfeksiyonları",
+        usage:
+          "İdrar yolu enfeksiyonları, solunum yolu enfeksiyonları, kemik enfeksiyonları",
         sideEffects: ["Tendon hasarı", "Fototoksisite", "QT uzaması"],
         dosage: "250-750 mg, 12 saatte bir",
-        contraindications: ["Hamilelik", "18 yaş altı", "Tendon bozukluğu öyküsü"],
+        contraindications: [
+          "Hamilelik",
+          "18 yaş altı",
+          "Tendon bozukluğu öyküsü",
+        ],
         interactions: ["Antasitler", "Teofilin", "Warfarin"],
-        synonyms: ["Cipro"]
+        synonyms: ["Cipro"],
       }),
       this.createTerm({
         latinName: "Sertraline",
         turkishName: "Sertralin",
         category: TermCategory.DRUG,
-        definition: "Seçici serotonin geri alım inhibitörü (SSRI). Depresyon, anksiyete ve obsesif-kompulsif bozukluk tedavisinde kullanılır.",
+        definition:
+          "Seçici serotonin geri alım inhibitörü (SSRI). Depresyon, anksiyete ve obsesif-kompulsif bozukluk tedavisinde kullanılır.",
         components: ["SSRI"],
         relatedTerms: ["Antidepresan", "SSRI"],
         etymology: "Ser- (serotonin) + -traline (SSRI sonek)",
-        usage: "Depresyon, panik bozukluğu, obsesif-kompulsif bozukluk, travma sonrası stres bozukluğu",
+        usage:
+          "Depresyon, panik bozukluğu, obsesif-kompulsif bozukluk, travma sonrası stres bozukluğu",
         sideEffects: ["Mide bulantısı", "Uykusuzluk", "Cinsel işlev bozukluğu"],
         dosage: "50-200 mg/gün",
         contraindications: ["MAO inhibitörü kullanımı", "Pimozid"],
         interactions: ["MAO inhibitörleri", "Warfarin", "Triptanlar"],
-        synonyms: ["Zoloft"]
+        synonyms: ["Zoloft"],
       }),
       this.createTerm({
         latinName: "Warfarin",
         turkishName: "Varfarin",
         category: TermCategory.DRUG,
-        definition: "Oral antikoagülan. Kan pıhtılaşmasını önleyerek tromboembolik olayların tedavi ve önlenmesinde kullanılır.",
+        definition:
+          "Oral antikoagülan. Kan pıhtılaşmasını önleyerek tromboembolik olayların tedavi ve önlenmesinde kullanılır.",
         components: ["Kumarin türevi"],
         relatedTerms: ["Antikoagülan", "Kan inceltici"],
         etymology: "Wisconsin Alumni Research Foundation + -arin (kumarin)",
-        usage: "Atriyal fibrilasyon, derin ven trombozu, pulmoner emboli, kalp kapak protezi",
+        usage:
+          "Atriyal fibrilasyon, derin ven trombozu, pulmoner emboli, kalp kapak protezi",
         sideEffects: ["Kanama", "Morarma", "Cilt nekrozu (nadir)"],
         dosage: "2-10 mg/gün, INR'ye göre ayarlanır",
-        contraindications: ["Aktif kanama", "Hamilelik", "Ciddi karaciğer hastalığı"],
+        contraindications: [
+          "Aktif kanama",
+          "Hamilelik",
+          "Ciddi karaciğer hastalığı",
+        ],
         interactions: ["Aspirin", "NSAID'ler", "Antibiyotikler", "Vitamin K"],
-        synonyms: ["Coumadin"]
+        synonyms: ["Coumadin"],
       }),
       this.createTerm({
         latinName: "Furosemide",
         turkishName: "Furosemid",
         category: TermCategory.DRUG,
-        definition: "Loop diüretik. Böbreklerden su ve tuz atılımını artırarak ödem ve yüksek tansiyon tedavisinde kullanılır.",
+        definition:
+          "Loop diüretik. Böbreklerden su ve tuz atılımını artırarak ödem ve yüksek tansiyon tedavisinde kullanılır.",
         components: ["Sülfonamid türevi"],
         relatedTerms: ["Diüretik", "Loop diüretik"],
         etymology: "Fur- (furosemide) + -osemide (diüretik sonek)",
         usage: "Ödem, kalp yetmezliği, böbrek yetmezliği, hipertansiyon",
-        sideEffects: ["Dehidratasyon", "Elektrolit dengesizliği", "İşitme kaybı (yüksek dozda)"],
+        sideEffects: [
+          "Dehidratasyon",
+          "Elektrolit dengesizliği",
+          "İşitme kaybı (yüksek dozda)",
+        ],
         dosage: "20-80 mg/gün, sabah",
         contraindications: ["Anüri", "Şiddetli hipokalemi"],
         interactions: ["Digoksin", "Aminoglikozitler", "Lityum"],
-        synonyms: ["Lasix"]
+        synonyms: ["Lasix"],
       }),
       this.createTerm({
         latinName: "Pantoprazole",
         turkishName: "Pantoprazol",
         category: TermCategory.DRUG,
-        definition: "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
+        definition:
+          "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
         components: ["Benzimidazol türevi"],
         relatedTerms: ["Proton pompa inhibitörü", "Antiasit"],
         etymology: "Panto- (pantoprazole) + -prazole (benzimidazol sonek)",
-        usage: "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
+        usage:
+          "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
         sideEffects: ["Baş ağrısı", "İshal", "Karın ağrısı"],
         dosage: "40 mg/gün, sabah aç karnına",
         contraindications: ["Pantoprazole alerjisi"],
         interactions: ["Warfarin", "Ketokonazol"],
-        synonyms: ["Protonix"]
+        synonyms: ["Protonix"],
       }),
       this.createTerm({
         latinName: "Tramadol",
         turkishName: "Tramadol",
         category: TermCategory.DRUG,
-        definition: "Opioid analjezik. Orta-şiddetli ağrı tedavisinde kullanılır. Bağımlılık potansiyeli düşüktür.",
+        definition:
+          "Opioid analjezik. Orta-şiddetli ağrı tedavisinde kullanılır. Bağımlılık potansiyeli düşüktür.",
         components: ["Opioid"],
         relatedTerms: ["Analjezik", "Opioid"],
         etymology: "Tram- (tramadol) + -adol (opioid sonek)",
@@ -551,28 +716,35 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "50-100 mg, 4-6 saatte bir",
         contraindications: ["Akut alkol zehirlenmesi", "Opioid bağımlılığı"],
         interactions: ["SSRI'ler", "MAO inhibitörleri", "Karbamazepin"],
-        synonyms: ["Ultram"]
+        synonyms: ["Ultram"],
       }),
       this.createTerm({
         latinName: "Montelukast",
         turkishName: "Montelukast",
         category: TermCategory.DRUG,
-        definition: "Lökotrien reseptör antagonisti. Astım ve alerjik rinit tedavisinde kullanılır.",
+        definition:
+          "Lökotrien reseptör antagonisti. Astım ve alerjik rinit tedavisinde kullanılır.",
         components: ["Lökotrien antagonisti"],
         relatedTerms: ["Astım ilacı", "Antialerjik"],
-        etymology: "Monte- (montelukast) + -lukast (lökotrien antagonisti sonek)",
+        etymology:
+          "Monte- (montelukast) + -lukast (lökotrien antagonisti sonek)",
         usage: "Astım, alerjik rinit, egzersiz kaynaklı bronkospazm",
-        sideEffects: ["Baş ağrısı", "Karın ağrısı", "Ruh hali değişiklikleri (nadir)"],
+        sideEffects: [
+          "Baş ağrısı",
+          "Karın ağrısı",
+          "Ruh hali değişiklikleri (nadir)",
+        ],
         dosage: "10 mg/gün, akşam",
         contraindications: ["Montelukast alerjisi"],
         interactions: ["Fenobarbital", "Rifampin"],
-        synonyms: ["Singulair"]
+        synonyms: ["Singulair"],
       }),
       this.createTerm({
         latinName: "Losartan",
         turkishName: "Losartan",
         category: TermCategory.DRUG,
-        definition: "Anjiyotensin II reseptör blokeri (ARB). Kan basıncını düşürür ve böbrek koruyucu etki gösterir.",
+        definition:
+          "Anjiyotensin II reseptör blokeri (ARB). Kan basıncını düşürür ve böbrek koruyucu etki gösterir.",
         components: ["ARB"],
         relatedTerms: ["Antihipertansif", "ARB"],
         etymology: "Los- (losartan) + -artan (ARB sonek)",
@@ -581,13 +753,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "25-100 mg/gün",
         contraindications: ["Hamilelik", "Bilateral renal arter stenozu"],
         interactions: ["Potasyum takviyeleri", "NSAID'ler"],
-        synonyms: ["Cozaar"]
+        synonyms: ["Cozaar"],
       }),
       this.createTerm({
         latinName: "Clopidogrel",
         turkishName: "Klopidogrel",
         category: TermCategory.DRUG,
-        definition: "Trombosit agregasyon inhibitörü. Kan pıhtılaşmasını önleyerek kardiyovasküler olayları önler.",
+        definition:
+          "Trombosit agregasyon inhibitörü. Kan pıhtılaşmasını önleyerek kardiyovasküler olayları önler.",
         components: ["Tiyenopiridin"],
         relatedTerms: ["Antiplatelet", "Kan inceltici"],
         etymology: "Clopi- (clopidogrel) + -dogrel (tiyenopiridin sonek)",
@@ -596,28 +769,31 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "75 mg/gün",
         contraindications: ["Aktif kanama", "Şiddetli karaciğer yetmezliği"],
         interactions: ["Warfarin", "NSAID'ler", "Proton pompa inhibitörleri"],
-        synonyms: ["Plavix"]
+        synonyms: ["Plavix"],
       }),
       this.createTerm({
         latinName: "Gabapentin",
         turkishName: "Gabapentin",
         category: TermCategory.DRUG,
-        definition: "Antikonvülzan ve nöropatik ağrı ilacı. Epilepsi ve nöropatik ağrı tedavisinde kullanılır.",
+        definition:
+          "Antikonvülzan ve nöropatik ağrı ilacı. Epilepsi ve nöropatik ağrı tedavisinde kullanılır.",
         components: ["GABA analoğu"],
         relatedTerms: ["Antikonvülzan", "Nöropatik ağrı"],
         etymology: "Gaba- (GABA) + -pentin (antikonvülzan sonek)",
-        usage: "Epilepsi, nöropatik ağrı, fibromiyalji, huzursuz bacak sendromu",
+        usage:
+          "Epilepsi, nöropatik ağrı, fibromiyalji, huzursuz bacak sendromu",
         sideEffects: ["Baş dönmesi", "Yorgunluk", "Koordinasyon bozukluğu"],
         dosage: "300-3600 mg/gün, üç dozda",
         contraindications: ["Gabapentin alerjisi"],
         interactions: ["Alkol", "Opioidler"],
-        synonyms: ["Neurontin"]
+        synonyms: ["Neurontin"],
       }),
       this.createTerm({
         latinName: "Duloxetine",
         turkishName: "Duloksetin",
         category: TermCategory.DRUG,
-        definition: "Serotonin-norepinefrin geri alım inhibitörü (SNRI). Depresyon, anksiyete ve nöropatik ağrı tedavisinde kullanılır.",
+        definition:
+          "Serotonin-norepinefrin geri alım inhibitörü (SNRI). Depresyon, anksiyete ve nöropatik ağrı tedavisinde kullanılır.",
         components: ["SNRI"],
         relatedTerms: ["Antidepresan", "SNRI"],
         etymology: "Dulo- (duloxetine) + -xetine (SNRI sonek)",
@@ -626,104 +802,76 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "30-120 mg/gün",
         contraindications: ["MAO inhibitörü kullanımı", "Glokom"],
         interactions: ["MAO inhibitörleri", "Triptanlar", "NSAID'ler"],
-        synonyms: ["Cymbalta"]
+        synonyms: ["Cymbalta"],
       }),
       this.createTerm({
         latinName: "Rosuvastatin",
         turkishName: "Rosuvastatin",
         category: TermCategory.DRUG,
-        definition: "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
+        definition:
+          "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
         components: ["Statin grubu"],
         relatedTerms: ["Statin", "Kolesterol düşürücü"],
-        etymology: "Rosu- (rosuvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
+        etymology:
+          "Rosu- (rosuvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
         usage: "Hiperkolesterolemi, kardiyovasküler hastalık önleme",
-        sideEffects: ["Kas ağrısı", "Karaciğer enzim yükselmesi", "Rhabdomiyoliz (nadir)"],
+        sideEffects: [
+          "Kas ağrısı",
+          "Karaciğer enzim yükselmesi",
+          "Rhabdomiyoliz (nadir)",
+        ],
         dosage: "5-40 mg/gün, akşam yemeği ile",
         contraindications: ["Aktif karaciğer hastalığı", "Hamilelik"],
         interactions: ["Eritromisin", "Siklosporin"],
-        synonyms: ["Crestor"]
+        synonyms: ["Crestor"],
       }),
       this.createTerm({
         latinName: "Tamsulosin",
         turkishName: "Tamsulosin",
         category: TermCategory.DRUG,
-        definition: "Alfa-1 adrenerjik reseptör antagonisti. Prostat büyümesi (BPH) ve idrar yolu problemlerinin tedavisinde kullanılır.",
+        definition:
+          "Alfa-1 adrenerjik reseptör antagonisti. Prostat büyümesi (BPH) ve idrar yolu problemlerinin tedavisinde kullanılır.",
         components: ["Alfa bloker"],
         relatedTerms: ["Alfa bloker", "BPH tedavisi"],
         etymology: "Tam- (tamsulosin) + -sulosin (alfa bloker sonek)",
         usage: "Benign prostat hiperplazisi (BPH), idrar retansiyonu",
-        sideEffects: ["Baş dönmesi", "Retrograde ejakülasyon", "Düşük tansiyon"],
+        sideEffects: [
+          "Baş dönmesi",
+          "Retrograde ejakülasyon",
+          "Düşük tansiyon",
+        ],
         dosage: "0.4 mg/gün, akşam yemeği ile",
         contraindications: ["Tamsulosin alerjisi"],
         interactions: ["Sildenafil", "Tadalafil"],
-        synonyms: ["Flomax"]
+        synonyms: ["Flomax"],
       }),
     ];
   }
 
   private createPlantTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı bitki verilerini kullan
+    const plantsFromData = allPlantsData.map((plant) =>
       this.createTerm({
-        latinName: "Aloe vera",
-        turkishName: "Aloe vera",
-        category: TermCategory.PLANT,
-        definition: "Yapraklarından jel çıkarılan, yanık ve cilt problemlerinde kullanılan şifalı bitki.",
-        components: ["Aloin", "Polisakkaritler", "Vitaminler"],
-        relatedTerms: ["Şifalı bitki", "Cilt bakımı"],
-        etymology: "Arapça alloeh (acı madde) + Latince vera (gerçek)",
-        usage: "Yanık tedavisi, cilt bakımı, sindirim sorunları",
-        sideEffects: ["Alerjik reaksiyon (nadir)"],
-        dosage: "Jel olarak topikal uygulama",
-        contraindications: ["Alerji"],
-        interactions: ["Diüretikler"],
-        synonyms: ["Sarısabır", "Tıbbi aloe"]
-      }),
-      this.createTerm({
-        latinName: "Ginkgo biloba",
-        turkishName: "Ginkgo biloba",
-        category: TermCategory.PLANT,
-        definition: "Bellek ve dolaşım sistemi için kullanılan, en eski ağaç türlerinden biri.",
-        components: ["Ginkgolidler", "Flavonoidler"],
-        relatedTerms: ["Nootropik", "Dolaşım"],
-        etymology: "Japonca ginkyo (gümüş kayısı) + Latince biloba (iki loblu)",
-        usage: "Bellek desteği, dolaşım problemleri",
-        sideEffects: ["Baş ağrısı", "Mide rahatsızlığı"],
-        dosage: "120-240 mg/gün",
-        contraindications: ["Kanama bozuklukları"],
-        interactions: ["Antikoagülanlar"],
-        synonyms: ["Mabet ağacı"]
-      }),
-      this.createTerm({
-        latinName: "Echinacea purpurea",
-        turkishName: "Ekinezya",
-        category: TermCategory.PLANT,
-        definition: "Bağışıklık sistemini güçlendiren, soğuk algınlığı tedavisinde kullanılan bitki.",
-        components: ["Ekinakozid", "Polisakkaritler"],
-        relatedTerms: ["İmmünomodülatör", "Soğuk algınlığı"],
-        etymology: "Yunanca echinos (kirpi) - dikenli yaprakları nedeniyle",
-        usage: "Bağışıklık desteği, soğuk algınlığı",
-        sideEffects: ["Alerjik reaksiyon (nadir)"],
-        dosage: "300-500 mg, günde 3 kez",
-        contraindications: ["Otoimmün hastalıklar"],
-        interactions: ["İmmünosupresanlar"],
-        synonyms: ["Mor koni çiçeği"]
-      }),
-      this.createTerm({
-        latinName: "Panax ginseng",
-        turkishName: "Ginseng",
-        category: TermCategory.PLANT,
-        definition: "Enerji ve dayanıklılığı artıran, adaptojen özellikli kök bitkisi.",
-        components: ["Ginsenosidler", "Polisakkaritler"],
-        relatedTerms: ["Adaptojen", "Enerji"],
-        etymology: "Yunanca panax (tüm hastalıkları iyileştiren)",
-        usage: "Enerji desteği, stres yönetimi, fiziksel performans",
-        sideEffects: ["Uykusuzluk", "Yüksek tansiyon"],
-        dosage: "200-400 mg/gün",
-        contraindications: ["Yüksek tansiyon", "Hamilelik"],
-        interactions: ["Antikoagülanlar", "Kafein"],
-        synonyms: ["Kore ginsengi", "Asya ginsengi"]
-      }),
-    ];
+        latinName: plant.latinName,
+        turkishName: plant.turkishName,
+        category: plant.category,
+        definition: plant.definition,
+        components: plant.components,
+        relatedTerms: plant.relatedTerms,
+        etymology: plant.etymology,
+        usage: plant.usage,
+        sideEffects: plant.sideEffects,
+        dosage: plant.dosage,
+        contraindications: plant.contraindications,
+        interactions: plant.interactions,
+        synonyms: plant.synonyms,
+      })
+    );
+
+    console.log(
+      `🌿 Created ${plantsFromData.length} plant terms from plantsData`
+    );
+    return plantsFromData;
   }
 
   private createInsectTerms(): PharmacyTerm[] {
@@ -732,7 +880,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Galleria mellonella",
         turkishName: "Balmumu Güvesi",
         category: TermCategory.INSECT,
-        definition: "Arı kovanlarında yaşayan, balmumu ile beslenen güve türü. Tıbbi araştırmalarda model organizma olarak kullanılır.",
+        definition:
+          "Arı kovanlarında yaşayan, balmumu ile beslenen güve türü. Tıbbi araştırmalarda model organizma olarak kullanılır.",
         components: ["Balmumu", "Proteinler"],
         relatedTerms: ["Arı", "Model organizma"],
         etymology: "Latince galleria (galeri) + mellonella (bal)",
@@ -741,13 +890,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Büyük balmumu güvesi"]
+        synonyms: ["Büyük balmumu güvesi"],
       }),
       this.createTerm({
         latinName: "Alphitobius diaperinus",
         turkishName: "Kümes Böceği",
         category: TermCategory.INSECT,
-        definition: "Kümes hayvanlarında ve tahıl depolama alanlarında bulunan, protein kaynağı olarak kullanılan böcek.",
+        definition:
+          "Kümes hayvanlarında ve tahıl depolama alanlarında bulunan, protein kaynağı olarak kullanılan böcek.",
         components: ["Protein", "Yağ", "Kitin"],
         relatedTerms: ["Protein kaynağı", "Alternatif gıda"],
         etymology: "Yunanca alphiton (un) + bios (yaşam)",
@@ -756,13 +906,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Küçük kara böcek", "Un böceği"]
+        synonyms: ["Küçük kara böcek", "Un böceği"],
       }),
       this.createTerm({
         latinName: "Tenebrio molitor",
         turkishName: "Un Kurdu",
         category: TermCategory.INSECT,
-        definition: "Yüksek protein içeriği nedeniyle alternatif gıda kaynağı olarak kullanılan böcek türü.",
+        definition:
+          "Yüksek protein içeriği nedeniyle alternatif gıda kaynağı olarak kullanılan böcek türü.",
         components: ["Protein", "Yağ", "Fiber"],
         relatedTerms: ["Alternatif protein", "Sürdürülebilir gıda"],
         etymology: "Latince tenebrio (karanlık) + molitor (değirmenci)",
@@ -771,13 +922,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: ["Kabuklu deniz ürünleri alerjisi"],
         interactions: [],
-        synonyms: ["Mealworm", "Un kurdu"]
+        synonyms: ["Mealworm", "Un kurdu"],
       }),
       this.createTerm({
         latinName: "Apis mellifera",
         turkishName: "Bal Arısı",
         category: TermCategory.INSECT,
-        definition: "Bal, propolis ve arı sütü üreten, tıbbi açıdan değerli ürünler sağlayan sosyal böcek.",
+        definition:
+          "Bal, propolis ve arı sütü üreten, tıbbi açıdan değerli ürünler sağlayan sosyal böcek.",
         components: ["Bal", "Propolis", "Arı sütü", "Balmumu"],
         relatedTerms: ["Bal", "Propolis", "Apiterapi"],
         etymology: "Latince apis (arı) + mellifera (bal taşıyan)",
@@ -786,7 +938,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: ["Arı alerjisi"],
         interactions: [],
-        synonyms: ["Bal arısı", "Avrupa bal arısı"]
+        synonyms: ["Bal arısı", "Avrupa bal arısı"],
       }),
     ];
   }
@@ -797,7 +949,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Caffeine",
         turkishName: "Kafein",
         category: TermCategory.COMPONENT,
-        definition: "Merkezi sinir sistemini uyaran, uyanıklığı artıran doğal alkaloid. Kahve, çay ve kola içeceklerinde bulunur.",
+        definition:
+          "Merkezi sinir sistemini uyaran, uyanıklığı artıran doğal alkaloid. Kahve, çay ve kola içeceklerinde bulunur.",
         components: ["Metilksantin"],
         relatedTerms: ["Uyarıcı", "Alkaloid"],
         etymology: "Almanca Kaffee (kahve) + -in (kimyasal sonek)",
@@ -806,13 +959,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "100-200 mg (1-2 fincan kahve)",
         contraindications: ["Yüksek tansiyon", "Anksiyete bozukluğu"],
         interactions: ["Teofilin", "Ephedrine"],
-        synonyms: ["1,3,7-trimetilksantin", "Guaranin"]
+        synonyms: ["1,3,7-trimetilksantin", "Guaranin"],
       }),
       this.createTerm({
         latinName: "Curcumin",
         turkishName: "Kurkumin",
         category: TermCategory.COMPONENT,
-        definition: "Zerdeçalın aktif bileşeni. Güçlü anti-inflamatuar ve antioksidan özelliklere sahiptir.",
+        definition:
+          "Zerdeçalın aktif bileşeni. Güçlü anti-inflamatuar ve antioksidan özelliklere sahiptir.",
         components: ["Diferuloilmetan"],
         relatedTerms: ["Anti-inflamatuar", "Antioksidan"],
         etymology: "Latince Curcuma (zerdeçal) + -in",
@@ -821,13 +975,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "500-1000 mg/gün",
         contraindications: ["Safra taşı"],
         interactions: ["Antikoagülanlar"],
-        synonyms: ["Diferuloilmetan"]
+        synonyms: ["Diferuloilmetan"],
       }),
       this.createTerm({
         latinName: "Quercetin",
         turkishName: "Kersetin",
         category: TermCategory.COMPONENT,
-        definition: "Soğan, elma ve çayda bulunan, antioksidan ve anti-inflamatuar özellikli flavonoid.",
+        definition:
+          "Soğan, elma ve çayda bulunan, antioksidan ve anti-inflamatuar özellikli flavonoid.",
         components: ["Flavonol"],
         relatedTerms: ["Flavonoid", "Antioksidan"],
         etymology: "Latince quercus (meşe) - meşe ağacında bulunur",
@@ -836,7 +991,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "500-1000 mg/gün",
         contraindications: [],
         interactions: ["Antibiyotikler"],
-        synonyms: ["3,3',4',5,7-pentahidroksiflavon"]
+        synonyms: ["3,3',4',5,7-pentahidroksiflavon"],
       }),
     ];
   }
@@ -847,7 +1002,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Diabetes mellitus",
         turkishName: "Diyabet",
         category: TermCategory.DISEASE,
-        definition: "Kan şekeri seviyesinin yükselmesi ile karakterize kronik metabolik hastalık. Tip 1 ve Tip 2 olmak üzere iki ana tipi vardır.",
+        definition:
+          "Kan şekeri seviyesinin yükselmesi ile karakterize kronik metabolik hastalık. Tip 1 ve Tip 2 olmak üzere iki ana tipi vardır.",
         components: ["İnsülin eksikliği", "Glukoz intoleransı"],
         relatedTerms: ["Metabolik hastalık", "İnsülin"],
         etymology: "Yunanca diabetes (sifon) + mellitus (tatlı)",
@@ -856,13 +1012,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Şeker hastalığı", "DM"]
+        synonyms: ["Şeker hastalığı", "DM"],
       }),
       this.createTerm({
         latinName: "Hypertension",
         turkishName: "Hipertansiyon",
         category: TermCategory.DISEASE,
-        definition: "Kan basıncının sürekli olarak yüksek seyrettiği kardiyovasküler hastalık.",
+        definition:
+          "Kan basıncının sürekli olarak yüksek seyrettiği kardiyovasküler hastalık.",
         components: ["Yüksek kan basıncı"],
         relatedTerms: ["Kardiyovasküler", "Kan basıncı"],
         etymology: "Yunanca hyper (aşırı) + tension (gerilim)",
@@ -871,13 +1028,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Yüksek tansiyon", "HT"]
+        synonyms: ["Yüksek tansiyon", "HT"],
       }),
       this.createTerm({
         latinName: "Asthma",
         turkishName: "Astım",
         category: TermCategory.DISEASE,
-        definition: "Hava yollarının daralması ve iltihaplanması ile karakterize kronik solunum yolu hastalığı.",
+        definition:
+          "Hava yollarının daralması ve iltihaplanması ile karakterize kronik solunum yolu hastalığı.",
         components: ["Hava yolu inflamasyonu", "Bronkospazm"],
         relatedTerms: ["Solunum", "İnflamasyon"],
         etymology: "Yunanca asthma (nefes darlığı)",
@@ -886,7 +1044,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Bronşiyal astım"]
+        synonyms: ["Bronşiyal astım"],
       }),
     ];
   }
@@ -897,22 +1055,25 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Hamstrings",
         turkishName: "Hamstring Kasları",
         category: TermCategory.ANATOMY,
-        definition: "Uyluğun arka kısmında bulunan, diz fleksiyonu ve kalça ekstansiyonundan sorumlu üç kas grubu.",
+        definition:
+          "Uyluğun arka kısmında bulunan, diz fleksiyonu ve kalça ekstansiyonundan sorumlu üç kas grubu.",
         components: ["Biceps femoris", "Semitendinosus", "Semimembranosus"],
         relatedTerms: ["Kas", "Uyluk", "Diz"],
-        etymology: "İngilizce ham (jambon) + string (ip) - kasların görünümü nedeniyle",
+        etymology:
+          "İngilizce ham (jambon) + string (ip) - kasların görünümü nedeniyle",
         usage: "Yürüme, koşma, diz bükme",
         sideEffects: [],
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Uyluk arka kasları", "Femur arka kasları"]
+        synonyms: ["Uyluk arka kasları", "Femur arka kasları"],
       }),
       this.createTerm({
         latinName: "Internal oblique",
         turkishName: "İç Eğik Kas",
         category: TermCategory.ANATOMY,
-        definition: "Karın duvarında bulunan, gövde rotasyonu ve lateral fleksiyondan sorumlu kas.",
+        definition:
+          "Karın duvarında bulunan, gövde rotasyonu ve lateral fleksiyondan sorumlu kas.",
         components: ["Kas lifleri"],
         relatedTerms: ["Karın kası", "Gövde"],
         etymology: "Latince internus (iç) + obliquus (eğik)",
@@ -921,14 +1082,20 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Obliquus internus abdominis"]
+        synonyms: ["Obliquus internus abdominis"],
       }),
       this.createTerm({
         latinName: "Quadriceps femoris",
         turkishName: "Dört Başlı Uyluk Kası",
         category: TermCategory.ANATOMY,
-        definition: "Uyluğun ön kısmında bulunan, diz ekstansiyonundan sorumlu dört başlı kas grubu.",
-        components: ["Rectus femoris", "Vastus lateralis", "Vastus medialis", "Vastus intermedius"],
+        definition:
+          "Uyluğun ön kısmında bulunan, diz ekstansiyonundan sorumlu dört başlı kas grubu.",
+        components: [
+          "Rectus femoris",
+          "Vastus lateralis",
+          "Vastus medialis",
+          "Vastus intermedius",
+        ],
         relatedTerms: ["Uyluk", "Diz", "Kas"],
         etymology: "Latince quadri (dört) + caput (baş) + femoris (uyluk)",
         usage: "Diz ekstansiyonu, yürüme, koşma",
@@ -936,22 +1103,24 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Quadriceps", "Dörtlü kas"]
+        synonyms: ["Quadriceps", "Dörtlü kas"],
       }),
       this.createTerm({
         latinName: "Deltoid",
         turkishName: "Deltoid Kas",
         category: TermCategory.ANATOMY,
-        definition: "Omuz eklemini örten, kolun yukarı kaldırılmasından sorumlu üçgen şeklindeki kas.",
+        definition:
+          "Omuz eklemini örten, kolun yukarı kaldırılmasından sorumlu üçgen şeklindeki kas.",
         components: ["Anterior deltoid", "Medial deltoid", "Posterior deltoid"],
         relatedTerms: ["Omuz", "Kol", "Kas"],
-        etymology: "Yunanca delta (üçgen) + -oid (benzer) - üçgen şekli nedeniyle",
+        etymology:
+          "Yunanca delta (üçgen) + -oid (benzer) - üçgen şekli nedeniyle",
         usage: "Kol elevasyonu, omuz abdüksiyonu",
         sideEffects: [],
         dosage: "",
         contraindications: [],
         interactions: [],
-        synonyms: ["Deltoideus", "Omuz kası"]
+        synonyms: ["Deltoideus", "Omuz kası"],
       }),
     ];
   }
@@ -962,7 +1131,8 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         latinName: "Vitamin C",
         turkishName: "C Vitamini",
         category: TermCategory.VITAMIN,
-        definition: "Askorbik asit olarak da bilinen, suda çözünen antioksidan vitamin. Bağışıklık sistemi için önemlidir.",
+        definition:
+          "Askorbik asit olarak da bilinen, suda çözünen antioksidan vitamin. Bağışıklık sistemi için önemlidir.",
         components: ["Askorbik asit"],
         relatedTerms: ["Antioksidan", "Bağışıklık"],
         etymology: "Latince vita (hayat) + amine",
@@ -971,13 +1141,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "75-90 mg/gün (kadın/erkek), 1000 mg/gün (maksimum)",
         contraindications: ["Böbrek taşı öyküsü"],
         interactions: ["Demir preparatları"],
-        synonyms: ["Askorbik asit", "L-askorbik asit"]
+        synonyms: ["Askorbik asit", "L-askorbik asit"],
       }),
       this.createTerm({
         latinName: "Vitamin D",
         turkishName: "D Vitamini",
         category: TermCategory.VITAMIN,
-        definition: "Kalsiyum emilimi ve kemik sağlığı için gerekli yağda çözünen vitamin. Güneş ışığından sentezlenir.",
+        definition:
+          "Kalsiyum emilimi ve kemik sağlığı için gerekli yağda çözünen vitamin. Güneş ışığından sentezlenir.",
         components: ["Kolekalsiferol (D3)", "Ergokalsiferol (D2)"],
         relatedTerms: ["Kalsiyum", "Kemik sağlığı"],
         etymology: "Latince vita (hayat) + amine",
@@ -986,13 +1157,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "600-800 IU/gün (yetişkinler)",
         contraindications: ["Hiperkalsemi"],
         interactions: ["Kalsiyum takviyeleri"],
-        synonyms: ["Kalsiferol", "Güneş vitamini"]
+        synonyms: ["Kalsiferol", "Güneş vitamini"],
       }),
       this.createTerm({
         latinName: "Vitamin B12",
         turkishName: "B12 Vitamini",
         category: TermCategory.VITAMIN,
-        definition: "Kobalamin olarak da bilinen, DNA sentezi ve sinir sistemi için gerekli suda çözünen vitamin.",
+        definition:
+          "Kobalamin olarak da bilinen, DNA sentezi ve sinir sistemi için gerekli suda çözünen vitamin.",
         components: ["Kobalamin"],
         relatedTerms: ["DNA sentezi", "Anemi"],
         etymology: "Latince vita (hayat) + amine",
@@ -1001,13 +1173,14 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "2.4 mcg/gün (yetişkinler)",
         contraindications: ["Kobalamin alerjisi (nadir)"],
         interactions: ["Metformin"],
-        synonyms: ["Kobalamin", "Siyanokobalamin"]
+        synonyms: ["Kobalamin", "Siyanokobalamin"],
       }),
       this.createTerm({
         latinName: "Folic acid",
         turkishName: "Folik asit",
         category: TermCategory.VITAMIN,
-        definition: "B9 vitamini olarak da bilinen, hücre bölünmesi ve DNA sentezi için gerekli suda çözünen vitamin.",
+        definition:
+          "B9 vitamini olarak da bilinen, hücre bölünmesi ve DNA sentezi için gerekli suda çözünen vitamin.",
         components: ["Pteroylmonoglutamik asit"],
         relatedTerms: ["DNA sentezi", "Hamilelik"],
         etymology: "Latince folium (yaprak) - yapraklı sebzelerde bulunur",
@@ -1016,7 +1189,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         dosage: "400 mcg/gün (yetişkinler), 600 mcg/gün (hamilelik)",
         contraindications: ["B12 eksikliği (maskelenebilir)"],
         interactions: ["Metotreksat"],
-        synonyms: ["Folat", "B9 vitamini"]
+        synonyms: ["Folat", "B9 vitamini"],
       }),
     ];
   }
@@ -1044,47 +1217,52 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   private async loadManualJSONData(): Promise<PharmacyTerm[]> {
     try {
       // Load JSON data file
-      const jsonData = require('../data/pharmacyTerms.json');
+      const jsonData = require("../data/pharmacyTerms.json");
       const terms: PharmacyTerm[] = [];
 
       // Map category names to TermCategory enum
       const categoryMap: { [key: string]: TermCategory } = {
-        'drugs': TermCategory.DRUG,
-        'plants': TermCategory.PLANT,
-        'vitamins': TermCategory.VITAMIN,
-        'minerals': TermCategory.MINERAL,
-        'insects': TermCategory.INSECT,
-        'components': TermCategory.COMPONENT,
-        'diseases': TermCategory.DISEASE,
-        'anatomy': TermCategory.ANATOMY,
+        drugs: TermCategory.DRUG,
+        plants: TermCategory.PLANT,
+        vitamins: TermCategory.VITAMIN,
+        minerals: TermCategory.MINERAL,
+        insects: TermCategory.INSECT,
+        components: TermCategory.COMPONENT,
+        diseases: TermCategory.DISEASE,
+        anatomy: TermCategory.ANATOMY,
       };
 
       // Process each category
       for (const [categoryKey, categoryValue] of Object.entries(categoryMap)) {
         if (jsonData[categoryKey] && Array.isArray(jsonData[categoryKey])) {
           jsonData[categoryKey].forEach((item: any) => {
-            terms.push(this.createTerm({
-              latinName: item.latinName,
-              turkishName: item.turkishName,
-              category: categoryValue,
-              definition: item.definition || '',
-              components: item.components || [],
-              relatedTerms: item.relatedTerms || [],
-              etymology: item.etymology,
-              usage: item.usage,
-              sideEffects: item.sideEffects || [],
-              dosage: item.dosage,
-              contraindications: item.contraindications || [],
-              interactions: item.interactions || [],
-              synonyms: item.synonyms || []
-            }));
+            terms.push(
+              this.createTerm({
+                latinName: item.latinName,
+                turkishName: item.turkishName,
+                category: categoryValue,
+                definition: item.definition || "",
+                components: item.components || [],
+                relatedTerms: item.relatedTerms || [],
+                etymology: item.etymology,
+                usage: item.usage,
+                sideEffects: item.sideEffects || [],
+                dosage: item.dosage,
+                contraindications: item.contraindications || [],
+                interactions: item.interactions || [],
+                synonyms: item.synonyms || [],
+              })
+            );
           });
         }
       }
 
       console.log(`📁 JSON data loaded: ${terms.length} terms`);
       if (terms.length > 0) {
-        console.log(`📋 Sample JSON terms:`, terms.slice(0, 3).map(t => `${t.latinName} (${t.category})`));
+        console.log(
+          `📋 Sample JSON terms:`,
+          terms.slice(0, 3).map((t) => `${t.latinName} (${t.category})`)
+        );
       }
       return terms;
     } catch (error) {
@@ -1096,15 +1274,15 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   private async loadOnlineData(): Promise<PharmacyTerm[]> {
     try {
       console.log("🌐 Loading drugs from APIs...");
-      
+
       // Yeni API servisini kullan
       const apiTerms = await drugAPIService.fetchFromMultipleSources(100);
-      
+
       if (apiTerms.length > 0) {
         console.log(`✅ API'den ${apiTerms.length} ilaç yüklendi`);
         return apiTerms;
       }
-      
+
       // Fallback: Eski yöntem
       console.log("⚠️ Using fallback API method...");
       const drugTerms = await this.loadOnlineDrugs();
@@ -1120,27 +1298,38 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       const url = "https://api.fda.gov/drug/label.json?limit=50";
       const response = await fetch(url);
       const data = await response.json();
-      
+
       if (!data.results) return [];
 
-      return data.results.map((drug: any) => {
-        const genericName = drug.generic_name?.[0] || drug.brand_name?.[0] || "Unknown";
-        return this.createTerm({
-          latinName: genericName,
-          turkishName: genericName,
-          category: TermCategory.DRUG,
-          definition: drug.indications_and_usage?.[0] || "FDA onaylı ilaç",
-          components: [genericName],
-          relatedTerms: ["FDA", "İlaç", "Tıbbi"],
-          etymology: "Online API",
-          usage: drug.indications_and_usage?.join("; ") || "",
-          sideEffects: drug.warnings || [],
-          dosage: "Doktor tavsiyesi",
-          contraindications: drug.warnings || [],
-          interactions: ["Diğer ilaçlar"],
-          synonyms: drug.brand_name || []
+      return data.results
+        .filter((drug: any) => {
+          // Filter out drugs without proper names
+          const genericName = drug.generic_name?.[0] || drug.brand_name?.[0];
+          return (
+            genericName && genericName !== "Unknown" && genericName.length > 2
+          );
+        })
+        .map((drug: any) => {
+          const genericName = drug.generic_name?.[0] || drug.brand_name?.[0];
+          const brandName = drug.brand_name?.[0] || genericName;
+          return this.createTerm({
+            latinName: genericName,
+            turkishName: brandName,
+            category: TermCategory.DRUG,
+            definition:
+              drug.indications_and_usage?.[0]?.substring(0, 200) ||
+              "FDA onaylı ilaç",
+            components: [genericName],
+            relatedTerms: ["FDA", "İlaç"],
+            etymology: "FDA Database",
+            usage: drug.indications_and_usage?.[0]?.substring(0, 150) || "",
+            sideEffects: drug.warnings?.slice(0, 3) || [],
+            dosage: "Doktor tavsiyesi",
+            contraindications: [],
+            interactions: [],
+            synonyms: drug.brand_name?.slice(0, 3) || [],
+          });
         });
-      });
     } catch (error) {
       console.error("❌ Error loading online drugs:", error);
       return [];
@@ -1166,17 +1355,23 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
     try {
       console.log(`🔄 Refreshing ${limit} drugs from API...`);
       const apiTerms = await drugAPIService.fetchFromMultipleSources(limit);
-      
+
       if (apiTerms.length > 0) {
         // Mevcut terimlerle birleştir (duplicate kontrolü ile)
-        const existingNames = new Set(this.terms.map(t => t.latinName.toLowerCase()));
-        const newTerms = apiTerms.filter(t => !existingNames.has(t.latinName.toLowerCase()));
-        
+        const existingNames = new Set(
+          this.terms.map((t) => t.latinName.toLowerCase())
+        );
+        const newTerms = apiTerms.filter(
+          (t) => !existingNames.has(t.latinName.toLowerCase())
+        );
+
         this.terms = [...this.terms, ...newTerms];
-        console.log(`✅ ${newTerms.length} yeni ilaç eklendi (toplam: ${this.terms.length})`);
+        console.log(
+          `✅ ${newTerms.length} yeni ilaç eklendi (toplam: ${this.terms.length})`
+        );
         return newTerms.length;
       }
-      
+
       return 0;
     } catch (error) {
       console.error("❌ Error refreshing drugs from API:", error);
@@ -1184,14 +1379,21 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
     }
   }
 
-  private createTerm(data: Partial<PharmacyTerm> & {
-    latinName: string;
-    turkishName: string;
-    category: TermCategory;
-    definition: string;
-  }): PharmacyTerm {
+  private createTerm(
+    data: Partial<PharmacyTerm> & {
+      latinName: string;
+      turkishName: string;
+      category: TermCategory;
+      definition: string;
+    }
+  ): PharmacyTerm {
+    // Create a stable ID based on latinName and category (won't change between app restarts)
+    const stableId = `${data.category}_${data.latinName
+      .toLowerCase()
+      .replace(/\s+/g, "_")}`;
+
     return {
-      id: uuidv4(),
+      id: stableId,
       latinName: data.latinName,
       turkishName: data.turkishName,
       category: data.category,
@@ -1207,11 +1409,10 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       synonyms: data.synonyms || [],
       isBookmarked: false,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
   }
 }
 
 // Singleton instance
 export const pharmacyTermService = new PharmacyTermService();
-

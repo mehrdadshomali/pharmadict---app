@@ -52,18 +52,56 @@ const AdminView: React.FC = () => {
       } else {
         setMessage({
           type: "error",
-          text: "Terim analiz edilemedi. Lütfen tekrar deneyin.",
+          text: "AI analiz edemedi. Kota dolmuş olabilir. Manuel ekleme yapabilirsiniz.",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Analysis error:", error);
-      setMessage({
-        type: "error",
-        text: "Bir hata oluştu. Lütfen tekrar deneyin.",
-      });
+      const errorMessage = error?.message || "";
+
+      if (errorMessage.includes("429") || errorMessage.includes("quota")) {
+        setMessage({
+          type: "error",
+          text: "API kota limiti aşıldı. Yarın tekrar deneyin veya manuel ekleyin.",
+        });
+      } else if (errorMessage.includes("403")) {
+        setMessage({
+          type: "error",
+          text: "API anahtarı geçersiz. Lütfen yeni anahtar oluşturun.",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: "Bir hata oluştu. Manuel ekleme yapabilirsiniz.",
+        });
+      }
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Manuel terim ekleme
+  const handleManualAdd = () => {
+    if (!termName.trim()) {
+      setMessage({ type: "error", text: "Lütfen bir terim adı girin" });
+      return;
+    }
+
+    setAnalysisResult({
+      latinName: termName.trim(),
+      turkishName: termName.trim(),
+      category: TermCategory.DRUG,
+      definition: "Manuel olarak eklendi - tanım girilmedi",
+      etymology: "",
+      usage: "",
+      sideEffects: [],
+      relatedTerms: [],
+      components: [],
+    });
+    setMessage({
+      type: "success",
+      text: "Manuel terim oluşturuldu. Düzenleyip kaydedebilirsiniz.",
+    });
   };
 
   const handleSaveToFirebase = async () => {
@@ -177,6 +215,24 @@ const AdminView: React.FC = () => {
                 </>
               )}
             </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.manualButton}
+            onPress={handleManualAdd}
+          >
+            <View style={styles.manualButtonInner}>
+              <Ionicons
+                name="add-circle-outline"
+                size={20}
+                color={colors.primary}
+              />
+              <Text
+                style={[styles.manualButtonText, { color: colors.primary }]}
+              >
+                Manuel Ekle (AI olmadan)
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -515,6 +571,25 @@ const createStyles = (colors: any, isDark: boolean) =>
       fontSize: 12,
       fontWeight: "500",
       color: colors.text,
+    },
+    manualButton: {
+      marginTop: 12,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.primary,
+      overflow: "hidden",
+    },
+    manualButtonInner: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 14,
+      gap: 8,
+      backgroundColor: colors.primaryGlow,
+    },
+    manualButtonText: {
+      fontSize: 16,
+      fontWeight: "600",
     },
   });
 

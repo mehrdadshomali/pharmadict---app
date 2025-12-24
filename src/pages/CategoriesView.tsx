@@ -15,7 +15,7 @@ import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../context/ThemeContext";
 import { TermCategory, TermCategoryConfig } from "../types/models";
-import TermService from "../services/TermService";
+import { usePharmacy } from "../context/PharmacyContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_GAP = 12;
@@ -84,6 +84,7 @@ const CategoriesView = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
+  const { terms, getTermsByCategory } = usePharmacy();
   const [categoryCounts, setCategoryCounts] = useState<{
     [key: string]: number;
   }>({});
@@ -91,14 +92,16 @@ const CategoriesView = () => {
   const HEADER_HEIGHT = insets.top + 60;
 
   useEffect(() => {
-    const counts: { [key: string]: number } = {};
-    categoriesData.forEach((item) => {
-      const categoryKey = getCategoryKey(item.category);
-      const terms = TermService.getTermsByCategory(categoryKey);
-      counts[item.category] = terms.length;
-    });
-    setCategoryCounts(counts);
-  }, []);
+    const loadCounts = async () => {
+      const counts: { [key: string]: number } = {};
+      for (const item of categoriesData) {
+        const categoryTerms = await getTermsByCategory(item.category);
+        counts[item.category] = categoryTerms.length;
+      }
+      setCategoryCounts(counts);
+    };
+    loadCounts();
+  }, [terms, getTermsByCategory]);
 
   const getCategoryKey = (category: TermCategory) => {
     const keyMap: { [key: string]: string } = {

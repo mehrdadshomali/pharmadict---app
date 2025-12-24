@@ -3,7 +3,7 @@ import { TermCategory } from "../types/models";
 import type { PharmacyTerm } from "../types/models";
 
 // Gemini API configuration
-const GEMINI_API_KEY = "AIzaSyA_0aoAtqNHup3oCbNc5St9op2N5mSpeHA";
+const GEMINI_API_KEY = "AIzaSyB1LTk_7cOZ7ZENGvbw6kXn1jSZUsOcY5A";
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 

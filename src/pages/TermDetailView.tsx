@@ -8,13 +8,14 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
+  Share,
+  Alert,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import * as Sharing from "expo-sharing";
 import { usePharmacy } from "../context/PharmacyContext";
 import { useTheme } from "../context/ThemeContext";
 import { pharmacyTermService } from "../services/PharmacyTermService";
@@ -102,6 +103,34 @@ const TermDetailView = () => {
     }
   };
 
+  const handleShare = async () => {
+    if (!term) return;
+
+    try {
+      const shareMessage = `📚 ${term.latinName} (${term.turkishName})
+
+📖 Tanım: ${term.definition}
+
+🏷️ Kategori: ${term.category}
+${term.usage ? `\n💊 Kullanım: ${term.usage}` : ""}
+${
+  term.components && term.components.length > 0
+    ? `\n🧪 Bileşenler: ${term.components.join(", ")}`
+    : ""
+}
+
+📱 Pharmadict uygulamasından paylaşıldı`;
+
+      await Share.share({
+        message: shareMessage,
+        title: `${term.latinName} - Pharmadict`,
+      });
+    } catch (error) {
+      console.error("Share error:", error);
+      Alert.alert("Hata", "Paylaşım yapılamadı");
+    }
+  };
+
   const styles = createStyles(colors, isDark);
 
   if (isLoading) {
@@ -165,7 +194,7 @@ const TermDetailView = () => {
               color={term.isBookmarked ? "#EC4899" : colors.textSecondary}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerBtn}>
+          <TouchableOpacity style={styles.headerBtn} onPress={handleShare}>
             <Ionicons
               name="share-outline"
               size={24}

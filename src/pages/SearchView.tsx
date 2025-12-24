@@ -20,7 +20,6 @@ import { usePharmacy } from "../context/PharmacyContext";
 import { useTheme } from "../context/ThemeContext";
 import type { SearchResult, PharmacyTerm } from "../types/models";
 import TermCard from "../components/TermCard";
-import TermService from "../services/TermService";
 
 const SearchView = () => {
   const navigation = useNavigation();
@@ -61,10 +60,9 @@ const SearchView = () => {
 
   const loadTrendingSearches = async () => {
     try {
-      const mostVisited = await TermService.getMostVisitedTerms(5);
-      setTrendingSearches(
-        mostVisited.map((term) => term.latinName).slice(0, 5)
-      );
+      // Use terms from context instead of TermService
+      const shuffled = [...terms].sort(() => 0.5 - Math.random());
+      setTrendingSearches(shuffled.slice(0, 5).map((term) => term.latinName));
     } catch (error) {
       console.error("Error loading trending searches:", error);
     }
