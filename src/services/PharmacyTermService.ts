@@ -9,6 +9,7 @@ import { allVitaminsData } from "../data/vitaminsData";
 import { allDrugsData } from "../data/drugsData";
 import { allMineralsData } from "../data/mineralsData";
 import { allDiseasesData } from "../data/diseasesData";
+import { allInsectsData } from "../data/insectsData";
 
 const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
@@ -458,72 +459,29 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   }
 
   private createInsectTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı böcek verilerini kullan
+    const insectsFromData = allInsectsData.map((insect) =>
       this.createTerm({
-        latinName: "Galleria mellonella",
-        turkishName: "Balmumu Güvesi",
-        category: TermCategory.INSECT,
-        definition:
-          "Arı kovanlarında yaşayan, balmumu ile beslenen güve türü. Tıbbi araştırmalarda model organizma olarak kullanılır.",
-        components: ["Balmumu", "Proteinler"],
-        relatedTerms: ["Arı", "Model organizma"],
-        etymology: "Latince galleria (galeri) + mellonella (bal)",
-        usage: "Tıbbi araştırmalar, enfeksiyon modelleri",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Büyük balmumu güvesi"],
-      }),
-      this.createTerm({
-        latinName: "Alphitobius diaperinus",
-        turkishName: "Kümes Böceği",
-        category: TermCategory.INSECT,
-        definition:
-          "Kümes hayvanlarında ve tahıl depolama alanlarında bulunan, protein kaynağı olarak kullanılan böcek.",
-        components: ["Protein", "Yağ", "Kitin"],
-        relatedTerms: ["Protein kaynağı", "Alternatif gıda"],
-        etymology: "Yunanca alphiton (un) + bios (yaşam)",
-        usage: "Alternatif protein kaynağı, hayvan yemi",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Küçük kara böcek", "Un böceği"],
-      }),
-      this.createTerm({
-        latinName: "Tenebrio molitor",
-        turkishName: "Un Kurdu",
-        category: TermCategory.INSECT,
-        definition:
-          "Yüksek protein içeriği nedeniyle alternatif gıda kaynağı olarak kullanılan böcek türü.",
-        components: ["Protein", "Yağ", "Fiber"],
-        relatedTerms: ["Alternatif protein", "Sürdürülebilir gıda"],
-        etymology: "Latince tenebrio (karanlık) + molitor (değirmenci)",
-        usage: "Alternatif protein kaynağı, hayvan yemi, insan gıdası",
-        sideEffects: ["Alerji (nadir)"],
-        dosage: "",
-        contraindications: ["Kabuklu deniz ürünleri alerjisi"],
-        interactions: [],
-        synonyms: ["Mealworm", "Un kurdu"],
-      }),
-      this.createTerm({
-        latinName: "Apis mellifera",
-        turkishName: "Bal Arısı",
-        category: TermCategory.INSECT,
-        definition:
-          "Bal, propolis ve arı sütü üreten, tıbbi açıdan değerli ürünler sağlayan sosyal böcek.",
-        components: ["Bal", "Propolis", "Arı sütü", "Balmumu"],
-        relatedTerms: ["Bal", "Propolis", "Apiterapi"],
-        etymology: "Latince apis (arı) + mellifera (bal taşıyan)",
-        usage: "Apiterapi, doğal antibakteriyel, bağışıklık desteği",
-        sideEffects: ["Alerjik reaksiyon (arı sokması)"],
-        dosage: "",
-        contraindications: ["Arı alerjisi"],
-        interactions: [],
-        synonyms: ["Bal arısı", "Avrupa bal arısı"],
-      }),
-    ];
+        latinName: insect.latinName,
+        turkishName: insect.turkishName,
+        category: insect.category,
+        definition: insect.definition,
+        components: insect.components,
+        relatedTerms: insect.relatedTerms,
+        etymology: insect.etymology,
+        usage: insect.usage,
+        sideEffects: insect.sideEffects,
+        dosage: insect.dosage,
+        contraindications: insect.contraindications,
+        interactions: insect.interactions,
+        synonyms: insect.synonyms,
+      })
+    );
+
+    console.log(
+      `🐛 Created ${insectsFromData.length} insect terms from insectsData`
+    );
+    return insectsFromData;
   }
 
   private createComponentTerms(): PharmacyTerm[] {
