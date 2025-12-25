@@ -10,6 +10,7 @@ import { allDrugsData } from "../data/drugsData";
 import { allMineralsData } from "../data/mineralsData";
 import { allDiseasesData } from "../data/diseasesData";
 import { allInsectsData } from "../data/insectsData";
+import { allComponentsData } from "../data/componentsData";
 
 const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
@@ -485,56 +486,29 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   }
 
   private createComponentTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı bileşen verilerini kullan
+    const componentsFromData = allComponentsData.map((component) =>
       this.createTerm({
-        latinName: "Caffeine",
-        turkishName: "Kafein",
-        category: TermCategory.COMPONENT,
-        definition:
-          "Merkezi sinir sistemini uyaran, uyanıklığı artıran doğal alkaloid. Kahve, çay ve kola içeceklerinde bulunur.",
-        components: ["Metilksantin"],
-        relatedTerms: ["Uyarıcı", "Alkaloid"],
-        etymology: "Almanca Kaffee (kahve) + -in (kimyasal sonek)",
-        usage: "Uyanıklık, performans artışı, baş ağrısı tedavisi",
-        sideEffects: ["Uykusuzluk", "Anksiyete", "Kalp çarpıntısı"],
-        dosage: "100-200 mg (1-2 fincan kahve)",
-        contraindications: ["Yüksek tansiyon", "Anksiyete bozukluğu"],
-        interactions: ["Teofilin", "Ephedrine"],
-        synonyms: ["1,3,7-trimetilksantin", "Guaranin"],
-      }),
-      this.createTerm({
-        latinName: "Curcumin",
-        turkishName: "Kurkumin",
-        category: TermCategory.COMPONENT,
-        definition:
-          "Zerdeçalın aktif bileşeni. Güçlü anti-inflamatuar ve antioksidan özelliklere sahiptir.",
-        components: ["Diferuloilmetan"],
-        relatedTerms: ["Anti-inflamatuar", "Antioksidan"],
-        etymology: "Latince Curcuma (zerdeçal) + -in",
-        usage: "İnflamasyon tedavisi, eklem sağlığı, antioksidan",
-        sideEffects: ["Mide rahatsızlığı (yüksek dozda)"],
-        dosage: "500-1000 mg/gün",
-        contraindications: ["Safra taşı"],
-        interactions: ["Antikoagülanlar"],
-        synonyms: ["Diferuloilmetan"],
-      }),
-      this.createTerm({
-        latinName: "Quercetin",
-        turkishName: "Kersetin",
-        category: TermCategory.COMPONENT,
-        definition:
-          "Soğan, elma ve çayda bulunan, antioksidan ve anti-inflamatuar özellikli flavonoid.",
-        components: ["Flavonol"],
-        relatedTerms: ["Flavonoid", "Antioksidan"],
-        etymology: "Latince quercus (meşe) - meşe ağacında bulunur",
-        usage: "Antioksidan, alerji tedavisi, kardiyovasküler sağlık",
-        sideEffects: ["Nadir"],
-        dosage: "500-1000 mg/gün",
-        contraindications: [],
-        interactions: ["Antibiyotikler"],
-        synonyms: ["3,3',4',5,7-pentahidroksiflavon"],
-      }),
-    ];
+        latinName: component.latinName,
+        turkishName: component.turkishName,
+        category: component.category,
+        definition: component.definition,
+        components: component.components,
+        relatedTerms: component.relatedTerms,
+        etymology: component.etymology,
+        usage: component.usage,
+        sideEffects: component.sideEffects,
+        dosage: component.dosage,
+        contraindications: component.contraindications,
+        interactions: component.interactions,
+        synonyms: component.synonyms,
+      })
+    );
+
+    console.log(
+      `🧪 Created ${componentsFromData.length} component terms from componentsData`
+    );
+    return componentsFromData;
   }
 
   private createDiseaseTerms(): PharmacyTerm[] {
