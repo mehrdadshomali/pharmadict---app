@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePharmacy } from "../context/PharmacyContext";
 import { useTheme } from "../context/ThemeContext";
+import { notesService } from "../services/NotesService";
 import type { PharmacyTerm } from "../types/models";
 import TermCard from "../components/TermCard";
 
@@ -24,6 +26,7 @@ const BookmarksView = () => {
   const { getBookmarkedTerms } = usePharmacy();
   const [bookmarkedTerms, setBookmarkedTerms] = useState<PharmacyTerm[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [termIdsWithNotes, setTermIdsWithNotes] = useState<string[]>([]);
 
   const HEADER_HEIGHT = insets.top + 60;
 
@@ -52,6 +55,11 @@ const BookmarksView = () => {
       synonyms: Array.isArray(term.synonyms) ? term.synonyms : [],
     }));
     setBookmarkedTerms(normalizedTerms);
+
+    // Not olan terimleri yükle
+    const noteIds = await notesService.getTermIdsWithNotes();
+    setTermIdsWithNotes(noteIds);
+
     setIsLoading(false);
   };
 
@@ -154,16 +162,24 @@ const BookmarksView = () => {
             {/* Terms List */}
             <View style={styles.termsList}>
               {bookmarkedTerms.map((term) => (
-                <TermCard
-                  key={term.id}
-                  term={term}
-                  onPress={() =>
-                    navigation.navigate(
-                      "TermDetail" as never,
-                      { id: term.id } as never
-                    )
-                  }
-                />
+                <View key={term.id} style={styles.termItemContainer}>
+                  <TouchableOpacity
+                    style={styles.termItemWrapper}
+                    onPress={() =>
+                      (navigation as any).navigate("TermDetail", {
+                        id: term.id,
+                      })
+                    }
+                    activeOpacity={0.7}
+                  >
+                    <TermCard term={term} onPress={() => {}} />
+                  </TouchableOpacity>
+                  {termIdsWithNotes.includes(term.id) && (
+                    <View style={styles.noteIndicator}>
+                      <Ionicons name="create" size={12} color="#FFFFFF" />
+                    </View>
+                  )}
+                </View>
               ))}
             </View>
           </>
@@ -253,6 +269,28 @@ const createStyles = (colors: any, isDark: boolean) =>
     },
     statsSubtitle: { fontSize: 13, color: "rgba(255,255,255,0.8)" },
     termsList: { gap: 12 },
+    termItemContainer: {
+      position: "relative",
+    },
+    termItemWrapper: {
+      flex: 1,
+    },
+    noteIndicator: {
+      position: "absolute",
+      top: 8,
+      right: 8,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: "#8B5CF6",
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: "#8B5CF6",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 4,
+    },
   });
 
 export default BookmarksView;

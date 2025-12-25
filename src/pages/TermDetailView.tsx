@@ -10,6 +10,10 @@ import {
   Dimensions,
   Share,
   Alert,
+  TextInput,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePharmacy } from "../context/PharmacyContext";
 import { useTheme } from "../context/ThemeContext";
 import { pharmacyTermService } from "../services/PharmacyTermService";
+import { notesService, TermNote } from "../services/NotesService";
 import type { PharmacyTerm } from "../types/models";
 import { TermCategory, TermCategoryConfig } from "../types/models";
 
@@ -57,6 +62,9 @@ const TermDetailView = () => {
   const [term, setTerm] = useState<PharmacyTerm | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [relatedTerms, setRelatedTerms] = useState<PharmacyTerm[]>([]);
+  const [note, setNote] = useState<TermNote | null>(null);
+  const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
+  const [noteText, setNoteText] = useState("");
 
   useEffect(() => {
     if (id) loadTerm(id);
@@ -69,8 +77,47 @@ const TermDetailView = () => {
       setTerm(loadedTerm);
       const related = await pharmacyTermService.getRelatedTerms(loadedTerm);
       setRelatedTerms(related);
+      // Not yükle
+      const termNote = await notesService.getNote(termId);
+      setNote(termNote);
+      setNoteText(termNote?.content || "");
     }
     setIsLoading(false);
+  };
+
+  const handleOpenNoteModal = () => {
+    setNoteText(note?.content || "");
+    setIsNoteModalVisible(true);
+  };
+
+  const handleSaveNote = async () => {
+    if (term) {
+      const savedNote = await notesService.saveNote(term.id, noteText);
+      if (noteText.trim() === "") {
+        setNote(null);
+      } else {
+        setNote(savedNote);
+      }
+      setIsNoteModalVisible(false);
+    }
+  };
+
+  const handleDeleteNote = async () => {
+    if (term) {
+      Alert.alert("Notu Sil", "Bu notu silmek istediğinizden emin misiniz?", [
+        { text: "İptal", style: "cancel" },
+        {
+          text: "Sil",
+          style: "destructive",
+          onPress: async () => {
+            await notesService.deleteNote(term.id);
+            setNote(null);
+            setNoteText("");
+            setIsNoteModalVisible(false);
+          },
+        },
+      ]);
+    }
   };
 
   const handleToggleBookmark = async () => {
@@ -341,6 +388,40 @@ ${
           </View>
         )}
 
+        {/* Personal Notes Section */}
+        <View style={[styles.card, styles.notesCard]}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="create-outline" size={20} color="#8B5CF6" />
+            <Text style={styles.cardTitle}>Kişisel Notlarım</Text>
+          </View>
+          {note && note.content ? (
+            <TouchableOpacity onPress={handleOpenNoteModal} activeOpacity={0.7}>
+              <View style={styles.noteContent}>
+                <Text style={styles.noteText} numberOfLines={5}>
+                  {note.content}
+                </Text>
+                <View style={styles.noteFooter}>
+                  <Text style={styles.noteDate}>
+                    Son güncelleme: {note.updatedAt.toLocaleDateString("tr-TR")}
+                  </Text>
+                  <View style={styles.noteEditBadge}>
+                    <Ionicons name="pencil" size={12} color="#8B5CF6" />
+                    <Text style={styles.noteEditText}>Düzenle</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.addNoteButton}
+              onPress={handleOpenNoteModal}
+            >
+              <Ionicons name="add-circle-outline" size={24} color="#8B5CF6" />
+              <Text style={styles.addNoteText}>Not ekle</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Related Terms */}
         {relatedTerms.length > 0 && (
           <View style={styles.card}>
@@ -380,6 +461,80 @@ ${
 
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      {/* Note Modal */}
+      <Modal
+        visible={isNoteModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsNoteModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContainer}>
+            <BlurView
+              intensity={isDark ? 80 : 90}
+              tint={isDark ? "dark" : "light"}
+              style={styles.modalContent}
+            >
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>📝 Not Ekle</Text>
+                <TouchableOpacity
+                  onPress={() => setIsNoteModalVisible(false)}
+                  style={styles.modalCloseBtn}
+                >
+                  <Ionicons name="close" size={24} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.modalSubtitle}>
+                {term?.latinName} için kişisel notunuz
+              </Text>
+
+              <TextInput
+                style={styles.noteInput}
+                multiline
+                placeholder="Notunuzu buraya yazın... (örn: Sınavda çıkabilir, yan etkilere dikkat!)"
+                placeholderTextColor={colors.textTertiary}
+                value={noteText}
+                onChangeText={setNoteText}
+                textAlignVertical="top"
+              />
+
+              <View style={styles.modalActions}>
+                {note && note.content && (
+                  <TouchableOpacity
+                    style={styles.deleteNoteBtn}
+                    onPress={handleDeleteNote}
+                  >
+                    <Ionicons name="trash-outline" size={20} color="#EF4444" />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={styles.cancelBtn}
+                  onPress={() => setIsNoteModalVisible(false)}
+                >
+                  <Text style={styles.cancelBtnText}>İptal</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.saveNoteBtn}
+                  onPress={handleSaveNote}
+                >
+                  <LinearGradient
+                    colors={["#8B5CF6", "#7C3AED"]}
+                    style={styles.saveNoteBtnGradient}
+                  >
+                    <Ionicons name="checkmark" size={20} color="#FFFFFF" />
+                    <Text style={styles.saveNoteBtnText}>Kaydet</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </BlurView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 };
@@ -521,6 +676,167 @@ const createStyles = (colors: any, isDark: boolean) =>
       marginBottom: 2,
     },
     relatedSubtitle: { fontSize: 13, color: colors.textSecondary },
+    // Notes styles
+    notesCard: {
+      borderColor: "rgba(139, 92, 246, 0.3)",
+      borderWidth: 1,
+    },
+    noteContent: {
+      backgroundColor: isDark
+        ? "rgba(139, 92, 246, 0.1)"
+        : "rgba(139, 92, 246, 0.05)",
+      borderRadius: 12,
+      padding: 14,
+    },
+    noteText: {
+      fontSize: 15,
+      color: colors.text,
+      lineHeight: 22,
+    },
+    noteFooter: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 12,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: isDark
+        ? "rgba(139, 92, 246, 0.2)"
+        : "rgba(139, 92, 246, 0.15)",
+    },
+    noteDate: {
+      fontSize: 12,
+      color: colors.textTertiary,
+    },
+    noteEditBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      backgroundColor: isDark
+        ? "rgba(139, 92, 246, 0.2)"
+        : "rgba(139, 92, 246, 0.1)",
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 8,
+    },
+    noteEditText: {
+      fontSize: 12,
+      fontWeight: "600",
+      color: "#8B5CF6",
+    },
+    addNoteButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      backgroundColor: isDark
+        ? "rgba(139, 92, 246, 0.1)"
+        : "rgba(139, 92, 246, 0.05)",
+      borderRadius: 12,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: "rgba(139, 92, 246, 0.2)",
+      borderStyle: "dashed",
+    },
+    addNoteText: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: "#8B5CF6",
+    },
+    // Modal styles
+    modalOverlay: {
+      flex: 1,
+      justifyContent: "flex-end",
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    modalContainer: {
+      maxHeight: "80%",
+    },
+    modalContent: {
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      padding: 20,
+      paddingBottom: 40,
+      overflow: "hidden",
+    },
+    modalHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    modalCloseBtn: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    modalSubtitle: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 16,
+    },
+    noteInput: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 16,
+      fontSize: 15,
+      color: colors.text,
+      minHeight: 150,
+      maxHeight: 250,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    modalActions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      gap: 12,
+      marginTop: 16,
+    },
+    deleteNoteBtn: {
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: "rgba(239, 68, 68, 0.1)",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: "auto",
+    },
+    cancelBtn: {
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      borderRadius: 12,
+      backgroundColor: colors.surface,
+    },
+    cancelBtnText: {
+      fontSize: 15,
+      fontWeight: "600",
+      color: colors.textSecondary,
+    },
+    saveNoteBtn: {
+      borderRadius: 12,
+      overflow: "hidden",
+    },
+    saveNoteBtnGradient: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+    },
+    saveNoteBtnText: {
+      fontSize: 15,
+      fontWeight: "700",
+      color: "#FFFFFF",
+    },
   });
 
 export default TermDetailView;
