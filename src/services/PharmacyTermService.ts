@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import { drugAPIService } from "./DrugAPIService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { allPlantsData } from "../data/plantsData";
+import { allVitaminsData } from "../data/vitaminsData";
+import { allDrugsData } from "../data/drugsData";
+import { allMineralsData } from "../data/mineralsData";
+import { allDiseasesData } from "../data/diseasesData";
 
 const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
@@ -68,6 +72,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       const diseaseTerms = this.createDiseaseTerms();
       const anatomyTerms = this.createAnatomyTerms();
       const vitaminTerms = this.createVitaminTerms();
+      const mineralTerms = this.createMineralTerms();
 
       const localTerms = [
         ...drugTerms,
@@ -77,6 +82,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         ...diseaseTerms,
         ...anatomyTerms,
         ...vitaminTerms,
+        ...mineralTerms,
       ];
 
       const additionalTerms = [
@@ -99,6 +105,7 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
       console.log(`📊 Disease terms: ${diseaseTerms.length}`);
       console.log(`📊 Anatomy terms: ${anatomyTerms.length}`);
       console.log(`📊 Vitamin terms: ${vitaminTerms.length}`);
+      console.log(`📊 Mineral terms: ${mineralTerms.length}`);
       console.log(`📊 Local terms: ${localTerms.length}`);
       console.log(`📊 Additional terms: ${additionalTerms.length}`);
       console.log(`📊 Manual CSV terms: ${manualTerms.length}`);
@@ -402,450 +409,26 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   // MARK: - Data Creation Methods (Simplified - will be expanded)
 
   private createDrugTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı ilaç verilerini kullan
+    const drugsFromData = allDrugsData.map((drug) =>
       this.createTerm({
-        latinName: "Acetylsalicylic acid",
-        turkishName: "Asetilsalisilik asit",
-        category: TermCategory.DRUG,
-        definition:
-          "Ağrı kesici, ateş düşürücü ve anti-inflamatuar etki gösteren bir ilaç. Aspirin olarak da bilinir.",
-        components: ["Salisilik asit", "Asetil grubu"],
-        relatedTerms: ["NSAID", "COX inhibitörü"],
-        etymology: "Latince acetyl + salicylic",
-        usage: "Ağrı, ateş, inflamasyon tedavisi",
-        sideEffects: ["Mide irritasyonu", "Kanama riski"],
-        dosage: "325-650 mg, 4-6 saatte bir",
-        contraindications: ["Peptic ülser", "Kanama bozuklukları"],
-        interactions: ["Warfarin", "Methotrexate"],
-        synonyms: ["Aspirin", "ASA"],
-      }),
-      this.createTerm({
-        latinName: "Paracetamol",
-        turkishName: "Parasetamol",
-        category: TermCategory.DRUG,
-        definition:
-          "Ağrı kesici ve ateş düşürücü etkisi olan analjezik ilaç. Mideye daha az zararlıdır.",
-        components: ["Para-aminofenol"],
-        relatedTerms: ["Analjezik", "Antipiretik"],
-        etymology: "Para-acetyl-amino-phenol",
-        usage: "Ağrı ve ateş tedavisi",
-        sideEffects: ["Karaciğer hasarı (yüksek dozda)"],
-        dosage: "500-1000 mg, 4-6 saatte bir",
-        contraindications: ["Karaciğer yetmezliği"],
-        interactions: ["Warfarin"],
-        synonyms: ["Acetaminophen", "Tylenol"],
-      }),
-      this.createTerm({
-        latinName: "Ibuprofen",
-        turkishName: "İbuprofen",
-        category: TermCategory.DRUG,
-        definition:
-          "Non-steroid anti-inflamatuar ilaç (NSAID). Ağrı, ateş ve inflamasyon tedavisinde kullanılır.",
-        components: ["Propionic asit türevi"],
-        relatedTerms: ["NSAID", "Anti-inflamatuar"],
-        etymology: "Isobutyl-phenyl-propionic acid",
-        usage: "Ağrı, ateş, inflamasyon, adet ağrısı",
-        sideEffects: ["Mide ülseri", "Böbrek hasarı"],
-        dosage: "200-400 mg, 6-8 saatte bir",
-        contraindications: ["Mide ülseri", "Böbrek yetmezliği"],
-        interactions: ["Aspirin", "Diüretikler"],
-        synonyms: ["Advil", "Brufen"],
-      }),
-      this.createTerm({
-        latinName: "Metformin",
-        turkishName: "Metformin",
-        category: TermCategory.DRUG,
-        definition:
-          "Tip 2 diyabet tedavisinde kullanılan oral antidiabetik ilaç. Kan şekerini düşürür.",
-        components: ["Biguanid"],
-        relatedTerms: ["Antidiabetik", "Biguanid"],
-        etymology: "Methyl-biguanide",
-        usage: "Tip 2 diyabet tedavisi",
-        sideEffects: ["Mide bulantısı", "İshal", "Laktik asidoz"],
-        dosage: "500-2000 mg/gün",
-        contraindications: ["Böbrek yetmezliği", "Karaciğer yetmezliği"],
-        interactions: ["Alkol"],
-        synonyms: ["Glucophage"],
-      }),
-      this.createTerm({
-        latinName: "Amoxicillin",
-        turkishName: "Amoksisilin",
-        category: TermCategory.DRUG,
-        definition:
-          "Geniş spektrumlu beta-laktam antibiyotik. Bakteriyel enfeksiyonların tedavisinde kullanılır.",
-        components: ["Beta-laktam halkası", "Amin grubu"],
-        relatedTerms: ["Antibiyotik", "Penisilin"],
-        etymology: "Amino-hydroxy-benzyl-penicillin",
-        usage: "Bakteriyel enfeksiyonlar, solunum yolu enfeksiyonları",
-        sideEffects: ["İshal", "Alerjik reaksiyon", "Candida enfeksiyonu"],
-        dosage: "250-500 mg, 8 saatte bir",
-        contraindications: ["Penisilin alerjisi"],
-        interactions: ["Oral kontraseptifler"],
-        synonyms: ["Amoxil"],
-      }),
-      this.createTerm({
-        latinName: "Omeprazole",
-        turkishName: "Omeprazol",
-        category: TermCategory.DRUG,
-        definition:
-          "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
-        components: ["Benzimidazol türevi"],
-        relatedTerms: ["Proton pompa inhibitörü", "Antiasit"],
-        etymology: "Ome- (omeprazole) + -prazole (benzimidazol sonek)",
-        usage:
-          "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
-        sideEffects: ["Baş ağrısı", "İshal", "Karın ağrısı"],
-        dosage: "20-40 mg/gün, sabah aç karnına",
-        contraindications: ["Omeprazole alerjisi"],
-        interactions: ["Warfarin", "Diazepam", "Phenytoin"],
-        synonyms: ["Losec", "Prilosec"],
-      }),
-      this.createTerm({
-        latinName: "Atorvastatin",
-        turkishName: "Atorvastatin",
-        category: TermCategory.DRUG,
-        definition:
-          "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
-        components: ["Statin grubu"],
-        relatedTerms: ["Statin", "Kolesterol düşürücü"],
-        etymology:
-          "Ato- (atorvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
-        usage: "Hiperkolesterolemi, kardiyovasküler hastalık önleme",
-        sideEffects: [
-          "Kas ağrısı",
-          "Karaciğer enzim yükselmesi",
-          "Rhabdomiyoliz (nadir)",
-        ],
-        dosage: "10-80 mg/gün, akşam yemeği ile",
-        contraindications: ["Aktif karaciğer hastalığı", "Hamilelik"],
-        interactions: ["Eritromisin", "Siklosporin", "Greyfurt suyu"],
-        synonyms: ["Lipitor"],
-      }),
-      this.createTerm({
-        latinName: "Lisinopril",
-        turkishName: "Lizinopril",
-        category: TermCategory.DRUG,
-        definition:
-          "ACE inhibitörü (anjiyotensin dönüştürücü enzim inhibitörü). Kan basıncını düşürür ve kalp yetmezliğinde kullanılır.",
-        components: ["ACE inhibitörü"],
-        relatedTerms: ["Antihipertansif", "ACE inhibitörü"],
-        etymology: "Lysine + -pril (ACE inhibitörü sonek)",
-        usage: "Hipertansiyon, kalp yetmezliği, diyabetik nefropati",
-        sideEffects: ["Öksürük", "Baş dönmesi", "Hiperkalemi"],
-        dosage: "5-40 mg/gün",
-        contraindications: ["Hamilelik", "Bilateral renal arter stenozu"],
-        interactions: ["Potasyum takviyeleri", "Diüretikler"],
-        synonyms: ["Prinivil", "Zestril"],
-      }),
-      this.createTerm({
-        latinName: "Metoprolol",
-        turkishName: "Metoprolol",
-        category: TermCategory.DRUG,
-        definition:
-          "Beta-1 adrenerjik reseptör blokeri. Kalp hızını yavaşlatır, kan basıncını düşürür ve anjina tedavisinde kullanılır.",
-        components: ["Beta bloker"],
-        relatedTerms: ["Beta bloker", "Antihipertansif"],
-        etymology: "Meto- (metoprolol) + -prolol (beta bloker sonek)",
-        usage:
-          "Hipertansiyon, anjina pektoris, kalp ritim bozuklukları, kalp krizi sonrası",
-        sideEffects: ["Yorgunluk", "Soğuk el ve ayaklar", "Bradikardi"],
-        dosage: "50-200 mg/gün, iki dozda",
-        contraindications: ["Astım", "Kalp bloğu", "Şiddetli bradikardi"],
-        interactions: ["Verapamil", "Diltiazem"],
-        synonyms: ["Lopressor", "Toprol"],
-      }),
-      this.createTerm({
-        latinName: "Amlodipine",
-        turkishName: "Amlodipin",
-        category: TermCategory.DRUG,
-        definition:
-          "Kalsiyum kanal blokeri. Kan damarlarını genişleterek kan basıncını düşürür ve anjina tedavisinde kullanılır.",
-        components: ["Dihidropiridin"],
-        relatedTerms: ["Kalsiyum kanal blokeri", "Antihipertansif"],
-        etymology: "Amlo- (amlodipine) + -dipine (dihidropiridin sonek)",
-        usage: "Hipertansiyon, anjina pektoris, koroner arter hastalığı",
-        sideEffects: ["Baş dönmesi", "Yüz kızarması", "Ayak bileği ödemi"],
-        dosage: "5-10 mg/gün",
-        contraindications: ["Şiddetli aort stenozu"],
-        interactions: ["Greyfurt suyu"],
-        synonyms: ["Norvasc"],
-      }),
-      this.createTerm({
-        latinName: "Levothyroxine",
-        turkishName: "Levotiroksin",
-        category: TermCategory.DRUG,
-        definition:
-          "Tiroid hormonu replasman tedavisi. Hipotiroidizm (tiroid yetmezliği) tedavisinde kullanılır.",
-        components: ["L-tiroksin"],
-        relatedTerms: ["Tiroid hormonu", "Hormon replasmanı"],
-        etymology: "Levo- (sol) + thyroxine (tiroksin)",
-        usage: "Hipotiroidizm, tiroid kanseri sonrası, guatr",
-        sideEffects: [
-          "Hipertiroidizm belirtileri (aşırı dozda)",
-          "Kalp çarpıntısı",
-        ],
-        dosage: "25-200 mcg/gün, aç karnına",
-        contraindications: ["Hipertiroidizm", "Akut miyokard enfarktüsü"],
-        interactions: ["Demir", "Kalsiyum", "Soya"],
-        synonyms: ["L-T4", "Synthroid", "Euthyrox"],
-      }),
-      this.createTerm({
-        latinName: "Azithromycin",
-        turkishName: "Azitromisin",
-        category: TermCategory.DRUG,
-        definition:
-          "Makrolid grubu antibiyotik. Geniş spektrumlu bakteriyel enfeksiyon tedavisinde kullanılır.",
-        components: ["Makrolid"],
-        relatedTerms: ["Antibiyotik", "Makrolid"],
-        etymology: "Azi- (azithromycin) + -thromycin (makrolid sonek)",
-        usage:
-          "Solunum yolu enfeksiyonları, cilt enfeksiyonları, cinsel yolla bulaşan hastalıklar",
-        sideEffects: ["İshal", "Mide bulantısı", "Karın ağrısı"],
-        dosage: "500 mg/gün, 3-5 gün",
-        contraindications: ["Makrolid alerjisi", "Karaciğer yetmezliği"],
-        interactions: ["Warfarin", "Digoksin"],
-        synonyms: ["Zithromax", "Z-Pak"],
-      }),
-      this.createTerm({
-        latinName: "Ciprofloxacin",
-        turkishName: "Siprofloksasin",
-        category: TermCategory.DRUG,
-        definition:
-          "Florokinolon grubu geniş spektrumlu antibiyotik. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır.",
-        components: ["Florokinolon"],
-        relatedTerms: ["Antibiyotik", "Florokinolon"],
-        etymology: "Cipro- (ciprofloxacin) + -floxacin (florokinolon sonek)",
-        usage:
-          "İdrar yolu enfeksiyonları, solunum yolu enfeksiyonları, kemik enfeksiyonları",
-        sideEffects: ["Tendon hasarı", "Fototoksisite", "QT uzaması"],
-        dosage: "250-750 mg, 12 saatte bir",
-        contraindications: [
-          "Hamilelik",
-          "18 yaş altı",
-          "Tendon bozukluğu öyküsü",
-        ],
-        interactions: ["Antasitler", "Teofilin", "Warfarin"],
-        synonyms: ["Cipro"],
-      }),
-      this.createTerm({
-        latinName: "Sertraline",
-        turkishName: "Sertralin",
-        category: TermCategory.DRUG,
-        definition:
-          "Seçici serotonin geri alım inhibitörü (SSRI). Depresyon, anksiyete ve obsesif-kompulsif bozukluk tedavisinde kullanılır.",
-        components: ["SSRI"],
-        relatedTerms: ["Antidepresan", "SSRI"],
-        etymology: "Ser- (serotonin) + -traline (SSRI sonek)",
-        usage:
-          "Depresyon, panik bozukluğu, obsesif-kompulsif bozukluk, travma sonrası stres bozukluğu",
-        sideEffects: ["Mide bulantısı", "Uykusuzluk", "Cinsel işlev bozukluğu"],
-        dosage: "50-200 mg/gün",
-        contraindications: ["MAO inhibitörü kullanımı", "Pimozid"],
-        interactions: ["MAO inhibitörleri", "Warfarin", "Triptanlar"],
-        synonyms: ["Zoloft"],
-      }),
-      this.createTerm({
-        latinName: "Warfarin",
-        turkishName: "Varfarin",
-        category: TermCategory.DRUG,
-        definition:
-          "Oral antikoagülan. Kan pıhtılaşmasını önleyerek tromboembolik olayların tedavi ve önlenmesinde kullanılır.",
-        components: ["Kumarin türevi"],
-        relatedTerms: ["Antikoagülan", "Kan inceltici"],
-        etymology: "Wisconsin Alumni Research Foundation + -arin (kumarin)",
-        usage:
-          "Atriyal fibrilasyon, derin ven trombozu, pulmoner emboli, kalp kapak protezi",
-        sideEffects: ["Kanama", "Morarma", "Cilt nekrozu (nadir)"],
-        dosage: "2-10 mg/gün, INR'ye göre ayarlanır",
-        contraindications: [
-          "Aktif kanama",
-          "Hamilelik",
-          "Ciddi karaciğer hastalığı",
-        ],
-        interactions: ["Aspirin", "NSAID'ler", "Antibiyotikler", "Vitamin K"],
-        synonyms: ["Coumadin"],
-      }),
-      this.createTerm({
-        latinName: "Furosemide",
-        turkishName: "Furosemid",
-        category: TermCategory.DRUG,
-        definition:
-          "Loop diüretik. Böbreklerden su ve tuz atılımını artırarak ödem ve yüksek tansiyon tedavisinde kullanılır.",
-        components: ["Sülfonamid türevi"],
-        relatedTerms: ["Diüretik", "Loop diüretik"],
-        etymology: "Fur- (furosemide) + -osemide (diüretik sonek)",
-        usage: "Ödem, kalp yetmezliği, böbrek yetmezliği, hipertansiyon",
-        sideEffects: [
-          "Dehidratasyon",
-          "Elektrolit dengesizliği",
-          "İşitme kaybı (yüksek dozda)",
-        ],
-        dosage: "20-80 mg/gün, sabah",
-        contraindications: ["Anüri", "Şiddetli hipokalemi"],
-        interactions: ["Digoksin", "Aminoglikozitler", "Lityum"],
-        synonyms: ["Lasix"],
-      }),
-      this.createTerm({
-        latinName: "Pantoprazole",
-        turkishName: "Pantoprazol",
-        category: TermCategory.DRUG,
-        definition:
-          "Proton pompa inhibitörü (PPI). Mide asidi üretimini azaltarak mide ülseri ve reflü tedavisinde kullanılır.",
-        components: ["Benzimidazol türevi"],
-        relatedTerms: ["Proton pompa inhibitörü", "Antiasit"],
-        etymology: "Panto- (pantoprazole) + -prazole (benzimidazol sonek)",
-        usage:
-          "Mide ülseri, gastroözofageal reflü hastalığı (GÖRH), Zollinger-Ellison sendromu",
-        sideEffects: ["Baş ağrısı", "İshal", "Karın ağrısı"],
-        dosage: "40 mg/gün, sabah aç karnına",
-        contraindications: ["Pantoprazole alerjisi"],
-        interactions: ["Warfarin", "Ketokonazol"],
-        synonyms: ["Protonix"],
-      }),
-      this.createTerm({
-        latinName: "Tramadol",
-        turkishName: "Tramadol",
-        category: TermCategory.DRUG,
-        definition:
-          "Opioid analjezik. Orta-şiddetli ağrı tedavisinde kullanılır. Bağımlılık potansiyeli düşüktür.",
-        components: ["Opioid"],
-        relatedTerms: ["Analjezik", "Opioid"],
-        etymology: "Tram- (tramadol) + -adol (opioid sonek)",
-        usage: "Orta-şiddetli ağrı, kronik ağrı, postoperatif ağrı",
-        sideEffects: ["Bulantı", "Baş dönmesi", "Kabızlık", "Bağımlılık riski"],
-        dosage: "50-100 mg, 4-6 saatte bir",
-        contraindications: ["Akut alkol zehirlenmesi", "Opioid bağımlılığı"],
-        interactions: ["SSRI'ler", "MAO inhibitörleri", "Karbamazepin"],
-        synonyms: ["Ultram"],
-      }),
-      this.createTerm({
-        latinName: "Montelukast",
-        turkishName: "Montelukast",
-        category: TermCategory.DRUG,
-        definition:
-          "Lökotrien reseptör antagonisti. Astım ve alerjik rinit tedavisinde kullanılır.",
-        components: ["Lökotrien antagonisti"],
-        relatedTerms: ["Astım ilacı", "Antialerjik"],
-        etymology:
-          "Monte- (montelukast) + -lukast (lökotrien antagonisti sonek)",
-        usage: "Astım, alerjik rinit, egzersiz kaynaklı bronkospazm",
-        sideEffects: [
-          "Baş ağrısı",
-          "Karın ağrısı",
-          "Ruh hali değişiklikleri (nadir)",
-        ],
-        dosage: "10 mg/gün, akşam",
-        contraindications: ["Montelukast alerjisi"],
-        interactions: ["Fenobarbital", "Rifampin"],
-        synonyms: ["Singulair"],
-      }),
-      this.createTerm({
-        latinName: "Losartan",
-        turkishName: "Losartan",
-        category: TermCategory.DRUG,
-        definition:
-          "Anjiyotensin II reseptör blokeri (ARB). Kan basıncını düşürür ve böbrek koruyucu etki gösterir.",
-        components: ["ARB"],
-        relatedTerms: ["Antihipertansif", "ARB"],
-        etymology: "Los- (losartan) + -artan (ARB sonek)",
-        usage: "Hipertansiyon, diyabetik nefropati, kalp yetmezliği",
-        sideEffects: ["Baş dönmesi", "Yorgunluk", "Hiperkalemi"],
-        dosage: "25-100 mg/gün",
-        contraindications: ["Hamilelik", "Bilateral renal arter stenozu"],
-        interactions: ["Potasyum takviyeleri", "NSAID'ler"],
-        synonyms: ["Cozaar"],
-      }),
-      this.createTerm({
-        latinName: "Clopidogrel",
-        turkishName: "Klopidogrel",
-        category: TermCategory.DRUG,
-        definition:
-          "Trombosit agregasyon inhibitörü. Kan pıhtılaşmasını önleyerek kardiyovasküler olayları önler.",
-        components: ["Tiyenopiridin"],
-        relatedTerms: ["Antiplatelet", "Kan inceltici"],
-        etymology: "Clopi- (clopidogrel) + -dogrel (tiyenopiridin sonek)",
-        usage: "Akut koroner sendrom, miyokard enfarktüsü sonrası, inme önleme",
-        sideEffects: ["Kanama", "Morarma", "Trombositopeni (nadir)"],
-        dosage: "75 mg/gün",
-        contraindications: ["Aktif kanama", "Şiddetli karaciğer yetmezliği"],
-        interactions: ["Warfarin", "NSAID'ler", "Proton pompa inhibitörleri"],
-        synonyms: ["Plavix"],
-      }),
-      this.createTerm({
-        latinName: "Gabapentin",
-        turkishName: "Gabapentin",
-        category: TermCategory.DRUG,
-        definition:
-          "Antikonvülzan ve nöropatik ağrı ilacı. Epilepsi ve nöropatik ağrı tedavisinde kullanılır.",
-        components: ["GABA analoğu"],
-        relatedTerms: ["Antikonvülzan", "Nöropatik ağrı"],
-        etymology: "Gaba- (GABA) + -pentin (antikonvülzan sonek)",
-        usage:
-          "Epilepsi, nöropatik ağrı, fibromiyalji, huzursuz bacak sendromu",
-        sideEffects: ["Baş dönmesi", "Yorgunluk", "Koordinasyon bozukluğu"],
-        dosage: "300-3600 mg/gün, üç dozda",
-        contraindications: ["Gabapentin alerjisi"],
-        interactions: ["Alkol", "Opioidler"],
-        synonyms: ["Neurontin"],
-      }),
-      this.createTerm({
-        latinName: "Duloxetine",
-        turkishName: "Duloksetin",
-        category: TermCategory.DRUG,
-        definition:
-          "Serotonin-norepinefrin geri alım inhibitörü (SNRI). Depresyon, anksiyete ve nöropatik ağrı tedavisinde kullanılır.",
-        components: ["SNRI"],
-        relatedTerms: ["Antidepresan", "SNRI"],
-        etymology: "Dulo- (duloxetine) + -xetine (SNRI sonek)",
-        usage: "Depresyon, anksiyete, nöropatik ağrı, fibromiyalji",
-        sideEffects: ["Mide bulantısı", "Baş dönmesi", "Uykusuzluk"],
-        dosage: "30-120 mg/gün",
-        contraindications: ["MAO inhibitörü kullanımı", "Glokom"],
-        interactions: ["MAO inhibitörleri", "Triptanlar", "NSAID'ler"],
-        synonyms: ["Cymbalta"],
-      }),
-      this.createTerm({
-        latinName: "Rosuvastatin",
-        turkishName: "Rosuvastatin",
-        category: TermCategory.DRUG,
-        definition:
-          "HMG-CoA redüktaz inhibitörü (statin). Kolesterol sentezini engelleyerek kan kolesterol seviyesini düşürür.",
-        components: ["Statin grubu"],
-        relatedTerms: ["Statin", "Kolesterol düşürücü"],
-        etymology:
-          "Rosu- (rosuvastatin) + -statin (HMG-CoA redüktaz inhibitörü)",
-        usage: "Hiperkolesterolemi, kardiyovasküler hastalık önleme",
-        sideEffects: [
-          "Kas ağrısı",
-          "Karaciğer enzim yükselmesi",
-          "Rhabdomiyoliz (nadir)",
-        ],
-        dosage: "5-40 mg/gün, akşam yemeği ile",
-        contraindications: ["Aktif karaciğer hastalığı", "Hamilelik"],
-        interactions: ["Eritromisin", "Siklosporin"],
-        synonyms: ["Crestor"],
-      }),
-      this.createTerm({
-        latinName: "Tamsulosin",
-        turkishName: "Tamsulosin",
-        category: TermCategory.DRUG,
-        definition:
-          "Alfa-1 adrenerjik reseptör antagonisti. Prostat büyümesi (BPH) ve idrar yolu problemlerinin tedavisinde kullanılır.",
-        components: ["Alfa bloker"],
-        relatedTerms: ["Alfa bloker", "BPH tedavisi"],
-        etymology: "Tam- (tamsulosin) + -sulosin (alfa bloker sonek)",
-        usage: "Benign prostat hiperplazisi (BPH), idrar retansiyonu",
-        sideEffects: [
-          "Baş dönmesi",
-          "Retrograde ejakülasyon",
-          "Düşük tansiyon",
-        ],
-        dosage: "0.4 mg/gün, akşam yemeği ile",
-        contraindications: ["Tamsulosin alerjisi"],
-        interactions: ["Sildenafil", "Tadalafil"],
-        synonyms: ["Flomax"],
-      }),
-    ];
+        latinName: drug.latinName,
+        turkishName: drug.turkishName,
+        category: drug.category,
+        definition: drug.definition,
+        components: drug.components,
+        relatedTerms: drug.relatedTerms,
+        etymology: drug.etymology,
+        usage: drug.usage,
+        sideEffects: drug.sideEffects,
+        dosage: drug.dosage,
+        contraindications: drug.contraindications,
+        interactions: drug.interactions,
+        synonyms: drug.synonyms,
+      })
+    );
+
+    return drugsFromData;
   }
 
   private createPlantTerms(): PharmacyTerm[] {
@@ -997,56 +580,29 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   }
 
   private createDiseaseTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı hastalık verilerini kullan
+    const diseasesFromData = allDiseasesData.map((disease) =>
       this.createTerm({
-        latinName: "Diabetes mellitus",
-        turkishName: "Diyabet",
-        category: TermCategory.DISEASE,
-        definition:
-          "Kan şekeri seviyesinin yükselmesi ile karakterize kronik metabolik hastalık. Tip 1 ve Tip 2 olmak üzere iki ana tipi vardır.",
-        components: ["İnsülin eksikliği", "Glukoz intoleransı"],
-        relatedTerms: ["Metabolik hastalık", "İnsülin"],
-        etymology: "Yunanca diabetes (sifon) + mellitus (tatlı)",
-        usage: "Kan şekeri kontrolü, diyet, ilaç tedavisi",
-        sideEffects: ["Hipoglisemi", "Hiperglisemi", "Komplikasyonlar"],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Şeker hastalığı", "DM"],
-      }),
-      this.createTerm({
-        latinName: "Hypertension",
-        turkishName: "Hipertansiyon",
-        category: TermCategory.DISEASE,
-        definition:
-          "Kan basıncının sürekli olarak yüksek seyrettiği kardiyovasküler hastalık.",
-        components: ["Yüksek kan basıncı"],
-        relatedTerms: ["Kardiyovasküler", "Kan basıncı"],
-        etymology: "Yunanca hyper (aşırı) + tension (gerilim)",
-        usage: "Tansiyon kontrolü, yaşam tarzı değişiklikleri, ilaç tedavisi",
-        sideEffects: ["İnme riski", "Kalp hastalığı"],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Yüksek tansiyon", "HT"],
-      }),
-      this.createTerm({
-        latinName: "Asthma",
-        turkishName: "Astım",
-        category: TermCategory.DISEASE,
-        definition:
-          "Hava yollarının daralması ve iltihaplanması ile karakterize kronik solunum yolu hastalığı.",
-        components: ["Hava yolu inflamasyonu", "Bronkospazm"],
-        relatedTerms: ["Solunum", "İnflamasyon"],
-        etymology: "Yunanca asthma (nefes darlığı)",
-        usage: "Bronkodilatörler, kortikosteroidler, yaşam tarzı",
-        sideEffects: ["Nefes darlığı", "Öksürük", "Hışıltı"],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Bronşiyal astım"],
-      }),
-    ];
+        latinName: disease.latinName,
+        turkishName: disease.turkishName,
+        category: disease.category,
+        definition: disease.definition,
+        components: disease.components,
+        relatedTerms: disease.relatedTerms,
+        etymology: disease.etymology,
+        usage: disease.usage,
+        sideEffects: disease.sideEffects,
+        dosage: disease.dosage,
+        contraindications: disease.contraindications,
+        interactions: disease.interactions,
+        synonyms: disease.synonyms,
+      })
+    );
+
+    console.log(
+      `🏥 Created ${diseasesFromData.length} disease terms from diseasesData`
+    );
+    return diseasesFromData;
   }
 
   private createAnatomyTerms(): PharmacyTerm[] {
@@ -1126,72 +682,55 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   }
 
   private createVitaminTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı vitamin verilerini kullan
+    const vitaminsFromData = allVitaminsData.map((vitamin) =>
       this.createTerm({
-        latinName: "Vitamin C",
-        turkishName: "C Vitamini",
-        category: TermCategory.VITAMIN,
-        definition:
-          "Askorbik asit olarak da bilinen, suda çözünen antioksidan vitamin. Bağışıklık sistemi için önemlidir.",
-        components: ["Askorbik asit"],
-        relatedTerms: ["Antioksidan", "Bağışıklık"],
-        etymology: "Latince vita (hayat) + amine",
-        usage: "Bağışıklık desteği, kolajen sentezi, demir emilimi",
-        sideEffects: ["İshal (yüksek dozda)", "Böbrek taşı riski"],
-        dosage: "75-90 mg/gün (kadın/erkek), 1000 mg/gün (maksimum)",
-        contraindications: ["Böbrek taşı öyküsü"],
-        interactions: ["Demir preparatları"],
-        synonyms: ["Askorbik asit", "L-askorbik asit"],
-      }),
+        latinName: vitamin.latinName,
+        turkishName: vitamin.turkishName,
+        category: vitamin.category,
+        definition: vitamin.definition,
+        components: vitamin.components,
+        relatedTerms: vitamin.relatedTerms,
+        etymology: vitamin.etymology,
+        usage: vitamin.usage,
+        sideEffects: vitamin.sideEffects,
+        dosage: vitamin.dosage,
+        contraindications: vitamin.contraindications,
+        interactions: vitamin.interactions,
+        synonyms: vitamin.synonyms,
+      })
+    );
+
+    console.log(
+      `💊 Created ${vitaminsFromData.length} vitamin terms from vitaminsData`
+    );
+    return vitaminsFromData;
+  }
+
+  private createMineralTerms(): PharmacyTerm[] {
+    // Yeni kapsamlı mineral verilerini kullan
+    const mineralsFromData = allMineralsData.map((mineral) =>
       this.createTerm({
-        latinName: "Vitamin D",
-        turkishName: "D Vitamini",
-        category: TermCategory.VITAMIN,
-        definition:
-          "Kalsiyum emilimi ve kemik sağlığı için gerekli yağda çözünen vitamin. Güneş ışığından sentezlenir.",
-        components: ["Kolekalsiferol (D3)", "Ergokalsiferol (D2)"],
-        relatedTerms: ["Kalsiyum", "Kemik sağlığı"],
-        etymology: "Latince vita (hayat) + amine",
-        usage: "Kemik sağlığı, kalsiyum emilimi, bağışıklık",
-        sideEffects: ["Hiperkalsemi (aşırı dozda)"],
-        dosage: "600-800 IU/gün (yetişkinler)",
-        contraindications: ["Hiperkalsemi"],
-        interactions: ["Kalsiyum takviyeleri"],
-        synonyms: ["Kalsiferol", "Güneş vitamini"],
-      }),
-      this.createTerm({
-        latinName: "Vitamin B12",
-        turkishName: "B12 Vitamini",
-        category: TermCategory.VITAMIN,
-        definition:
-          "Kobalamin olarak da bilinen, DNA sentezi ve sinir sistemi için gerekli suda çözünen vitamin.",
-        components: ["Kobalamin"],
-        relatedTerms: ["DNA sentezi", "Anemi"],
-        etymology: "Latince vita (hayat) + amine",
-        usage: "Anemi tedavisi, sinir sistemi sağlığı, DNA sentezi",
-        sideEffects: ["Nadir (genellikle güvenli)"],
-        dosage: "2.4 mcg/gün (yetişkinler)",
-        contraindications: ["Kobalamin alerjisi (nadir)"],
-        interactions: ["Metformin"],
-        synonyms: ["Kobalamin", "Siyanokobalamin"],
-      }),
-      this.createTerm({
-        latinName: "Folic acid",
-        turkishName: "Folik asit",
-        category: TermCategory.VITAMIN,
-        definition:
-          "B9 vitamini olarak da bilinen, hücre bölünmesi ve DNA sentezi için gerekli suda çözünen vitamin.",
-        components: ["Pteroylmonoglutamik asit"],
-        relatedTerms: ["DNA sentezi", "Hamilelik"],
-        etymology: "Latince folium (yaprak) - yapraklı sebzelerde bulunur",
-        usage: "Hamilelik öncesi ve sırasında, anemi tedavisi",
-        sideEffects: ["Nadir"],
-        dosage: "400 mcg/gün (yetişkinler), 600 mcg/gün (hamilelik)",
-        contraindications: ["B12 eksikliği (maskelenebilir)"],
-        interactions: ["Metotreksat"],
-        synonyms: ["Folat", "B9 vitamini"],
-      }),
-    ];
+        latinName: mineral.latinName,
+        turkishName: mineral.turkishName,
+        category: mineral.category,
+        definition: mineral.definition,
+        components: mineral.components,
+        relatedTerms: mineral.relatedTerms,
+        etymology: mineral.etymology,
+        usage: mineral.usage,
+        sideEffects: mineral.sideEffects,
+        dosage: mineral.dosage,
+        contraindications: mineral.contraindications,
+        interactions: mineral.interactions,
+        synonyms: mineral.synonyms,
+      })
+    );
+
+    console.log(
+      `💎 Created ${mineralsFromData.length} mineral terms from mineralsData`
+    );
+    return mineralsFromData;
   }
 
   private createAdditionalDrugTerms(): PharmacyTerm[] {
