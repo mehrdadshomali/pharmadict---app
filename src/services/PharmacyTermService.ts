@@ -11,6 +11,7 @@ import { allMineralsData } from "../data/mineralsData";
 import { allDiseasesData } from "../data/diseasesData";
 import { allInsectsData } from "../data/insectsData";
 import { allComponentsData } from "../data/componentsData";
+import { allAnatomyData } from "../data/anatomyData";
 
 const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
@@ -538,79 +539,29 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
   }
 
   private createAnatomyTerms(): PharmacyTerm[] {
-    return [
+    // Yeni kapsamlı anatomi verilerini kullan
+    const anatomyFromData = allAnatomyData.map((anatomy) =>
       this.createTerm({
-        latinName: "Hamstrings",
-        turkishName: "Hamstring Kasları",
-        category: TermCategory.ANATOMY,
-        definition:
-          "Uyluğun arka kısmında bulunan, diz fleksiyonu ve kalça ekstansiyonundan sorumlu üç kas grubu.",
-        components: ["Biceps femoris", "Semitendinosus", "Semimembranosus"],
-        relatedTerms: ["Kas", "Uyluk", "Diz"],
-        etymology:
-          "İngilizce ham (jambon) + string (ip) - kasların görünümü nedeniyle",
-        usage: "Yürüme, koşma, diz bükme",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Uyluk arka kasları", "Femur arka kasları"],
-      }),
-      this.createTerm({
-        latinName: "Internal oblique",
-        turkishName: "İç Eğik Kas",
-        category: TermCategory.ANATOMY,
-        definition:
-          "Karın duvarında bulunan, gövde rotasyonu ve lateral fleksiyondan sorumlu kas.",
-        components: ["Kas lifleri"],
-        relatedTerms: ["Karın kası", "Gövde"],
-        etymology: "Latince internus (iç) + obliquus (eğik)",
-        usage: "Gövde rotasyonu, lateral fleksiyon, karın basıncı",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Obliquus internus abdominis"],
-      }),
-      this.createTerm({
-        latinName: "Quadriceps femoris",
-        turkishName: "Dört Başlı Uyluk Kası",
-        category: TermCategory.ANATOMY,
-        definition:
-          "Uyluğun ön kısmında bulunan, diz ekstansiyonundan sorumlu dört başlı kas grubu.",
-        components: [
-          "Rectus femoris",
-          "Vastus lateralis",
-          "Vastus medialis",
-          "Vastus intermedius",
-        ],
-        relatedTerms: ["Uyluk", "Diz", "Kas"],
-        etymology: "Latince quadri (dört) + caput (baş) + femoris (uyluk)",
-        usage: "Diz ekstansiyonu, yürüme, koşma",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Quadriceps", "Dörtlü kas"],
-      }),
-      this.createTerm({
-        latinName: "Deltoid",
-        turkishName: "Deltoid Kas",
-        category: TermCategory.ANATOMY,
-        definition:
-          "Omuz eklemini örten, kolun yukarı kaldırılmasından sorumlu üçgen şeklindeki kas.",
-        components: ["Anterior deltoid", "Medial deltoid", "Posterior deltoid"],
-        relatedTerms: ["Omuz", "Kol", "Kas"],
-        etymology:
-          "Yunanca delta (üçgen) + -oid (benzer) - üçgen şekli nedeniyle",
-        usage: "Kol elevasyonu, omuz abdüksiyonu",
-        sideEffects: [],
-        dosage: "",
-        contraindications: [],
-        interactions: [],
-        synonyms: ["Deltoideus", "Omuz kası"],
-      }),
-    ];
+        latinName: anatomy.latinName,
+        turkishName: anatomy.turkishName,
+        category: anatomy.category,
+        definition: anatomy.definition,
+        components: anatomy.components,
+        relatedTerms: anatomy.relatedTerms,
+        etymology: anatomy.etymology,
+        usage: anatomy.usage,
+        sideEffects: anatomy.sideEffects,
+        dosage: anatomy.dosage,
+        contraindications: anatomy.contraindications,
+        interactions: anatomy.interactions,
+        synonyms: anatomy.synonyms,
+      })
+    );
+
+    console.log(
+      `🫀 Created ${anatomyFromData.length} anatomy terms from anatomyData`
+    );
+    return anatomyFromData;
   }
 
   private createVitaminTerms(): PharmacyTerm[] {
