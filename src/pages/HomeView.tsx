@@ -287,7 +287,7 @@ const HomeView = () => {
         style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: HEADER_HEIGHT + 16 },
+          { paddingTop: HEADER_HEIGHT + 32 },
         ]}
         showsVerticalScrollIndicator={false}
       >

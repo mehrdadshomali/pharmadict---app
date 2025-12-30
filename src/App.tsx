@@ -142,6 +142,7 @@ const splashStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-end",
     paddingBottom: 20,
+    paddingTop: 40,
   },
   logoContainer: {
     marginBottom: 16,
