@@ -332,13 +332,6 @@ const HomeView = () => {
                 searchQuery.trim() && navigation.navigate("Search" as never)
               }
             />
-            <TouchableOpacity style={styles.searchButton}>
-              <Ionicons
-                name="options-outline"
-                size={20}
-                color={colors.textTertiary}
-              />
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -591,9 +584,6 @@ const createStyles = (colors: any, isDark: boolean) =>
       fontSize: 15,
       fontFamily: "Inter_400Regular",
       color: colors.text,
-    },
-    searchButton: {
-      padding: 4,
     },
     section: {
       marginBottom: 24,

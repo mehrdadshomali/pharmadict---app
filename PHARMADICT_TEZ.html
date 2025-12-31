@@ -1,0 +1,2201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>PHARMADICT Bitirme Projesi</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">PHARMADICT Bitirme Projesi</h1>
+</header>
+<h1 id="pharmadict-mobil-tibbi-terimler-sözlüğü-uygulamasi">PHARMADICT:
+MOBİL TIBBİ TERİMLER SÖZLÜĞÜ UYGULAMASI</h1>
+<h2 id="bitirme-projesi">BİTİRME PROJESİ</h2>
+<hr />
+<p><strong>Hazırlayan:</strong> [Öğrenci Adı Soyadı]</p>
+<p><strong>Öğrenci Numarası:</strong> [Numara]</p>
+<p><strong>Danışman:</strong> [Danışman Adı]</p>
+<p><strong>Bölüm:</strong> [Bölüm Adı]</p>
+<p><strong>Tarih:</strong> Aralık 2024</p>
+<hr />
+<h2 id="özet">ÖZET</h2>
+<p>Bu bitirme projesi kapsamında, eczacılık ve sağlık alanında eğitim
+gören öğrenciler ile sağlık profesyonellerinin tıbbi terimlere hızlı ve
+kolay erişimini sağlamak amacıyla “Pharmadict” adlı mobil uygulama
+geliştirilmiştir. Uygulama, React Native framework’ü ve Expo platformu
+kullanılarak cross-platform olarak tasarlanmıştır. TypeScript
+programlama dili ile geliştirilen uygulama, 850’den fazla tıbbi terimi
+sekiz farklı kategoride sunmaktadır. Kullanıcılar terimleri arayabilir,
+favorilere ekleyebilir, kişisel notlar alabilir ve bilgi yarışması ile
+öğrendiklerini test edebilmektedir. Uygulama, modern kullanıcı arayüzü
+tasarımı, offline çalışabilme özelliği ve kişiselleştirme seçenekleri
+ile kullanıcı deneyimini ön planda tutmaktadır.</p>
+<p><strong>Anahtar Kelimeler:</strong> Mobil Uygulama, React Native,
+Tıbbi Terimler, Eczacılık, Cross-Platform</p>
+<hr />
+<h2 id="abstract">ABSTRACT</h2>
+<p>Within the scope of this graduation project, a mobile application
+named “Pharmadict” has been developed to provide quick and easy access
+to medical terminology for students studying in pharmacy and healthcare
+fields, as well as healthcare professionals. The application is designed
+as cross-platform using React Native framework and Expo platform.
+Developed with TypeScript programming language, the application offers
+more than 850 medical terms in eight different categories. Users can
+search terms, add to favorites, take personal notes, and test their
+knowledge with quizzes. The application prioritizes user experience with
+modern user interface design, offline functionality, and personalization
+options.</p>
+<p><strong>Keywords:</strong> Mobile Application, React Native, Medical
+Terms, Pharmacy, Cross-Platform</p>
+<hr />
+<h2 id="içindekiler">İÇİNDEKİLER</h2>
+<ul>
+<li>ÖZET ………………………………………………………………………………………………………. ii</li>
+<li>ABSTRACT …………………………………………………………………………………………….. iii</li>
+<li>İÇİNDEKİLER …………………………………………………………………………………………. iv</li>
+<li>ŞEKİL LİSTESİ ……………………………………………………………………………………….. vi</li>
+<li>TABLO LİSTESİ ……………………………………………………………………………………… vii</li>
+<li>KISALTMALAR ………………………………………………………………………………………. viii</li>
+</ul>
+<p><strong>1. GİRİŞ</strong></p>
+<ul>
+<li>1.1 Projenin Genel Tanımı …………………………………………………………………………. 1</li>
+<li>1.2 Projenin Amacı ve Önemi …………………………………………………………………….. 2</li>
+<li>1.3 Projenin Kapsamı ………………………………………………………………………………… 3</li>
+<li>1.4 Uygulamanın Genel Tanıtımı ………………………………………………………………… 4
+<ul>
+<li>1.4.1 Açılış Ekranı (Splash Screen) ………………………………………………………….. 4</li>
+<li>1.4.2 Ana Sayfa Ekranı ………………………………………………………………………….. 5</li>
+<li>1.4.3 Arama Ekranı ……………………………………………………………………………….. 6</li>
+<li>1.4.4 Kategoriler Ekranı …………………………………………………………………………. 7</li>
+<li>1.4.5 Favoriler Ekranı ……………………………………………………………………………. 8</li>
+<li>1.4.6 Terim Detay Ekranı ……………………………………………………………………….. 9</li>
+<li>1.4.7 Quiz Bölümü ………………………………………………………………………………… 10</li>
+</ul></li>
+</ul>
+<p><strong>2. MATERYAL VE YÖNTEM</strong></p>
+<ul>
+<li>2.1 Geliştirme Ortamı ve Araçları ……………………………………………………………….. 11
+<ul>
+<li>2.1.1 React Native ………………………………………………………………………………… 11</li>
+<li>2.1.2 Expo …………………………………………………………………………………………… 12</li>
+<li>2.1.3 TypeScript …………………………………………………………………………………… 13</li>
+<li>2.1.4 Visual Studio Code ……………………………………………………………………….. 13</li>
+</ul></li>
+<li>2.2 Kullanılan Kütüphaneler ………………………………………………………………………. 14
+<ul>
+<li>2.2.1 React Navigation ………………………………………………………………………….. 14</li>
+<li>2.2.2 AsyncStorage ………………………………………………………………………………. 15</li>
+<li>2.2.3 Expo Linear Gradient ……………………………………………………………………. 15</li>
+<li>2.2.4 Expo Blur ……………………………………………………………………………………. 16</li>
+</ul></li>
+<li>2.3 State Yönetimi ……………………………………………………………………………………. 16
+<ul>
+<li>2.3.1 React Context API ………………………………………………………………………… 16</li>
+<li>2.3.2 React Hooks ………………………………………………………………………………… 17</li>
+</ul></li>
+<li>2.4 Veri Yapısı ve Modelleme ……………………………………………………………………. 18
+<ul>
+<li>2.4.1 Terim Veri Modeli ………………………………………………………………………… 18</li>
+<li>2.4.2 Kategori Yapısı ……………………………………………………………………………. 19</li>
+</ul></li>
+<li>2.5 Kullanıcı Arayüzü Tasarımı ………………………………………………………………….. 20
+<ul>
+<li>2.5.1 Renk Paleti ………………………………………………………………………………….. 20</li>
+<li>2.5.2 Tipografi …………………………………………………………………………………….. 21</li>
+<li>2.5.3 Bileşen Tasarımı ………………………………………………………………………….. 21</li>
+</ul></li>
+</ul>
+<p><strong>3. BULGULAR - PROJENİN ÇALIŞMASI VE
+KABİLİYETLERİ</strong></p>
+<ul>
+<li>3.1 Sistem Mimarisi ………………………………………………………………………………….. 22</li>
+<li>3.2 Veri Akış Diyagramı ……………………………………………………………………………. 23</li>
+<li>3.3 Kullanıcı Akış Diyagramı …………………………………………………………………….. 24</li>
+<li>3.4 Sınıf Diyagramı ………………………………………………………………………………….. 25</li>
+<li>3.5 Dosya Yapısı ……………………………………………………………………………………… 26</li>
+<li>3.6 Servis Katmanı …………………………………………………………………………………… 27</li>
+<li>3.7 Veritabanı Yapısı ………………………………………………………………………………… 28</li>
+</ul>
+<p><strong>4. TARTIŞMA VE SONUÇ</strong></p>
+<ul>
+<li>4.1 Projenin Değerlendirilmesi …………………………………………………………………… 29</li>
+<li>4.2 Amaca Ulaşma Değerlendirmesi …………………………………………………………… 29</li>
+<li>4.3 Karşılaşılan Zorluklar ve Çözümler ………………………………………………………..
+30</li>
+<li>4.4 Gelecek Çalışmalar ……………………………………………………………………………… 31</li>
+</ul>
+<p><strong>5. KAYNAKLAR</strong> …………………………………………………………………………………….
+32</p>
+<p><strong>6. EKLER</strong> ……………………………………………………………………………………………….
+33</p>
+<hr />
+<h2 id="şekil-listesi">ŞEKİL LİSTESİ</h2>
+<ul>
+<li>Şekil 1. Sistemin Genel Yapısı …………………………………………………………………… 1</li>
+<li>Şekil 2. Uygulama Logosu …………………………………………………………………………. 2</li>
+<li>Şekil 3. Açılış Ekranı (Splash Screen) ………………………………………………………….
+4</li>
+<li>Şekil 4. Ana Sayfa Ekran Görüntüsü …………………………………………………………… 5</li>
+<li>Şekil 5. Ana Sayfa - Kategori Carousel ………………………………………………………..
+5</li>
+<li>Şekil 6. Arama Ekranı Görüntüsü ……………………………………………………………….. 6</li>
+<li>Şekil 7. Arama Sonuçları Ekranı …………………………………………………………………. 6</li>
+<li>Şekil 8. Kategoriler Ekran Görüntüsü ………………………………………………………….. 7</li>
+<li>Şekil 9. Kategori Detay Ekranı …………………………………………………………………… 7</li>
+<li>Şekil 10. Favoriler Ekran Görüntüsü …………………………………………………………… 8</li>
+<li>Şekil 11. Terim Detay Ekranı - Üst Kısım …………………………………………………….
+9</li>
+<li>Şekil 12. Terim Detay Ekranı - Alt Kısım …………………………………………………….
+9</li>
+<li>Şekil 13. Kişisel Not Ekleme Modalı ………………………………………………………….. 10</li>
+<li>Şekil 14. Quiz Bölümü Ekran Görüntüsü …………………………………………………….. 10</li>
+<li>Şekil 15. React Native Çalışma Prensibi ………………………………………………………
+11</li>
+<li>Şekil 16. Expo Geliştirme Ortamı ………………………………………………………………. 12</li>
+<li>Şekil 17. Navigasyon Yapısı Şeması …………………………………………………………… 14</li>
+<li>Şekil 18. Context API Veri Akışı ……………………………………………………………….. 16</li>
+<li>Şekil 19. Terim Veri Modeli Şeması …………………………………………………………… 18</li>
+<li>Şekil 20. Kategori Renk Paleti …………………………………………………………………… 20</li>
+<li>Şekil 21. Koyu Tema Renk Paleti ………………………………………………………………. 20</li>
+<li>Şekil 22. Açık Tema Renk Paleti ……………………………………………………………….. 21</li>
+<li>Şekil 23. Sistem Mimarisi Diyagramı …………………………………………………………. 22</li>
+<li>Şekil 24. Veri Akış Diyagramı …………………………………………………………………… 23</li>
+<li>Şekil 25. Kullanıcı Akış Diyagramı ……………………………………………………………. 24</li>
+<li>Şekil 26. Sınıf Diyagramı ………………………………………………………………………….. 25</li>
+<li>Şekil 27. Proje Dosya Yapısı ……………………………………………………………………… 26</li>
+</ul>
+<hr />
+<h2 id="tablo-listesi">TABLO LİSTESİ</h2>
+<ul>
+<li>Tablo 1. Kullanılan Teknolojiler ve Versiyonları …………………………………………..
+11</li>
+<li>Tablo 2. Kullanılan Kütüphaneler ………………………………………………………………. 14</li>
+<li>Tablo 3. Kategori Bilgileri ………………………………………………………………………… 19</li>
+<li>Tablo 4. AsyncStorage Veri Anahtarları ……………………………………………………… 28</li>
+<li>Tablo 5. Terim Sayıları (Kategorilere Göre) …………………………………………………
+29</li>
+</ul>
+<hr />
+<h2 id="kisaltmalar">KISALTMALAR</h2>
+<ul>
+<li><strong>API:</strong> Application Programming Interface (Uygulama
+Programlama Arayüzü)</li>
+<li><strong>CSS:</strong> Cascading Style Sheets (Basamaklı Stil
+Şablonları)</li>
+<li><strong>HTML:</strong> HyperText Markup Language (Hiper Metin
+İşaretleme Dili)</li>
+<li><strong>IDE:</strong> Integrated Development Environment (Tümleşik
+Geliştirme Ortamı)</li>
+<li><strong>iOS:</strong> iPhone Operating System (iPhone İşletim
+Sistemi)</li>
+<li><strong>JSON:</strong> JavaScript Object Notation (JavaScript Nesne
+Gösterimi)</li>
+<li><strong>SDK:</strong> Software Development Kit (Yazılım Geliştirme
+Kiti)</li>
+<li><strong>UI:</strong> User Interface (Kullanıcı Arayüzü)</li>
+<li><strong>UX:</strong> User Experience (Kullanıcı Deneyimi)</li>
+</ul>
+<hr />
+<h2 id="giriş">1. GİRİŞ</h2>
+<h3 id="projenin-genel-tanımı">1.1 Projenin Genel Tanımı</h3>
+<p>Pharmadict, eczacılık ve sağlık alanında eğitim gören öğrenciler ile
+sağlık profesyonellerinin tıbbi terimlere hızlı ve kolay erişimini
+sağlamak amacıyla geliştirilmiş kapsamlı bir mobil uygulamadır. Uygulama
+adı, “Pharmacy” (eczacılık) ve “Dictionary” (sözlük) kelimelerinin
+birleşiminden oluşmaktadır.</p>
+<p>Günümüzde tıp ve eczacılık alanında kullanılan terminoloji oldukça
+geniş ve karmaşıktır. Öğrenciler ve profesyoneller, bu terimleri
+öğrenmek ve hatırlamak için çeşitli kaynaklara başvurmak zorunda
+kalmaktadır. Geleneksel basılı sözlükler taşınabilirlik açısından pratik
+değildir ve güncel tutulması zordur. İnternet tabanlı kaynaklar ise her
+zaman güvenilir olmayabilir ve internet bağlantısı gerektirmektedir.</p>
+<p>Pharmadict, bu sorunlara çözüm olarak tasarlanmıştır. Uygulama,
+offline çalışabilme özelliği sayesinde internet bağlantısı olmadan da
+kullanılabilmektedir. Kapsamlı veritabanı, güvenilir kaynaklardan
+derlenen 850’den fazla tıbbi terimi içermektedir. Modern ve kullanıcı
+dostu arayüzü ile terimlere hızlı erişim sağlanmaktadır.</p>
+<p>[Şekil 1. Sistemin Genel Yapısı buraya eklenecek]</p>
+<p>Uygulama, React Native framework’ü kullanılarak geliştirilmiştir. Bu
+teknoloji sayesinde tek bir kod tabanı ile hem iOS hem de Android
+platformlarında çalışabilen bir uygulama elde edilmiştir. Cross-platform
+yaklaşım, geliştirme süresini kısaltmış ve bakım maliyetlerini
+düşürmüştür.</p>
+<hr />
+<h3 id="projenin-amacı-ve-önemi">1.2 Projenin Amacı ve Önemi</h3>
+<p>Bu projenin temel amacı, tıbbi terminoloji öğrenimini kolaylaştıran,
+kullanıcı dostu ve kapsamlı bir mobil uygulama geliştirmektir. Projenin
+spesifik amaçları şunlardır:</p>
+<p><strong>Eğitim Desteği:</strong> Eczacılık ve sağlık alanında eğitim
+gören öğrencilerin ders çalışma süreçlerini desteklemek ve tıbbi
+terimleri daha kolay öğrenmelerini sağlamak.</p>
+<p><strong>Hızlı Erişim:</strong> Sağlık profesyonellerinin günlük
+çalışmalarında karşılaştıkları terimlere hızlı ve güvenilir bir şekilde
+erişmelerini sağlamak.</p>
+<p><strong>Offline Kullanım:</strong> İnternet bağlantısı olmayan
+ortamlarda da uygulamanın kullanılabilmesini sağlamak.</p>
+<p><strong>Kişiselleştirme:</strong> Kullanıcıların kendi öğrenme
+süreçlerini yönetebilmeleri için favori ve not ekleme özellikleri
+sunmak.</p>
+<p><strong>Bilgi Testi:</strong> Quiz özelliği ile kullanıcıların
+öğrendiklerini test etmelerini sağlamak.</p>
+<p>[Şekil 2. Uygulama Logosu buraya eklenecek]</p>
+<p>Projenin önemi, tıbbi eğitimde dijital araçların artan rolü ile
+doğrudan ilişkilidir. Mobil cihazların yaygınlaşması, öğrencilerin ve
+profesyonellerin bilgiye her an her yerden erişme beklentisini
+artırmıştır. Pharmadict, bu beklentiyi karşılayan modern bir çözüm
+sunmaktadır.</p>
+<hr />
+<h3 id="projenin-kapsamı">1.3 Projenin Kapsamı</h3>
+<p>Pharmadict uygulaması, sekiz farklı kategoride toplam 850’den fazla
+tıbbi terimi kapsamaktadır. Bu kategoriler şunlardır:</p>
+<p><strong>İlaçlar (100 terim):</strong> Yaygın kullanılan ilaçlar,
+etken maddeleri, kullanım alanları, yan etkileri ve dozaj bilgileri.</p>
+<p><strong>Bitkiler (100 terim):</strong> Tıbbi amaçlarla kullanılan
+bitkiler, aktif bileşenleri ve geleneksel kullanım alanları.</p>
+<p><strong>Vitaminler (100 terim):</strong> Suda ve yağda çözünen
+vitaminler, fonksiyonları ve eksiklik belirtileri.</p>
+<p><strong>Mineraller (100 terim):</strong> Vücut için gerekli
+mineraller ve eser elementler, fonksiyonları ve kaynakları.</p>
+<p><strong>Hastalıklar (150 terim):</strong> Yaygın hastalıklar,
+semptomları, tanı yöntemleri ve tedavi yaklaşımları.</p>
+<p><strong>Böcekler (100 terim):</strong> Tıbbi öneme sahip böcekler,
+zehirleri ve tedavi yöntemleri.</p>
+<p><strong>Bileşenler (100 terim):</strong> Farmakolojik bileşenler,
+alkaloidler, flavonoidler ve diğer aktif maddeler.</p>
+<p><strong>Anatomi (100 terim):</strong> İnsan vücudunun anatomik
+yapıları, organlar ve sistemler.</p>
+<p>Her terim için şu bilgiler sunulmaktadır:</p>
+<ul>
+<li>Latince/İngilizce isim</li>
+<li>Türkçe karşılık</li>
+<li>Tanım</li>
+<li>Etimoloji (köken bilgisi)</li>
+<li>Kullanım alanı</li>
+<li>Bileşenler</li>
+<li>Yan etkiler</li>
+<li>Dozaj bilgisi</li>
+<li>Kontrendikasyonlar</li>
+<li>İlaç etkileşimleri</li>
+<li>Eş anlamlılar</li>
+<li>İlgili terimler</li>
+</ul>
+<hr />
+<h3 id="uygulamanın-genel-tanıtımı">1.4 Uygulamanın Genel Tanıtımı</h3>
+<p>Bu bölümde uygulamanın ekranları ve özellikleri detaylı olarak
+tanıtılmaktadır.</p>
+<h4 id="açılış-ekranı-splash-screen">1.4.1 Açılış Ekranı (Splash
+Screen)</h4>
+<p>Uygulama başlatıldığında kullanıcıyı animasyonlu bir açılış ekranı
+karşılamaktadır. Bu ekranda uygulama logosu, “PHARMADICT” yazısı ve
+“Merhaba” karşılama mesajı yer almaktadır.</p>
+<p>Açılış ekranı, kullanıcıya profesyonel bir ilk izlenim vermek ve
+uygulamanın yüklenme sürecini görsel olarak zenginleştirmek amacıyla
+tasarlanmıştır. Ekranda gradient arka plan kullanılmış ve logo ile
+yazılar fade-in animasyonu ile görünür hale gelmektedir.</p>
+<p>Açılış ekranı yaklaşık 2.5 saniye sürmekte ve ardından otomatik
+olarak ana sayfaya geçiş yapılmaktadır. Bu süre, uygulamanın arka planda
+verileri yüklemesi için yeterli zaman sağlamaktadır.</p>
+<p>[Şekil 3. Açılış Ekranı (Splash Screen) buraya eklenecek]</p>
+<hr />
+<h4 id="ana-sayfa-ekranı">1.4.2 Ana Sayfa Ekranı</h4>
+<p>Ana sayfa, uygulamanın merkezi noktasıdır ve kullanıcıya çeşitli
+özelliklere hızlı erişim sağlamaktadır. Ana sayfada şu bölümler yer
+almaktadır:</p>
+<p><strong>Header (Üst Kısım):</strong> Uygulama logosu, ismi ve tema
+değiştirme butonu bulunmaktadır. Blur efekti ile modern bir görünüm
+sağlanmıştır.</p>
+<p><strong>Hero Kartı:</strong> Uygulamayı tanıtan ve kullanıcıyı motive
+eden bir karşılama kartıdır. “Pharmadict İle Keşfet” başlığı ve
+“1000’den fazla terim ile eczacılık dünyasını keşfet” alt başlığı yer
+almaktadır.</p>
+<p><strong>Arama Çubuğu:</strong> Kullanıcıların hızlı arama yapabilmesi
+için bir arama alanı bulunmaktadır. Arama çubuğuna tıklandığında arama
+sayfasına yönlendirme yapılmaktadır.</p>
+<p><strong>Kategori Carousel:</strong> Yatay kaydırılabilir kategori
+kartları ile kullanıcılar istedikleri kategoriye hızlıca
+erişebilmektedir. Her kategori kendine özgü renk ve ikon ile temsil
+edilmektedir.</p>
+<p><strong>Öne Çıkanlar:</strong> En çok ziyaret edilen terimler bu
+bölümde listelenmektedir. Kullanıcının ilgi alanlarına göre dinamik
+olarak güncellenmektedir.</p>
+<p><strong>Mini Quiz:</strong> Kullanıcıların bilgilerini test
+edebilecekleri interaktif bir quiz bölümü bulunmaktadır.</p>
+<p><strong>Son Eklenenler:</strong> Veritabanına en son eklenen terimler
+bu bölümde gösterilmektedir.</p>
+<p>[Şekil 4. Ana Sayfa Ekran Görüntüsü buraya eklenecek]</p>
+<p>[Şekil 5. Ana Sayfa - Kategori Carousel buraya eklenecek]</p>
+<hr />
+<h4 id="arama-ekranı">1.4.3 Arama Ekranı</h4>
+<p>Arama ekranı, kullanıcıların terimleri hızlı ve etkili bir şekilde
+bulmalarını sağlamaktadır. Arama özelliği gerçek zamanlı olarak
+çalışmakta, kullanıcı yazmaya başladığında sonuçlar anında
+listelenmektedir.</p>
+<p><strong>Arama Özellikleri:</strong></p>
+<ul>
+<li>Latince/İngilizce isim üzerinden arama</li>
+<li>Türkçe karşılık üzerinden arama</li>
+<li>Tanım içinde arama</li>
+<li>Eş anlamlılar üzerinden arama</li>
+</ul>
+<p><strong>Arama Geçmişi:</strong> Kullanıcının önceki aramaları
+kaydedilmekte ve hızlı erişim için listelenmektedir. Kullanıcı istediği
+zaman arama geçmişini temizleyebilmektedir.</p>
+<p><strong>Popüler Aramalar:</strong> En çok aranan terimler bu bölümde
+gösterilmektedir.</p>
+<p><strong>Arama Önerileri:</strong> Kullanıcı yazmaya başladığında,
+girilen metne uygun terim önerileri sunulmaktadır.</p>
+<p>[Şekil 6. Arama Ekranı Görüntüsü buraya eklenecek]</p>
+<p>[Şekil 7. Arama Sonuçları Ekranı buraya eklenecek]</p>
+<hr />
+<h4 id="kategoriler-ekranı">1.4.4 Kategoriler Ekranı</h4>
+<p>Kategoriler ekranı, terimlerin kategorilere göre organize edildiği
+bir görünüm sunmaktadır. Bento grid tasarımı ile modern ve görsel olarak
+çekici bir arayüz oluşturulmuştur.</p>
+<p>Her kategori kartında şu bilgiler yer almaktadır:</p>
+<ul>
+<li>Kategori ikonu</li>
+<li>Kategori adı</li>
+<li>Kategorideki terim sayısı</li>
+<li>Kısa açıklama</li>
+</ul>
+<p>Kategoriler gradient arka planlar ile renklendirilmiştir. Her
+kategorinin kendine özgü bir renk teması bulunmaktadır:</p>
+<ul>
+<li>İlaçlar: Mavi</li>
+<li>Bitkiler: Yeşil</li>
+<li>Vitaminler: Turuncu</li>
+<li>Mineraller: Mor</li>
+<li>Hastalıklar: Pembe</li>
+<li>Böcekler: Turuncu</li>
+<li>Bileşenler: Kırmızı</li>
+<li>Anatomi: İndigo</li>
+</ul>
+<p>Kullanıcı bir kategoriye tıkladığında, o kategorideki tüm terimler
+listelenmektedir.</p>
+<p>[Şekil 8. Kategoriler Ekran Görüntüsü buraya eklenecek]</p>
+<p>[Şekil 9. Kategori Detay Ekranı buraya eklenecek]</p>
+<hr />
+<h4 id="favoriler-ekranı">1.4.5 Favoriler Ekranı</h4>
+<p>Favoriler ekranı, kullanıcının beğendiği ve kaydettiği terimleri
+listelemektedir. Bu özellik, sık kullanılan terimlere hızlı erişim
+sağlamak ve kişisel bir çalışma listesi oluşturmak için
+tasarlanmıştır.</p>
+<p><strong>Özellikler:</strong></p>
+<ul>
+<li>Favori terim sayısı gösterimi</li>
+<li>Terim kartları ile liste görünümü</li>
+<li>Not eklenen terimlerde özel ikon gösterimi</li>
+<li>Favorilerden çıkarma özelliği</li>
+</ul>
+<p>Favori veriler cihazın yerel hafızasında saklanmakta ve uygulama
+kapatılsa bile korunmaktadır.</p>
+<p>[Şekil 10. Favoriler Ekran Görüntüsü buraya eklenecek]</p>
+<hr />
+<h4 id="terim-detay-ekranı">1.4.6 Terim Detay Ekranı</h4>
+<p>Terim detay ekranı, seçilen terim hakkında kapsamlı bilgi
+sunmaktadır. Ekran, kullanıcı deneyimini ön planda tutan modern bir
+tasarıma sahiptir.</p>
+<p><strong>Hero Bölümü:</strong> Ekranın üst kısmında, terimin
+kategorisine özgü gradient arka plan üzerinde kategori ikonu, terim adı
+ve Türkçe karşılığı yer almaktadır.</p>
+<p><strong>Bilgi Kartları:</strong> Terim hakkındaki bilgiler, ayrı
+kartlar halinde düzenlenmiştir:</p>
+<ul>
+<li><strong>Tanım Kartı:</strong> Terimin detaylı açıklaması</li>
+<li><strong>Etimoloji Kartı:</strong> Terimin köken bilgisi</li>
+<li><strong>Kullanım Kartı:</strong> Terimin kullanım alanları</li>
+<li><strong>Bileşenler Kartı:</strong> Terimin içerdiği bileşenler (tag
+formatında)</li>
+<li><strong>Yan Etkiler Kartı:</strong> Olası yan etkiler (uyarı
+formatında)</li>
+<li><strong>Dozaj Kartı:</strong> Dozaj bilgileri</li>
+<li><strong>Kişisel Notlar Kartı:</strong> Kullanıcının eklediği
+notlar</li>
+</ul>
+<p><strong>Aksiyon Butonları:</strong></p>
+<ul>
+<li>Favori ekleme/çıkarma (kalp ikonu)</li>
+<li>Paylaşım (share ikonu)</li>
+<li>Geri dönme (ok ikonu)</li>
+</ul>
+<p><strong>İlgili Terimler:</strong> Ekranın alt kısmında, mevcut
+terimle ilişkili diğer terimler listelenmektedir. Kullanıcı bu terimlere
+tıklayarak detay sayfalarına gidebilmektedir.</p>
+<p>[Şekil 11. Terim Detay Ekranı - Üst Kısım buraya eklenecek]</p>
+<p>[Şekil 12. Terim Detay Ekranı - Alt Kısım buraya eklenecek]</p>
+<p><strong>Kişisel Not Özelliği:</strong></p>
+<p>Kullanıcılar her terim için kişisel not ekleyebilmektedir. Bu özellik
+özellikle sınav hazırlığı yapan öğrenciler için tasarlanmıştır. Not
+ekleme işlemi modal pencere üzerinden yapılmaktadır.</p>
+<p>Not özellikleri:</p>
+<ul>
+<li>Metin girişi için geniş alan</li>
+<li>Kaydetme ve iptal butonları</li>
+<li>Mevcut notu silme seçeneği</li>
+<li>Son güncelleme tarihi gösterimi</li>
+</ul>
+<p>[Şekil 13. Kişisel Not Ekleme Modalı buraya eklenecek]</p>
+<hr />
+<h4 id="quiz-bölümü">1.4.7 Quiz Bölümü</h4>
+<p>Quiz bölümü, kullanıcıların tıbbi bilgilerini eğlenceli bir şekilde
+test etmelerini sağlamaktadır. Ana sayfada yer alan mini quiz widget’ı,
+interaktif bir öğrenme deneyimi sunmaktadır.</p>
+<p><strong>Quiz Özellikleri:</strong></p>
+<ul>
+<li>24 soruluk soru havuzu</li>
+<li>6 set halinde 4’er soru</li>
+<li>Çoktan seçmeli sorular (3 seçenek)</li>
+<li>Anlık geri bildirim (doğru/yanlış animasyonları)</li>
+<li>Skor takibi</li>
+<li>İlerleme çubuğu</li>
+<li>Set göstergesi</li>
+</ul>
+<p><strong>Soru Tipleri:</strong></p>
+<ul>
+<li>İlaç etken maddeleri</li>
+<li>Vitamin fonksiyonları</li>
+<li>Mineral kaynakları</li>
+<li>Bitki kullanım alanları</li>
+<li>Organ fonksiyonları</li>
+<li>Hastalık belirtileri</li>
+</ul>
+<p>Quiz tamamlandığında kullanıcı yeni bir sete geçebilmekte ve
+bilgilerini pekiştirebilmektedir.</p>
+<p>[Şekil 14. Quiz Bölümü Ekran Görüntüsü buraya eklenecek]</p>
+<hr />
+<h2 id="materyal-ve-yöntem">2. MATERYAL VE YÖNTEM</h2>
+<h3 id="geliştirme-ortamı-ve-araçları">2.1 Geliştirme Ortamı ve
+Araçları</h3>
+<p>Bu bölümde projenin geliştirilmesinde kullanılan teknolojiler ve
+araçlar detaylı olarak açıklanmaktadır.</p>
+<h4 id="react-native">2.1.1 React Native</h4>
+<p>React Native, Facebook tarafından 2015 yılında açık kaynak olarak
+yayınlanan bir mobil uygulama geliştirme framework’üdür. JavaScript ve
+React kullanarak native mobil uygulamalar geliştirmeyi mümkün
+kılmaktadır.</p>
+<p><strong>React Native’in Avantajları:</strong></p>
+<ul>
+<li><p><strong>Cross-Platform Geliştirme:</strong> Tek bir kod tabanı
+ile hem iOS hem de Android uygulamaları geliştirilebilmektedir. Bu durum
+geliştirme süresini ve maliyetini önemli ölçüde azaltmaktadır.</p></li>
+<li><p><strong>Native Performans:</strong> React Native, JavaScript
+kodunu native bileşenlere dönüştürmektedir. Bu sayede web tabanlı hibrit
+uygulamalara kıyasla çok daha iyi performans elde edilmektedir.</p></li>
+<li><p><strong>Hot Reloading:</strong> Geliştirme sürecinde yapılan
+değişiklikler anında uygulamaya yansımaktadır. Bu özellik geliştirme
+hızını artırmaktadır.</p></li>
+<li><p><strong>Geniş Ekosistem:</strong> React Native, geniş bir
+kütüphane ve araç ekosistemine sahiptir. Topluluk desteği güçlüdür ve
+sürekli gelişmektedir.</p></li>
+<li><p><strong>Kod Paylaşımı:</strong> İş mantığı kodunun büyük bir
+kısmı platformlar arasında paylaşılabilmektedir.</p></li>
+</ul>
+<p>[Şekil 15. React Native Çalışma Prensibi buraya eklenecek]</p>
+<p><strong>Tablo 1. Kullanılan Teknolojiler ve Versiyonları</strong></p>
+<table>
+<thead>
+<tr>
+<th>Teknoloji</th>
+<th>Versiyon</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React Native</td>
+<td>0.76.x</td>
+<td>Mobil uygulama framework’ü</td>
+</tr>
+<tr>
+<td>React</td>
+<td>19.1.0</td>
+<td>UI kütüphanesi</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td>5.3.3</td>
+<td>Programlama dili</td>
+</tr>
+<tr>
+<td>Expo</td>
+<td>54.0.0</td>
+<td>Geliştirme platformu</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>18+</td>
+<td>JavaScript runtime</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="expo">2.1.2 Expo</h4>
+<p>Expo, React Native geliştirme sürecini kolaylaştıran ve hızlandıran
+bir platform ve araç setidir. Expo kullanmanın başlıca avantajları
+şunlardır:</p>
+<p><strong>Kolay Başlangıç:</strong> Expo ile yeni bir proje oluşturmak
+ve çalıştırmak oldukça basittir. Native geliştirme ortamı kurulumu
+gerektirmeden hızlıca başlanabilmektedir.</p>
+<p><strong>Expo Go Uygulaması:</strong> Geliştirme sürecinde uygulamayı
+fiziksel cihazda test etmek için Expo Go uygulaması kullanılmaktadır. QR
+kod tarayarak uygulama anında cihazda çalıştırılabilmektedir.</p>
+<p><strong>Hazır API’ler:</strong> Kamera, konum, bildirimler, dosya
+sistemi gibi native özelliklere erişim için hazır API’ler
+sunulmaktadır.</p>
+<p><strong>OTA Güncellemeler:</strong> Over-the-air güncellemeler
+sayesinde uygulama mağaza onayı beklemeden güncellenebilmektedir.</p>
+<p><strong>Build Servisleri:</strong> Expo Application Services (EAS)
+ile bulut tabanlı build işlemleri yapılabilmektedir.</p>
+<p>[Şekil 16. Expo Geliştirme Ortamı buraya eklenecek]</p>
+<hr />
+<h4 id="typescript">2.1.3 TypeScript</h4>
+<p>TypeScript, Microsoft tarafından geliştirilen ve JavaScript’in
+üzerine inşa edilmiş bir programlama dilidir. JavaScript’e statik tip
+kontrolü eklemektedir.</p>
+<p><strong>TypeScript’in Avantajları:</strong></p>
+<ul>
+<li><p><strong>Tip Güvenliği:</strong> Değişkenlerin ve fonksiyonların
+tipleri tanımlanarak derleme zamanında hata kontrolü
+yapılmaktadır.</p></li>
+<li><p><strong>Gelişmiş IDE Desteği:</strong> Otomatik tamamlama,
+refactoring ve hata gösterimi gibi özellikler geliştirilmiştir.</p></li>
+<li><p><strong>Daha İyi Dokümantasyon:</strong> Tip tanımları kodun
+kendini dokümante etmesini sağlamaktadır.</p></li>
+<li><p><strong>Büyük Projelerde Ölçeklenebilirlik:</strong> Tip sistemi
+sayesinde büyük projelerde kod kalitesi korunmaktadır.</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// TypeScript ile tip tanımlama örneği</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PharmacyTerm {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  latinName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  turkishName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  category<span class="op">:</span> TermCategory<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  definition<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  isBookmarked<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h4 id="visual-studio-code">2.1.4 Visual Studio Code</h4>
+<p>Proje geliştirme sürecinde Visual Studio Code (VS Code) editörü
+kullanılmıştır. VS Code, Microsoft tarafından geliştirilen ücretsiz ve
+açık kaynaklı bir kod editörüdür.</p>
+<p><strong>Kullanılan Eklentiler:</strong></p>
+<ul>
+<li>ESLint: Kod kalitesi kontrolü</li>
+<li>Prettier: Kod formatlama</li>
+<li>React Native Tools: React Native geliştirme desteği</li>
+<li>TypeScript: TypeScript dil desteği</li>
+</ul>
+<hr />
+<h3 id="kullanılan-kütüphaneler">2.2 Kullanılan Kütüphaneler</h3>
+<p>Projede çeşitli üçüncü parti kütüphaneler kullanılmıştır. Bu
+kütüphaneler, geliştirme sürecini hızlandırmış ve uygulamanın
+işlevselliğini artırmıştır.</p>
+<p><strong>Tablo 2. Kullanılan Kütüphaneler</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kütüphane</th>
+<th>Versiyon</th>
+<th>Kullanım Amacı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="citation"
+data-cites="react-navigation/native">@react-navigation/native</span></td>
+<td>6.1.9</td>
+<td>Navigasyon yönetimi</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="react-navigation/bottom-tabs">@react-navigation/bottom-tabs</span></td>
+<td>6.5.11</td>
+<td>Alt tab navigasyonu</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="react-navigation/native-stack">@react-navigation/native-stack</span></td>
+<td>6.9.17</td>
+<td>Stack navigasyonu</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="react-native-async-storage">@react-native-async-storage</span></td>
+<td>2.2.0</td>
+<td>Yerel veri depolama</td>
+</tr>
+<tr>
+<td>expo-linear-gradient</td>
+<td>15.0.8</td>
+<td>Gradient arka planlar</td>
+</tr>
+<tr>
+<td>expo-blur</td>
+<td>15.0.8</td>
+<td>Blur efektleri</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="expo/vector-icons">@expo/vector-icons</span></td>
+<td>15.0.3</td>
+<td>İkon seti</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="expo-google-fonts/inter">@expo-google-fonts/inter</span></td>
+<td>0.4.2</td>
+<td>Inter font ailesi</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="expo-google-fonts/poppins">@expo-google-fonts/poppins</span></td>
+<td>0.4.1</td>
+<td>Poppins font ailesi</td>
+</tr>
+<tr>
+<td>uuid</td>
+<td>9.0.0</td>
+<td>Benzersiz ID üretimi</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="react-navigation">2.2.1 React Navigation</h4>
+<p>React Navigation, React Native uygulamalarında navigasyon yönetimi
+için kullanılan en popüler kütüphanedir. Projede iki tür navigasyon
+kullanılmıştır:</p>
+<p><strong>Stack Navigator:</strong> Sayfaların üst üste yığılması
+prensibine dayanmaktadır. Terim detay sayfası ve kategori detay sayfası
+stack navigator ile açılmaktadır. Kullanıcı geri butonuna bastığında
+önceki sayfaya dönmektedir.</p>
+<p><strong>Bottom Tab Navigator:</strong> Ekranın alt kısmında sabit bir
+tab bar oluşturmaktadır. Ana sayfa, arama, kategoriler ve favoriler
+sekmeleri bu navigator ile yönetilmektedir.</p>
+<p>[Şekil 17. Navigasyon Yapısı Şeması buraya eklenecek]</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Navigasyon yapısı örneği</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>Stack<span class="op">.</span><span class="at">Navigator</span><span class="op">&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Stack<span class="op">.</span><span class="at">Screen</span> name<span class="op">=</span><span class="st">&quot;Main&quot;</span> component<span class="op">=</span>{MainTabs} <span class="op">/&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Stack<span class="op">.</span><span class="at">Screen</span> name<span class="op">=</span><span class="st">&quot;TermDetail&quot;</span> component<span class="op">=</span>{TermDetailView} <span class="op">/&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Stack<span class="op">.</span><span class="at">Screen</span> name<span class="op">=</span><span class="st">&quot;CategoryDetail&quot;</span> component<span class="op">=</span>{CategoryDetailView} <span class="op">/&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>Stack<span class="op">.</span><span class="at">Navigator</span><span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h4 id="asyncstorage">2.2.2 AsyncStorage</h4>
+<p>AsyncStorage, React Native uygulamalarında anahtar-değer çiftleri
+şeklinde veri depolamak için kullanılan bir kütüphanedir. Web’deki
+localStorage’a benzer şekilde çalışmaktadır.</p>
+<p><strong>Kullanım Alanları:</strong></p>
+<ul>
+<li>Favori terimlerin saklanması</li>
+<li>Kişisel notların saklanması</li>
+<li>Tema tercihinin saklanması</li>
+<li>Arama geçmişinin saklanması</li>
+<li>Terim ziyaret sayılarının saklanması</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// AsyncStorage kullanım örneği</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Veri kaydetme</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">await</span> AsyncStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">&quot;favorites&quot;</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(favoriteIds))<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Veri okuma</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> stored <span class="op">=</span> <span class="cf">await</span> AsyncStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">&quot;favorites&quot;</span>)<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> favorites <span class="op">=</span> stored <span class="op">?</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(stored) <span class="op">:</span> []<span class="op">;</span></span></code></pre></div>
+<hr />
+<h4 id="expo-linear-gradient">2.2.3 Expo Linear Gradient</h4>
+<p>Expo Linear Gradient, renk geçişli arka planlar oluşturmak için
+kullanılmaktadır. Uygulamada kategori kartları, hero kartları ve
+butonlarda gradient efektler kullanılmıştır.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Gradient kullanım örneği</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>LinearGradient</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  colors<span class="op">=</span>{[<span class="st">&quot;#14B8A6&quot;</span><span class="op">,</span> <span class="st">&quot;#0D9488&quot;</span>]}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  start<span class="op">=</span>{{ x<span class="op">:</span> <span class="dv">0</span><span class="op">,</span> y<span class="op">:</span> <span class="dv">0</span> }}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  end<span class="op">=</span>{{ x<span class="op">:</span> <span class="dv">1</span><span class="op">,</span> y<span class="op">:</span> <span class="dv">1</span> }}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  style<span class="op">=</span>{styles<span class="op">.</span><span class="at">card</span>}</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span><span class="bu">Text</span><span class="op">&gt;</span>İçerik<span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>LinearGradient<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h4 id="expo-blur">2.2.4 Expo Blur</h4>
+<p>Expo Blur, bulanıklık efekti oluşturmak için kullanılmaktadır.
+Uygulamada header bölümünde cam efekti (glassmorphism) oluşturmak için
+kullanılmıştır.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Blur kullanım örneği</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>BlurView intensity<span class="op">=</span>{<span class="dv">40</span>} tint<span class="op">=</span><span class="st">&quot;dark&quot;</span> style<span class="op">=</span>{styles<span class="op">.</span><span class="at">header</span>}<span class="op">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span><span class="bu">Text</span><span class="op">&gt;</span>Header İçeriği<span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>BlurView<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h3 id="state-yönetimi">2.3 State Yönetimi</h3>
+<p>State yönetimi, React uygulamalarında verilerin tutulması ve
+güncellenmesi sürecini ifade etmektedir. Projede React Context API ve
+React Hooks kullanılarak state yönetimi sağlanmıştır.</p>
+<h4 id="react-context-api">2.3.1 React Context API</h4>
+<p>Context API, React’ın yerleşik state yönetim çözümüdür. Verilerin
+component ağacı boyunca “prop drilling” yapmadan paylaşılmasını
+sağlamaktadır.</p>
+<p>Projede iki ana context oluşturulmuştur:</p>
+<p><strong>PharmacyContext:</strong> Terim verileri ve ilgili işlemleri
+yönetmektedir.</p>
+<ul>
+<li>Tüm terimler listesi</li>
+<li>Yükleme durumu</li>
+<li>Arama metni ve sonuçları</li>
+<li>Favori işlemleri</li>
+<li>Kategori filtreleme</li>
+</ul>
+<p><strong>ThemeContext:</strong> Tema ayarlarını yönetmektedir.</p>
+<ul>
+<li>Aktif tema (koyu/açık)</li>
+<li>Renk paleti</li>
+<li>Tema değiştirme fonksiyonu</li>
+</ul>
+<p>[Şekil 18. Context API Veri Akışı buraya eklenecek]</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Context Provider yapısı</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>ThemeProvider<span class="op">&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>PharmacyProvider<span class="op">&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>App <span class="op">/&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;/</span>PharmacyProvider<span class="op">&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>ThemeProvider<span class="op">&gt;;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Context kullanımı</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { terms<span class="op">,</span> isLoading<span class="op">,</span> toggleBookmark } <span class="op">=</span> <span class="fu">usePharmacy</span>()<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { colors<span class="op">,</span> isDark<span class="op">,</span> toggleTheme } <span class="op">=</span> <span class="fu">useTheme</span>()<span class="op">;</span></span></code></pre></div>
+<hr />
+<h4 id="react-hooks">2.3.2 React Hooks</h4>
+<p>React Hooks, fonksiyonel component’lerde state ve lifecycle
+özelliklerini kullanmayı sağlayan fonksiyonlardır. Projede kullanılan
+başlıca hook’lar şunlardır:</p>
+<p><strong>useState:</strong> Component içinde state tutmak için
+kullanılmaktadır.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [searchText<span class="op">,</span> setSearchText] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&quot;&quot;</span>)<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [isLoading<span class="op">,</span> setIsLoading] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span></code></pre></div>
+<p><strong>useEffect:</strong> Yan etkileri (API çağrıları, abonelikler
+vb.) yönetmek için kullanılmaktadır.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">loadAllTerms</span>()<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [])<span class="op">;</span> <span class="co">// Component mount olduğunda çalışır</span></span></code></pre></div>
+<p><strong>useCallback:</strong> Fonksiyonları memoize etmek için
+kullanılmaktadır.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> toggleBookmark <span class="op">=</span> <span class="fu">useCallback</span>(<span class="kw">async</span> (termId<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Favori toggle işlemi</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [])<span class="op">;</span></span></code></pre></div>
+<p><strong>useRef:</strong> DOM referansları ve değişmeyen değerler için
+kullanılmaktadır.</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span><span class="op">&lt;</span>TextInput<span class="op">&gt;</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> animValue <span class="op">=</span> <span class="fu">useRef</span>(<span class="kw">new</span> Animated<span class="op">.</span><span class="fu">Value</span>(<span class="dv">0</span>))<span class="op">.</span><span class="at">current</span><span class="op">;</span></span></code></pre></div>
+<p><strong>useContext:</strong> Context değerlerine erişmek için
+kullanılmaktadır.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> context <span class="op">=</span> <span class="fu">useContext</span>(PharmacyContext)<span class="op">;</span></span></code></pre></div>
+<hr />
+<h3 id="veri-yapısı-ve-modelleme">2.4 Veri Yapısı ve Modelleme</h3>
+<h4 id="terim-veri-modeli">2.4.1 Terim Veri Modeli</h4>
+<p>Uygulamadaki her terim, belirli bir veri yapısına sahiptir.
+TypeScript interface’i ile tanımlanan bu yapı, veri tutarlılığını
+sağlamaktadır.</p>
+<p>[Şekil 19. Terim Veri Modeli Şeması buraya eklenecek]</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PharmacyTerm {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Benzersiz kimlik</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  latinName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Latince/İngilizce isim</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  turkishName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Türkçe karşılık</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  category<span class="op">:</span> TermCategory<span class="op">;</span> <span class="co">// Kategori</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  definition<span class="op">:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Tanım</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  components<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// Bileşenler</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  relatedTerms<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// İlgili terimler</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  etymology<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Etimoloji (opsiyonel)</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  usage<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Kullanım alanı (opsiyonel)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  sideEffects<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// Yan etkiler (opsiyonel)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  dosage<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span> <span class="co">// Dozaj (opsiyonel)</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  contraindications<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// Kontrendikasyonlar (opsiyonel)</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  interactions<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// İlaç etkileşimleri (opsiyonel)</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  synonyms<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span> <span class="co">// Eş anlamlılar</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  isBookmarked<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span> <span class="co">// Favori durumu</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  createdAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span> <span class="co">// Oluşturulma tarihi</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  updatedAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span> <span class="co">// Güncellenme tarihi</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>ID Oluşturma Stratejisi:</strong></p>
+<p>Terim ID’leri, kategori ve Latince isim kombinasyonundan
+oluşturulmaktadır. Bu yaklaşım, ID’lerin tahmin edilebilir ve tutarlı
+olmasını sağlamaktadır.</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// ID oluşturma örneği</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> id <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>category<span class="sc">}</span><span class="vs">_</span><span class="sc">${</span>latinName<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">\s+</span><span class="ss">/g</span><span class="op">,</span> <span class="st">&quot;_&quot;</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Örnek: &quot;İlaçlar_aspirin&quot;</span></span></code></pre></div>
+<hr />
+<h4 id="kategori-yapısı">2.4.2 Kategori Yapısı</h4>
+<p>Terimler sekiz ana kategoride sınıflandırılmıştır. Her kategori için
+enum değeri, ikon, renk ve açıklama tanımlanmıştır.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> TermCategory {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  DRUG <span class="op">=</span> <span class="st">&quot;İlaçlar&quot;</span><span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  PLANT <span class="op">=</span> <span class="st">&quot;Bitkiler&quot;</span><span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  VITAMIN <span class="op">=</span> <span class="st">&quot;Vitaminler&quot;</span><span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  MINERAL <span class="op">=</span> <span class="st">&quot;Mineraller&quot;</span><span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  DISEASE <span class="op">=</span> <span class="st">&quot;Hastalıklar&quot;</span><span class="op">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  INSECT <span class="op">=</span> <span class="st">&quot;Böcekler&quot;</span><span class="op">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  COMPONENT <span class="op">=</span> <span class="st">&quot;Bileşenler&quot;</span><span class="op">,</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  ANATOMY <span class="op">=</span> <span class="st">&quot;Anatomi&quot;</span><span class="op">,</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Tablo 3. Kategori Bilgileri</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>İkon</th>
+<th>Renk Kodu</th>
+<th>Terim Sayısı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>İlaçlar</td>
+<td>medical</td>
+<td>#3B82F6</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Bitkiler</td>
+<td>leaf</td>
+<td>#10B981</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Vitaminler</td>
+<td>flask</td>
+<td>#F59E0B</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Mineraller</td>
+<td>diamond</td>
+<td>#8B5CF6</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Hastalıklar</td>
+<td>fitness</td>
+<td>#EC4899</td>
+<td>150</td>
+</tr>
+<tr>
+<td>Böcekler</td>
+<td>bug</td>
+<td>#F97316</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Bileşenler</td>
+<td>nuclear</td>
+<td>#EF4444</td>
+<td>100</td>
+</tr>
+<tr>
+<td>Anatomi</td>
+<td>body</td>
+<td>#6366F1</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="kullanıcı-arayüzü-tasarımı">2.5 Kullanıcı Arayüzü Tasarımı</h3>
+<h4 id="renk-paleti">2.5.1 Renk Paleti</h4>
+<p>Uygulama, koyu ve açık tema olmak üzere iki renk paleti sunmaktadır.
+Renk seçiminde erişilebilirlik ve göz yorgunluğu faktörleri göz önünde
+bulundurulmuştur.</p>
+<p>[Şekil 20. Kategori Renk Paleti buraya eklenecek]</p>
+<p><strong>Koyu Tema Renkleri:</strong></p>
+<p>[Şekil 21. Koyu Tema Renk Paleti buraya eklenecek]</p>
+<table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Renk Kodu</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Background</td>
+<td>#0A0E14</td>
+<td>Ana arka plan</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td>#151B23</td>
+<td>Kart arka planı</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td>#14B8A6</td>
+<td>Ana vurgu rengi</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>#F0F4F8</td>
+<td>Ana metin</td>
+</tr>
+<tr>
+<td>Border</td>
+<td>#2A3544</td>
+<td>Kenar çizgileri</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Açık Tema Renkleri:</strong></p>
+<p>[Şekil 22. Açık Tema Renk Paleti buraya eklenecek]</p>
+<table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>Renk Kodu</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Background</td>
+<td>#FAFBFC</td>
+<td>Ana arka plan</td>
+</tr>
+<tr>
+<td>Surface</td>
+<td>#FFFFFF</td>
+<td>Kart arka planı</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td>#0D9488</td>
+<td>Ana vurgu rengi</td>
+</tr>
+<tr>
+<td>Text</td>
+<td>#111827</td>
+<td>Ana metin</td>
+</tr>
+<tr>
+<td>Border</td>
+<td>#E5E7EB</td>
+<td>Kenar çizgileri</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="tipografi">2.5.2 Tipografi</h4>
+<p>Uygulamada iki font ailesi kullanılmıştır:</p>
+<p><strong>Poppins:</strong> Başlıklar ve logo için kullanılmaktadır.
+Bold ağırlık tercih edilmiştir.</p>
+<p><strong>Inter:</strong> Gövde metinleri için kullanılmaktadır.
+Regular, Medium, SemiBold ve Bold ağırlıkları kullanılmıştır.</p>
+<p>Font boyutları 11px ile 30px arasında değişmektedir. Başlıklar için
+büyük boyutlar, açıklama metinleri için küçük boyutlar tercih
+edilmiştir.</p>
+<hr />
+<h4 id="bileşen-tasarımı">2.5.3 Bileşen Tasarımı</h4>
+<p>Uygulama arayüzü, yeniden kullanılabilir bileşenler üzerine inşa
+edilmiştir. Başlıca bileşenler şunlardır:</p>
+<p><strong>TermCard:</strong> Terim listelerinde kullanılan kart
+bileşenidir. İki varyantı bulunmaktadır: default ve featured.</p>
+<p><strong>CategoryCarousel:</strong> Yatay kaydırılabilir kategori
+kartları bileşenidir.</p>
+<p><strong>MiniQuizCard:</strong> Quiz widget bileşenidir. Soru,
+seçenekler ve skor gösterimini içermektedir.</p>
+<p>Bileşenler, StyleSheet API kullanılarak stillendirilmiştir. Dinamik
+stiller için tema renkleri kullanılmaktadır.</p>
+<hr />
+<h2 id="bulgular---projenin-çalişmasi-ve-kabiliyetleri">3. BULGULAR -
+PROJENİN ÇALIŞMASI VE KABİLİYETLERİ</h2>
+<p>Bu bölümde projenin teknik yapısı, veri akışı ve sistem mimarisi
+detaylı olarak açıklanmaktadır.</p>
+<h3 id="sistem-mimarisi">3.1 Sistem Mimarisi</h3>
+<p>Pharmadict uygulaması, katmanlı mimari (layered architecture)
+prensiplerine uygun olarak tasarlanmıştır. Bu mimari yaklaşım, kodun
+modüler, test edilebilir ve bakımı kolay olmasını sağlamaktadır.</p>
+<p>[Şekil 23. Sistem Mimarisi Diyagramı buraya eklenecek]</p>
+<p><strong>Mimari Katmanlar:</strong></p>
+<p><strong>1. Sunum Katmanı (Presentation Layer):</strong> Bu katman,
+kullanıcı arayüzü bileşenlerini içermektedir. React Native
+component’leri bu katmanda yer almaktadır.</p>
+<ul>
+<li>Pages (Sayfalar): HomeView, SearchView, CategoriesView,
+BookmarksView, TermDetailView, CategoryDetailView</li>
+<li>Components (Bileşenler): TermCard, CategoryCarousel,
+MiniQuizCard</li>
+</ul>
+<p><strong>2. İş Mantığı Katmanı (Business Logic Layer):</strong>
+Context API ve custom hook’lar bu katmanda yer almaktadır. Uygulama
+mantığı ve state yönetimi bu katmanda gerçekleştirilmektedir.</p>
+<ul>
+<li>PharmacyContext: Terim verileri ve işlemleri</li>
+<li>ThemeContext: Tema yönetimi</li>
+<li>Custom Hooks: usePharmacy, useTheme</li>
+</ul>
+<p><strong>3. Servis Katmanı (Service Layer):</strong> Veri işlemleri ve
+dış kaynaklarla iletişim bu katmanda gerçekleştirilmektedir.</p>
+<ul>
+<li>PharmacyTermService: Terim CRUD işlemleri</li>
+<li>NotesService: Not yönetimi</li>
+<li>AsyncStorage: Yerel veri depolama</li>
+</ul>
+<p><strong>4. Veri Katmanı (Data Layer):</strong> Statik veri dosyaları
+ve veri modelleri bu katmanda yer almaktadır.</p>
+<ul>
+<li>Data Files: plantsData.ts, drugsData.ts, vitaminsData.ts, vb.</li>
+<li>Types: PharmacyTerm, TermCategory, Note</li>
+</ul>
+<hr />
+<h3 id="veri-akış-diyagramı">3.2 Veri Akış Diyagramı</h3>
+<p>Uygulamada veri akışı tek yönlü (unidirectional) olarak
+tasarlanmıştır. Bu yaklaşım, React’ın önerdiği veri akış modeline
+uygundur ve uygulamanın davranışını tahmin edilebilir kılmaktadır.</p>
+<p>[Şekil 24. Veri Akış Diyagramı buraya eklenecek]</p>
+<p><strong>Veri Akış Adımları:</strong></p>
+<pre><code>1. Kullanıcı Etkileşimi
+   ↓
+2. Event Handler (Olay İşleyici)
+   ↓
+3. Context Action (Bağlam Aksiyonu)
+   ↓
+4. Service Layer (Servis Katmanı)
+   ↓
+5. AsyncStorage (Yerel Depolama)
+   ↓
+6. State Güncelleme
+   ↓
+7. UI Yeniden Render</code></pre>
+<p><strong>Örnek Veri Akışı - Favori Ekleme:</strong></p>
+<ol type="1">
+<li>Kullanıcı kalp ikonuna tıklar</li>
+<li><code>onPress</code> event handler tetiklenir</li>
+<li><code>toggleBookmark(termId)</code> fonksiyonu çağrılır</li>
+<li>PharmacyTermService favori durumunu günceller</li>
+<li>AsyncStorage’a yeni favori listesi kaydedilir</li>
+<li>Context state güncellenir</li>
+<li>İlgili component’ler yeniden render edilir</li>
+</ol>
+<hr />
+<h3 id="kullanıcı-akış-diyagramı">3.3 Kullanıcı Akış Diyagramı</h3>
+<p>Kullanıcı akış diyagramı, kullanıcının uygulama içindeki olası
+yolculuklarını göstermektedir.</p>
+<p>[Şekil 25. Kullanıcı Akış Diyagramı buraya eklenecek]</p>
+<p><strong>Ana Kullanıcı Akışları:</strong></p>
+<p><strong>Akış 1: Terim Arama</strong></p>
+<pre><code>Splash Screen → Ana Sayfa → Arama Çubuğu → Arama Ekranı → Arama Sonuçları → Terim Detay</code></pre>
+<p><strong>Akış 2: Kategori Gezinme</strong></p>
+<pre><code>Ana Sayfa → Kategoriler Tab → Kategori Seçimi → Kategori Detay → Terim Listesi → Terim Detay</code></pre>
+<p><strong>Akış 3: Favori Yönetimi</strong></p>
+<pre><code>Terim Detay → Favori Ekle → Favoriler Tab → Favori Listesi → Terim Detay</code></pre>
+<p><strong>Akış 4: Not Ekleme</strong></p>
+<pre><code>Terim Detay → Not Butonu → Not Modal → Not Yazma → Kaydet → Terim Detay</code></pre>
+<p><strong>Akış 5: Quiz Çözme</strong></p>
+<pre><code>Ana Sayfa → Mini Quiz → Soru Görüntüleme → Cevap Seçimi → Sonuç → Sonraki Soru</code></pre>
+<hr />
+<h3 id="sınıf-diyagramı">3.4 Sınıf Diyagramı</h3>
+<p>TypeScript interface’leri ve sınıfları arasındaki ilişkiler aşağıda
+gösterilmektedir.</p>
+<p>[Şekil 26. Sınıf Diyagramı buraya eklenecek]</p>
+<p><strong>Ana Interface’ler:</strong></p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">// PharmacyTerm Interface</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PharmacyTerm {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  latinName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  turkishName<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  category<span class="op">:</span> TermCategory<span class="op">;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  definition<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  components<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  relatedTerms<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  etymology<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  usage<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  sideEffects<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  dosage<span class="op">?:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  contraindications<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  interactions<span class="op">?:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  synonyms<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  isBookmarked<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  createdAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  updatedAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">// Note Interface</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Note {</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  termId<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  content<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  createdAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>  updatedAt<span class="op">:</span> <span class="bu">Date</span><span class="op">;</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="co">// QuizQuestion Interface</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> QuizQuestion {</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>  question<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>  options<span class="op">:</span> <span class="dt">string</span>[]<span class="op">;</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  correctAnswer<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>Context Interface’leri:</strong></p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">// PharmacyContextType</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PharmacyContextType {</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  terms<span class="op">:</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  isLoading<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  searchText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  setSearchText<span class="op">:</span> (text<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  filteredTerms<span class="op">:</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  toggleBookmark<span class="op">:</span> (termId<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  getTermsByCategory<span class="op">:</span> (category<span class="op">:</span> TermCategory) <span class="kw">=&gt;</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  getBookmarkedTerms<span class="op">:</span> () <span class="kw">=&gt;</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  incrementVisitCount<span class="op">:</span> (termId<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  getMostVisitedTerms<span class="op">:</span> () <span class="kw">=&gt;</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">// ThemeContextType</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> ThemeContextType {</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  isDark<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  colors<span class="op">:</span> ColorPalette<span class="op">;</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  toggleTheme<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h3 id="dosya-yapısı">3.5 Dosya Yapısı</h3>
+<p>Proje dosyaları, işlevlerine göre organize edilmiştir. Bu
+organizasyon, kodun bulunabilirliğini ve bakımını
+kolaylaştırmaktadır.</p>
+<p>[Şekil 27. Proje Dosya Yapısı buraya eklenecek]</p>
+<pre><code>pharmadict/
+├── src/
+│   ├── App.tsx                    # Ana uygulama bileşeni
+│   ├── main.tsx                   # Uygulama giriş noktası
+│   │
+│   ├── components/                # Yeniden kullanılabilir bileşenler
+│   │   ├── TermCard.tsx          # Terim kartı bileşeni
+│   │   ├── CategoryCarousel.tsx  # Kategori carousel bileşeni
+│   │   └── MiniQuizCard.tsx      # Quiz widget bileşeni
+│   │
+│   ├── pages/                     # Sayfa bileşenleri
+│   │   ├── HomeView.tsx          # Ana sayfa
+│   │   ├── SearchView.tsx        # Arama sayfası
+│   │   ├── CategoriesView.tsx    # Kategoriler sayfası
+│   │   ├── BookmarksView.tsx     # Favoriler sayfası
+│   │   ├── TermDetailView.tsx    # Terim detay sayfası
+│   │   ├── CategoryDetailView.tsx # Kategori detay sayfası
+│   │   └── AdminView.tsx         # Yönetim sayfası
+│   │
+│   ├── context/                   # Context dosyaları
+│   │   ├── PharmacyContext.tsx   # Terim context&#39;i
+│   │   └── ThemeContext.tsx      # Tema context&#39;i
+│   │
+│   ├── services/                  # Servis dosyaları
+│   │   ├── PharmacyTermService.ts # Terim servisi
+│   │   ├── NotesService.ts       # Not servisi
+│   │   ├── FirebaseService.ts    # Firebase servisi
+│   │   └── GeminiService.ts      # AI servisi
+│   │
+│   ├── data/                      # Veri dosyaları
+│   │   ├── plantsData.ts         # Bitki verileri (100 terim)
+│   │   ├── drugsData.ts          # İlaç verileri (100 terim)
+│   │   ├── vitaminsData.ts       # Vitamin verileri (100 terim)
+│   │   ├── mineralsData.ts       # Mineral verileri (100 terim)
+│   │   ├── diseasesData.ts       # Hastalık verileri (150 terim)
+│   │   ├── insectsData.ts        # Böcek verileri (100 terim)
+│   │   ├── componentsData.ts     # Bileşen verileri (100 terim)
+│   │   └── anatomyData.ts        # Anatomi verileri (100 terim)
+│   │
+│   ├── styles/                    # Stil dosyaları
+│   │   └── index.css             # Global stiller
+│   │
+│   └── types/                     # Tip tanımları
+│       └── index.ts              # TypeScript tipleri
+│
+├── assets/                        # Statik dosyalar
+│   ├── images/                   # Görseller
+│   └── fonts/                    # Font dosyaları
+│
+├── app.json                       # Expo yapılandırması
+├── package.json                   # Bağımlılıklar
+├── tsconfig.json                  # TypeScript yapılandırması
+└── babel.config.js               # Babel yapılandırması</code></pre>
+<hr />
+<h3 id="servis-katmanı">3.6 Servis Katmanı</h3>
+<p>Servis katmanı, veri işlemlerini ve iş mantığını kapsüllemektedir. Bu
+katman, sunum katmanından bağımsız olarak test edilebilir ve
+değiştirilebilir yapıdadır.</p>
+<p><strong>3.6.1 PharmacyTermService</strong></p>
+<p>Bu servis, terim verilerinin yönetiminden sorumludur.</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PharmacyTermService {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Tüm terimleri yükle</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">loadAllTerms</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>PharmacyTerm[]<span class="op">&gt;;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Kategoriye göre terimleri getir</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="fu">getTermsByCategory</span>(</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    terms<span class="op">:</span> PharmacyTerm[]<span class="op">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    category<span class="op">:</span> TermCategory</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  )<span class="op">:</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Favori durumunu değiştir</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">toggleBookmark</span>(termId<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Favori terimleri getir</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getBookmarkedTermIds</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span>[]<span class="op">&gt;;</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Ziyaret sayısını artır</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">incrementVisitCount</span>(termId<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">// En çok ziyaret edilen terimleri getir</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getMostVisitedTermIds</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span>[]<span class="op">&gt;;</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Arama geçmişini kaydet</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">saveSearchHistory</span>(query<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Arama geçmişini getir</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getSearchHistory</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span>[]<span class="op">&gt;;</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><strong>3.6.2 NotesService</strong></p>
+<p>Bu servis, kullanıcı notlarının yönetiminden sorumludur.</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NotesService {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Tüm notları getir</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getAllNotes</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>Note[]<span class="op">&gt;;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Terime ait notu getir</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getNoteByTermId</span>(termId<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>Note <span class="op">|</span> <span class="dt">null</span><span class="op">&gt;;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Not kaydet veya güncelle</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">saveNote</span>(termId<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> content<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span>Note<span class="op">&gt;;</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Not sil</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">deleteNote</span>(termId<span class="op">:</span> <span class="dt">string</span>)<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Notlu terim ID&#39;lerini getir</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">static</span> <span class="kw">async</span> <span class="fu">getTermIdsWithNotes</span>()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span>[]<span class="op">&gt;;</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h3 id="veritabanı-yapısı">3.7 Veritabanı Yapısı</h3>
+<p>Uygulama, yerel veri depolama için AsyncStorage kullanmaktadır. Bu
+yaklaşım, offline çalışabilme özelliğini mümkün kılmaktadır.</p>
+<p><strong>Tablo 4. AsyncStorage Veri Anahtarları</strong></p>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 29%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Anahtar</th>
+<th>Veri Tipi</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@pharmadict_bookmarks</code></td>
+<td>string[]</td>
+<td>Favori terim ID’leri</td>
+</tr>
+<tr>
+<td><code>@pharmadict_notes</code></td>
+<td>Note[]</td>
+<td>Kullanıcı notları</td>
+</tr>
+<tr>
+<td><code>@pharmadict_theme</code></td>
+<td>string</td>
+<td>Tema tercihi (dark/light)</td>
+</tr>
+<tr>
+<td><code>@pharmadict_search_history</code></td>
+<td>string[]</td>
+<td>Arama geçmişi</td>
+</tr>
+<tr>
+<td><code>@pharmadict_visit_counts</code></td>
+<td>Record&lt;string, number&gt;</td>
+<td>Terim ziyaret sayıları</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Veri Depolama Stratejisi:</strong></p>
+<p>Veriler JSON formatında serileştirilerek saklanmaktadır. Her okuma ve
+yazma işlemi asenkron olarak gerçekleştirilmektedir.</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Veri kaydetme örneği</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> saveBookmarks <span class="op">=</span> <span class="kw">async</span> (bookmarkIds<span class="op">:</span> <span class="dt">string</span>[]) <span class="kw">=&gt;</span> {</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> AsyncStorage<span class="op">.</span><span class="fu">setItem</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;@pharmadict_bookmarks&quot;</span><span class="op">,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(bookmarkIds)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Veri okuma örneği</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> loadBookmarks <span class="op">=</span> <span class="kw">async</span> ()<span class="op">:</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">string</span>[]<span class="op">&gt;</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> stored <span class="op">=</span> <span class="cf">await</span> AsyncStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">&quot;@pharmadict_bookmarks&quot;</span>)<span class="op">;</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> stored <span class="op">?</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(stored) <span class="op">:</span> []<span class="op">;</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p><strong>Veri Bütünlüğü:</strong></p>
+<p>Uygulama başlatıldığında, AsyncStorage’dan yüklenen veriler ile
+statik veri dosyaları senkronize edilmektedir. Bu işlem, favori
+durumlarının ve notların doğru şekilde yansıtılmasını sağlamaktadır.</p>
+<hr />
+<h2 id="tartişma-ve-sonuç">4. TARTIŞMA VE SONUÇ</h2>
+<h3 id="projenin-değerlendirilmesi">4.1 Projenin Değerlendirilmesi</h3>
+<p>Pharmadict projesi, belirlenen hedefler doğrultusunda başarıyla
+tamamlanmıştır. Uygulama, tıbbi terminoloji öğrenimini destekleyen
+kapsamlı ve kullanıcı dostu bir mobil çözüm sunmaktadır.</p>
+<p><strong>Tablo 5. Terim Sayıları (Kategorilere Göre)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Planlanan</th>
+<th>Gerçekleşen</th>
+<th>Başarı Oranı</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>İlaçlar</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Bitkiler</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Vitaminler</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Mineraller</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Hastalıklar</td>
+<td>150</td>
+<td>150</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Böcekler</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Bileşenler</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td>Anatomi</td>
+<td>100</td>
+<td>100</td>
+<td>%100</td>
+</tr>
+<tr>
+<td><strong>TOPLAM</strong></td>
+<td><strong>850</strong></td>
+<td><strong>850</strong></td>
+<td><strong>%100</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Teknik Değerlendirme:</strong></p>
+<p>Proje, modern yazılım geliştirme pratiklerine uygun olarak
+geliştirilmiştir. TypeScript kullanımı, tip güvenliği sağlamış ve hata
+oranını azaltmıştır. React Native ve Expo kombinasyonu, cross-platform
+geliştirme sürecini verimli kılmıştır.</p>
+<p>Kod kalitesi açısından şu metrikler elde edilmiştir:</p>
+<ul>
+<li>Toplam TypeScript dosyası: 25+</li>
+<li>Yeniden kullanılabilir bileşen sayısı: 10+</li>
+<li>Servis sınıfı sayısı: 4</li>
+<li>Context sayısı: 2</li>
+<li>Toplam kod satırı: 5000+</li>
+</ul>
+<p><strong>Kullanıcı Deneyimi Değerlendirmesi:</strong></p>
+<p>Uygulama arayüzü, modern tasarım trendlerine uygun olarak
+geliştirilmiştir. Koyu ve açık tema seçenekleri, farklı kullanım
+senaryolarına uyum sağlamaktadır. Animasyonlar ve geçiş efektleri,
+kullanıcı deneyimini zenginleştirmektedir.</p>
+<hr />
+<h3 id="amaca-ulaşma-değerlendirmesi">4.2 Amaca Ulaşma
+Değerlendirmesi</h3>
+<p>Projenin başlangıcında belirlenen amaçlar ve bu amaçlara ulaşma
+durumu aşağıda değerlendirilmektedir.</p>
+<p><strong>Amaç 1: Kapsamlı Terim Veritabanı Oluşturma</strong></p>
+<ul>
+<li>Hedef: 800+ terim</li>
+<li>Sonuç: 850 terim</li>
+<li>Değerlendirme: ✓ Başarılı</li>
+</ul>
+<p>Sekiz farklı kategoride toplam 850 terim başarıyla eklenerek hedefin
+üzerine çıkılmıştır. Her terim için detaylı bilgiler (tanım, etimoloji,
+kullanım, yan etkiler vb.) sağlanmıştır.</p>
+<p><strong>Amaç 2: Cross-Platform Uygulama Geliştirme</strong></p>
+<ul>
+<li>Hedef: iOS ve Android desteği</li>
+<li>Sonuç: Her iki platform desteklenmektedir</li>
+<li>Değerlendirme: ✓ Başarılı</li>
+</ul>
+<p>React Native ve Expo kullanılarak tek kod tabanından hem iOS hem de
+Android platformlarında çalışan uygulama geliştirilmiştir.</p>
+<p><strong>Amaç 3: Offline Çalışabilme</strong></p>
+<ul>
+<li>Hedef: İnternet bağlantısı olmadan kullanım</li>
+<li>Sonuç: Tüm terimler offline erişilebilir</li>
+<li>Değerlendirme: ✓ Başarılı</li>
+</ul>
+<p>Terim verileri uygulama içinde statik olarak saklanmakta, favori ve
+notlar AsyncStorage ile yerel olarak depolanmaktadır.</p>
+<p><strong>Amaç 4: Kişiselleştirme Özellikleri</strong></p>
+<ul>
+<li>Hedef: Favori ve not ekleme</li>
+<li>Sonuç: Her iki özellik de mevcut</li>
+<li>Değerlendirme: ✓ Başarılı</li>
+</ul>
+<p>Kullanıcılar terimleri favorilere ekleyebilmekte ve kişisel notlar
+alabilmektedir. Bu veriler cihazda kalıcı olarak saklanmaktadır.</p>
+<p><strong>Amaç 5: Bilgi Testi Özelliği</strong></p>
+<ul>
+<li>Hedef: Quiz bölümü</li>
+<li>Sonuç: 24 soruluk quiz sistemi</li>
+<li>Değerlendirme: ✓ Başarılı</li>
+</ul>
+<p>Mini quiz widget’ı ile kullanıcılar bilgilerini test edebilmektedir.
+Anlık geri bildirim ve skor takibi özellikleri mevcuttur.</p>
+<hr />
+<h3 id="karşılaşılan-zorluklar-ve-çözümler">4.3 Karşılaşılan Zorluklar
+ve Çözümler</h3>
+<p>Proje geliştirme sürecinde çeşitli teknik ve tasarımsal zorluklarla
+karşılaşılmıştır. Bu zorluklar ve uygulanan çözümler aşağıda
+açıklanmaktadır.</p>
+<p><strong>Zorluk 1: Büyük Veri Setinin Yönetimi</strong></p>
+<p>850 terimin yönetimi ve performanslı bir şekilde sunulması
+başlangıçta zorluk oluşturmuştur.</p>
+<p><em>Çözüm:</em> Veriler kategorilere göre ayrı dosyalarda organize
+edilmiştir. Lazy loading ve memoization teknikleri kullanılarak
+performans optimize edilmiştir.</p>
+<p><strong>Zorluk 2: State Yönetimi Karmaşıklığı</strong></p>
+<p>Birden fazla ekran arasında veri paylaşımı ve senkronizasyonu
+karmaşık hale gelmiştir.</p>
+<p><em>Çözüm:</em> React Context API kullanılarak merkezi state yönetimi
+sağlanmıştır. Custom hook’lar ile kod tekrarı önlenmiştir.</p>
+<p><strong>Zorluk 3: Tema Değişikliği</strong></p>
+<p>Koyu ve açık tema arasında geçiş yaparken tüm bileşenlerin tutarlı
+şekilde güncellenmesi gerekmiştir.</p>
+<p><em>Çözüm:</em> ThemeContext oluşturularak renk paleti merkezi olarak
+yönetilmiştir. Tüm bileşenler dinamik olarak tema renklerini
+kullanmaktadır.</p>
+<p><strong>Zorluk 4: Navigasyon Yapısı</strong></p>
+<p>Tab navigasyonu ve stack navigasyonunun birlikte çalışması
+karmaşıklık oluşturmuştur.</p>
+<p><em>Çözüm:</em> React Navigation kütüphanesi ile nested navigator
+yapısı kurulmuştur. Tab navigator içinde stack navigator kullanılarak
+sorun çözülmüştür.</p>
+<p><strong>Zorluk 5: Veri Kalıcılığı</strong></p>
+<p>Favori ve not verilerinin uygulama kapatıldığında kaybolmaması
+gerekmiştir.</p>
+<p><em>Çözüm:</em> AsyncStorage kullanılarak veriler cihazın yerel
+hafızasında kalıcı olarak saklanmıştır.</p>
+<hr />
+<h3 id="gelecek-çalışmalar">4.4 Gelecek Çalışmalar</h3>
+<p>Pharmadict uygulaması, mevcut haliyle işlevsel ve kapsamlı bir çözüm
+sunmaktadır. Ancak gelecekte yapılabilecek geliştirmeler ile uygulama
+daha da zenginleştirilebilir.</p>
+<p><strong>Kısa Vadeli Geliştirmeler (1-3 ay):</strong></p>
+<ol type="1">
+<li><p><strong>Terim Sayısının Artırılması:</strong> Mevcut 850 terime
+ek olarak yeni terimler eklenebilir. Özellikle hastalıklar ve ilaçlar
+kategorilerinde genişleme yapılabilir.</p></li>
+<li><p><strong>Sesli Telaffuz:</strong> Terimlerin doğru telaffuzunu
+öğrenmek için ses dosyaları eklenebilir. Text-to-speech API’leri
+kullanılabilir.</p></li>
+<li><p><strong>Görsel İçerik:</strong> Anatomi ve bitki kategorilerinde
+görsel içerikler eklenebilir. Bu özellik öğrenmeyi
+kolaylaştıracaktır.</p></li>
+<li><p><strong>Gelişmiş Quiz:</strong> Daha fazla soru tipi (eşleştirme,
+boşluk doldurma) ve zorluk seviyeleri eklenebilir.</p></li>
+</ol>
+<p><strong>Orta Vadeli Geliştirmeler (3-6 ay):</strong></p>
+<ol type="1">
+<li><p><strong>Bulut Senkronizasyonu:</strong> Firebase veya benzeri bir
+backend ile kullanıcı verilerinin bulutta saklanması sağlanabilir. Bu
+sayede farklı cihazlar arasında senkronizasyon mümkün
+olacaktır.</p></li>
+<li><p><strong>Kullanıcı Hesapları:</strong> Kayıt ve giriş sistemi
+eklenerek kişiselleştirilmiş deneyim sunulabilir.</p></li>
+<li><p><strong>Sosyal Özellikler:</strong> Kullanıcıların notlarını
+paylaşabilmesi ve topluluk oluşturması sağlanabilir.</p></li>
+<li><p><strong>Çoklu Dil Desteği:</strong> İngilizce ve diğer dillerde
+arayüz desteği eklenebilir.</p></li>
+</ol>
+<p><strong>Uzun Vadeli Geliştirmeler (6-12 ay):</strong></p>
+<ol type="1">
+<li><p><strong>Yapay Zeka Entegrasyonu:</strong> AI destekli soru-cevap
+sistemi ile kullanıcılar tıbbi konularda sorular sorabilir.</p></li>
+<li><p><strong>Spaced Repetition:</strong> Bilimsel öğrenme tekniklerine
+dayalı tekrar sistemi eklenebilir.</p></li>
+<li><p><strong>Gamification:</strong> Rozet, seviye ve başarı sistemi
+ile kullanıcı motivasyonu artırılabilir.</p></li>
+<li><p><strong>Offline-First Mimari:</strong> Daha gelişmiş offline
+senkronizasyon mekanizmaları uygulanabilir.</p></li>
+</ol>
+<hr />
+<h2 id="kaynaklar">5. KAYNAKLAR</h2>
+<ol type="1">
+<li><p>React Native Documentation. (2024). <em>Getting Started with
+React Native</em>. https://reactnative.dev/docs/getting-started</p></li>
+<li><p>Expo Documentation. (2024). <em>Expo SDK Documentation</em>.
+https://docs.expo.dev/</p></li>
+<li><p>TypeScript Documentation. (2024). <em>TypeScript Handbook</em>.
+https://www.typescriptlang.org/docs/</p></li>
+<li><p>React Documentation. (2024). <em>React Hooks</em>.
+https://react.dev/reference/react</p></li>
+<li><p>React Navigation. (2024). <em>React Navigation
+Documentation</em>.
+https://reactnavigation.org/docs/getting-started</p></li>
+<li><p>AsyncStorage. (2024). <em>React Native Async Storage</em>.
+https://react-native-async-storage.github.io/async-storage/</p></li>
+<li><p>Expo Linear Gradient. (2024). <em>Expo Linear Gradient
+Documentation</em>.
+https://docs.expo.dev/versions/latest/sdk/linear-gradient/</p></li>
+<li><p>Expo Blur. (2024). <em>Expo Blur Documentation</em>.
+https://docs.expo.dev/versions/latest/sdk/blur-view/</p></li>
+<li><p>Google Fonts. (2024). <em>Inter Font Family</em>.
+https://fonts.google.com/specimen/Inter</p></li>
+<li><p>Google Fonts. (2024). <em>Poppins Font Family</em>.
+https://fonts.google.com/specimen/Poppins</p></li>
+<li><p>Ionicons. (2024). <em>Ionicons Icon Library</em>.
+https://ionic.io/ionicons</p></li>
+<li><p>MDN Web Docs. (2024). <em>JavaScript Reference</em>.
+https://developer.mozilla.org/en-US/docs/Web/JavaScript</p></li>
+<li><p>Node.js Documentation. (2024). <em>Node.js v18
+Documentation</em>. https://nodejs.org/docs/latest-v18.x/api/</p></li>
+<li><p>Yarn Package Manager. (2024). <em>Yarn Documentation</em>.
+https://yarnpkg.com/getting-started</p></li>
+<li><p>Visual Studio Code. (2024). <em>VS Code Documentation</em>.
+https://code.visualstudio.com/docs</p></li>
+<li><p>ESLint. (2024). <em>ESLint User Guide</em>.
+https://eslint.org/docs/user-guide/</p></li>
+<li><p>Prettier. (2024). <em>Prettier Documentation</em>.
+https://prettier.io/docs/en/index.html</p></li>
+<li><p>Git Documentation. (2024). <em>Git Reference Manual</em>.
+https://git-scm.com/docs</p></li>
+<li><p>GitHub. (2024). <em>GitHub Docs</em>.
+https://docs.github.com/</p></li>
+<li><p>Türk Eczacıları Birliği. (2024). <em>Eczacılık Terimleri
+Sözlüğü</em>. https://www.teb.org.tr/</p></li>
+<li><p>Türk Dil Kurumu. (2024). <em>Güncel Türkçe Sözlük</em>.
+https://sozluk.gov.tr/</p></li>
+<li><p>PubMed. (2024). <em>Medical Terminology Database</em>.
+https://pubmed.ncbi.nlm.nih.gov/</p></li>
+<li><p>MedlinePlus. (2024). <em>Medical Encyclopedia</em>.
+https://medlineplus.gov/</p></li>
+<li><p>DrugBank. (2024). <em>Drug Database</em>.
+https://go.drugbank.com/</p></li>
+<li><p>World Health Organization. (2024). <em>International
+Classification of Diseases</em>.
+https://www.who.int/classifications/icd/</p></li>
+</ol>
+<hr />
+<h2 id="ekler">6. EKLER</h2>
+<h3 id="ek-1-uygulama-ekran-görüntüleri">EK-1: Uygulama Ekran
+Görüntüleri</h3>
+<p>Bu bölümde uygulamanın çeşitli ekranlarından alınan görüntüler yer
+almaktadır.</p>
+<p>[Ek Şekil 1. Açılış Ekranı - Koyu Tema]</p>
+<p>[Ek Şekil 2. Açılış Ekranı - Açık Tema]</p>
+<p>[Ek Şekil 3. Ana Sayfa - Koyu Tema]</p>
+<p>[Ek Şekil 4. Ana Sayfa - Açık Tema]</p>
+<p>[Ek Şekil 5. Arama Ekranı]</p>
+<p>[Ek Şekil 6. Arama Sonuçları]</p>
+<p>[Ek Şekil 7. Kategoriler Ekranı]</p>
+<p>[Ek Şekil 8. Kategori Detay - İlaçlar]</p>
+<p>[Ek Şekil 9. Kategori Detay - Bitkiler]</p>
+<p>[Ek Şekil 10. Favoriler Ekranı]</p>
+<p>[Ek Şekil 11. Terim Detay - Üst Kısım]</p>
+<p>[Ek Şekil 12. Terim Detay - Alt Kısım]</p>
+<p>[Ek Şekil 13. Not Ekleme Modalı]</p>
+<p>[Ek Şekil 14. Quiz Bölümü]</p>
+<hr />
+<h3 id="ek-2-örnek-kod-parçaları">EK-2: Örnek Kod Parçaları</h3>
+<p><strong>EK-2.1: PharmacyContext Örneği</strong></p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  createContext<span class="op">,</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  useContext<span class="op">,</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  useState<span class="op">,</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  useEffect<span class="op">,</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  useCallback<span class="op">,</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>} <span class="im">from</span> <span class="st">&quot;react&quot;</span><span class="op">;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { PharmacyTerm<span class="op">,</span> TermCategory } <span class="im">from</span> <span class="st">&quot;../types&quot;</span><span class="op">;</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { PharmacyTermService } <span class="im">from</span> <span class="st">&quot;../services/PharmacyTermService&quot;</span><span class="op">;</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PharmacyContextType {</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  terms<span class="op">:</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  isLoading<span class="op">:</span> <span class="dt">boolean</span><span class="op">;</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  searchText<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  setSearchText<span class="op">:</span> (text<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  filteredTerms<span class="op">:</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  toggleBookmark<span class="op">:</span> (termId<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;;</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  getTermsByCategory<span class="op">:</span> (category<span class="op">:</span> TermCategory) <span class="kw">=&gt;</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  getBookmarkedTerms<span class="op">:</span> () <span class="kw">=&gt;</span> PharmacyTerm[]<span class="op">;</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PharmacyContext <span class="op">=</span> <span class="fu">createContext</span><span class="op">&lt;</span>PharmacyContextType <span class="op">|</span> <span class="dt">undefined</span><span class="op">&gt;</span>(</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">undefined</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> PharmacyProvider<span class="op">:</span> React<span class="op">.</span><span class="at">FC</span><span class="op">&lt;</span>{ children<span class="op">:</span> React<span class="op">.</span><span class="at">ReactNode</span> }<span class="op">&gt;</span> <span class="op">=</span> ({</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  children<span class="op">,</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>}) <span class="kw">=&gt;</span> {</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [terms<span class="op">,</span> setTerms] <span class="op">=</span> <span class="fu">useState</span><span class="op">&lt;</span>PharmacyTerm[]<span class="op">&gt;</span>([])<span class="op">;</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isLoading<span class="op">,</span> setIsLoading] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [searchText<span class="op">,</span> setSearchText] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&quot;&quot;</span>)<span class="op">;</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">loadTerms</span>()<span class="op">;</span></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> loadTerms <span class="op">=</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setIsLoading</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> loadedTerms <span class="op">=</span> <span class="cf">await</span> PharmacyTermService<span class="op">.</span><span class="fu">loadAllTerms</span>()<span class="op">;</span></span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setTerms</span>(loadedTerms)<span class="op">;</span></span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setIsLoading</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> toggleBookmark <span class="op">=</span> <span class="fu">useCallback</span>(<span class="kw">async</span> (termId<span class="op">:</span> <span class="dt">string</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> PharmacyTermService<span class="op">.</span><span class="fu">toggleBookmark</span>(termId)<span class="op">;</span></span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setTerms</span>((prev) <span class="kw">=&gt;</span></span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a>      prev<span class="op">.</span><span class="fu">map</span>((term) <span class="kw">=&gt;</span></span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a>        term<span class="op">.</span><span class="at">id</span> <span class="op">===</span> termId</span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a>          <span class="op">?</span> { <span class="op">...</span>term<span class="op">,</span> isBookmarked<span class="op">:</span> <span class="op">!</span>term<span class="op">.</span><span class="at">isBookmarked</span> }</span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a>          <span class="op">:</span> term</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ... diğer fonksiyonlar</span></span>
+<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-57"><a href="#cb27-57" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>PharmacyContext<span class="op">.</span><span class="at">Provider</span></span>
+<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a>      value<span class="op">=</span>{{ terms<span class="op">,</span> isLoading<span class="op">,</span> searchText<span class="op">,</span> setSearchText <span class="co">/* ... */</span> }}</span>
+<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span></span>
+<span id="cb27-61"><a href="#cb27-61" aria-hidden="true" tabindex="-1"></a>      {children}</span>
+<span id="cb27-62"><a href="#cb27-62" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>PharmacyContext<span class="op">.</span><span class="at">Provider</span><span class="op">&gt;</span></span>
+<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> usePharmacy <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> context <span class="op">=</span> <span class="fu">useContext</span>(PharmacyContext)<span class="op">;</span></span>
+<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>context) {</span>
+<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&quot;usePharmacy must be used within PharmacyProvider&quot;</span>)<span class="op">;</span></span>
+<span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-71"><a href="#cb27-71" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> context<span class="op">;</span></span>
+<span id="cb27-72"><a href="#cb27-72" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<hr />
+<p><strong>EK-2.2: TermCard Bileşeni Örneği</strong></p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&quot;react&quot;</span><span class="op">;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { View<span class="op">,</span> <span class="bu">Text</span><span class="op">,</span> TouchableOpacity<span class="op">,</span> <span class="bu">StyleSheet</span> } <span class="im">from</span> <span class="st">&quot;react-native&quot;</span><span class="op">;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Ionicons } <span class="im">from</span> <span class="st">&quot;@expo/vector-icons&quot;</span><span class="op">;</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { LinearGradient } <span class="im">from</span> <span class="st">&quot;expo-linear-gradient&quot;</span><span class="op">;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { PharmacyTerm } <span class="im">from</span> <span class="st">&quot;../types&quot;</span><span class="op">;</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useTheme } <span class="im">from</span> <span class="st">&quot;../context/ThemeContext&quot;</span><span class="op">;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { getCategoryColors } <span class="im">from</span> <span class="st">&quot;../utils/categoryUtils&quot;</span><span class="op">;</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> TermCardProps {</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  term<span class="op">:</span> PharmacyTerm<span class="op">;</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  onPress<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  variant<span class="op">?:</span> <span class="st">&quot;default&quot;</span> <span class="op">|</span> <span class="st">&quot;featured&quot;</span><span class="op">;</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> TermCard<span class="op">:</span> React<span class="op">.</span><span class="at">FC</span><span class="op">&lt;</span>TermCardProps<span class="op">&gt;</span> <span class="op">=</span> ({</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  term<span class="op">,</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  onPress<span class="op">,</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  variant <span class="op">=</span> <span class="st">&quot;default&quot;</span><span class="op">,</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>}) <span class="kw">=&gt;</span> {</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { colors } <span class="op">=</span> <span class="fu">useTheme</span>()<span class="op">;</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> categoryColors <span class="op">=</span> <span class="fu">getCategoryColors</span>(term<span class="op">.</span><span class="at">category</span>)<span class="op">;</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (variant <span class="op">===</span> <span class="st">&quot;featured&quot;</span>) {</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>TouchableOpacity onPress<span class="op">=</span>{onPress} activeOpacity<span class="op">=</span>{<span class="fl">0.8</span>}<span class="op">&gt;</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>LinearGradient</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>          colors<span class="op">=</span>{categoryColors<span class="op">.</span><span class="at">gradient</span>}</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>          start<span class="op">=</span>{{ x<span class="op">:</span> <span class="dv">0</span><span class="op">,</span> y<span class="op">:</span> <span class="dv">0</span> }}</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>          end<span class="op">=</span>{{ x<span class="op">:</span> <span class="dv">1</span><span class="op">,</span> y<span class="op">:</span> <span class="dv">1</span> }}</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>          style<span class="op">=</span>{styles<span class="op">.</span><span class="at">featuredCard</span>}</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span><span class="bu">Text</span> style<span class="op">=</span>{styles<span class="op">.</span><span class="at">featuredTitle</span>}<span class="op">&gt;</span>{term<span class="op">.</span><span class="at">latinName</span>}<span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span><span class="bu">Text</span> style<span class="op">=</span>{styles<span class="op">.</span><span class="at">featuredSubtitle</span>}<span class="op">&gt;</span>{term<span class="op">.</span><span class="at">turkishName</span>}<span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>LinearGradient<span class="op">&gt;</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>TouchableOpacity<span class="op">&gt;</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>TouchableOpacity</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>      onPress<span class="op">=</span>{onPress}</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>      style<span class="op">=</span>{[styles<span class="op">.</span><span class="at">card</span><span class="op">,</span> { backgroundColor<span class="op">:</span> colors<span class="op">.</span><span class="at">surface</span> }]}</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>View style<span class="op">=</span>{styles<span class="op">.</span><span class="at">content</span>}<span class="op">&gt;</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span><span class="bu">Text</span> style<span class="op">=</span>{[styles<span class="op">.</span><span class="at">title</span><span class="op">,</span> { color<span class="op">:</span> colors<span class="op">.</span><span class="at">text</span> }]}<span class="op">&gt;</span></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>          {term<span class="op">.</span><span class="at">latinName</span>}</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span><span class="bu">Text</span> style<span class="op">=</span>{[styles<span class="op">.</span><span class="at">subtitle</span><span class="op">,</span> { color<span class="op">:</span> colors<span class="op">.</span><span class="at">textSecondary</span> }]}<span class="op">&gt;</span></span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>          {term<span class="op">.</span><span class="at">turkishName</span>}</span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span><span class="bu">Text</span><span class="op">&gt;</span></span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>View<span class="op">&gt;</span></span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>      {term<span class="op">.</span><span class="at">isBookmarked</span> <span class="op">&amp;&amp;</span> (</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Ionicons name<span class="op">=</span><span class="st">&quot;heart&quot;</span> size<span class="op">=</span>{<span class="dv">20</span>} color<span class="op">=</span>{colors<span class="op">.</span><span class="at">primary</span>} <span class="op">/&gt;</span></span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>      )}</span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>TouchableOpacity<span class="op">&gt;</span></span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> styles <span class="op">=</span> <span class="bu">StyleSheet</span><span class="op">.</span><span class="fu">create</span>({</span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>  card<span class="op">:</span> {</span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>    flexDirection<span class="op">:</span> <span class="st">&quot;row&quot;</span><span class="op">,</span></span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>    alignItems<span class="op">:</span> <span class="st">&quot;center&quot;</span><span class="op">,</span></span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>    padding<span class="op">:</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>    borderRadius<span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>    marginBottom<span class="op">:</span> <span class="dv">8</span><span class="op">,</span></span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a>  content<span class="op">:</span> {</span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a>    flex<span class="op">:</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a>  title<span class="op">:</span> {</span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">:</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a>    fontWeight<span class="op">:</span> <span class="st">&quot;600&quot;</span><span class="op">,</span></span>
+<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>  subtitle<span class="op">:</span> {</span>
+<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">:</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>    marginTop<span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a>  featuredCard<span class="op">:</span> {</span>
+<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a>    padding<span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a>    borderRadius<span class="op">:</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a>    marginRight<span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a>    width<span class="op">:</span> <span class="dv">160</span><span class="op">,</span></span>
+<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a>  featuredTitle<span class="op">:</span> {</span>
+<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a>    color<span class="op">:</span> <span class="st">&quot;#FFFFFF&quot;</span><span class="op">,</span></span>
+<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">:</span> <span class="dv">16</span><span class="op">,</span></span>
+<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a>    fontWeight<span class="op">:</span> <span class="st">&quot;700&quot;</span><span class="op">,</span></span>
+<span id="cb28-88"><a href="#cb28-88" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-89"><a href="#cb28-89" aria-hidden="true" tabindex="-1"></a>  featuredSubtitle<span class="op">:</span> {</span>
+<span id="cb28-90"><a href="#cb28-90" aria-hidden="true" tabindex="-1"></a>    color<span class="op">:</span> <span class="st">&quot;rgba(255,255,255,0.8)&quot;</span><span class="op">,</span></span>
+<span id="cb28-91"><a href="#cb28-91" aria-hidden="true" tabindex="-1"></a>    fontSize<span class="op">:</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb28-92"><a href="#cb28-92" aria-hidden="true" tabindex="-1"></a>    marginTop<span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb28-93"><a href="#cb28-93" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb28-94"><a href="#cb28-94" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<hr />
+<h3 id="ek-3-terim-veri-örneği">EK-3: Terim Veri Örneği</h3>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Örnek terim verisi</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> exampleTerm<span class="op">:</span> PharmacyTerm <span class="op">=</span> {</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  id<span class="op">:</span> <span class="st">&quot;İlaçlar_aspirin&quot;</span><span class="op">,</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  latinName<span class="op">:</span> <span class="st">&quot;Aspirin&quot;</span><span class="op">,</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  turkishName<span class="op">:</span> <span class="st">&quot;Asetilsalisilik Asit&quot;</span><span class="op">,</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  category<span class="op">:</span> <span class="st">&quot;İlaçlar&quot;</span><span class="op">,</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  definition<span class="op">:</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Aspirin, ağrı kesici, ateş düşürücü ve iltihap giderici özelliklere sahip bir ilaçtır. Ayrıca düşük dozlarda kan sulandırıcı olarak da kullanılmaktadır.&quot;</span><span class="op">,</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  etymology<span class="op">:</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Aspirin adı, Spiraea ulmaria (çayır kraliçesi) bitkisinden elde edilen salisilik asitten türetilmiştir. &quot;A&quot; ön eki asetil grubunu, &quot;spir&quot; kısmı bitkiyi temsil etmektedir.&#39;</span><span class="op">,</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  usage<span class="op">:</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Baş ağrısı, diş ağrısı, kas ağrıları, ateş, soğuk algınlığı belirtileri ve kalp hastalıklarının önlenmesinde kullanılır.&quot;</span><span class="op">,</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  components<span class="op">:</span> [</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Asetilsalisilik asit&quot;</span><span class="op">,</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Mısır nişastası&quot;</span><span class="op">,</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Mikrokristal selüloz&quot;</span><span class="op">,</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>  sideEffects<span class="op">:</span> [</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Mide rahatsızlığı&quot;</span><span class="op">,</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Bulantı&quot;</span><span class="op">,</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Mide kanaması riski&quot;</span><span class="op">,</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Alerjik reaksiyonlar&quot;</span><span class="op">,</span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>  dosage<span class="op">:</span></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Yetişkinler için genellikle 325-650 mg, günde 3-4 kez. Kalp koruma için günde 75-100 mg.&quot;</span><span class="op">,</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>  contraindications<span class="op">:</span> [</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Mide ülseri&quot;</span><span class="op">,</span></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Kanama bozuklukları&quot;</span><span class="op">,</span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Aspirin alerjisi&quot;</span><span class="op">,</span></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;12 yaş altı çocuklar&quot;</span><span class="op">,</span></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">,</span></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>  interactions<span class="op">:</span> [<span class="st">&quot;Varfarin&quot;</span><span class="op">,</span> <span class="st">&quot;İbuprofen&quot;</span><span class="op">,</span> <span class="st">&quot;Metotreksat&quot;</span><span class="op">,</span> <span class="st">&quot;ACE inhibitörleri&quot;</span>]<span class="op">,</span></span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>  synonyms<span class="op">:</span> [<span class="st">&quot;ASA&quot;</span><span class="op">,</span> <span class="st">&quot;Asetilsalisilik asit&quot;</span><span class="op">,</span> <span class="st">&quot;Acetylsalicylic acid&quot;</span>]<span class="op">,</span></span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>  relatedTerms<span class="op">:</span> [<span class="st">&quot;İbuprofen&quot;</span><span class="op">,</span> <span class="st">&quot;Parasetamol&quot;</span><span class="op">,</span> <span class="st">&quot;Naproksen&quot;</span>]<span class="op">,</span></span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>  isBookmarked<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>  createdAt<span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>(<span class="st">&quot;2024-01-01&quot;</span>)<span class="op">,</span></span>
+<span id="cb29-37"><a href="#cb29-37" aria-hidden="true" tabindex="-1"></a>  updatedAt<span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>(<span class="st">&quot;2024-12-01&quot;</span>)<span class="op">,</span></span>
+<span id="cb29-38"><a href="#cb29-38" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<hr />
+<h3 id="ek-4-proje-istatistikleri">EK-4: Proje İstatistikleri</h3>
+<p><strong>Geliştirme Süreci:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metrik</th>
+<th>Değer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Toplam geliştirme süresi</td>
+<td>~3 ay</td>
+</tr>
+<tr>
+<td>Toplam kod satırı</td>
+<td>5000+</td>
+</tr>
+<tr>
+<td>TypeScript dosya sayısı</td>
+<td>25+</td>
+</tr>
+<tr>
+<td>React component sayısı</td>
+<td>15+</td>
+</tr>
+<tr>
+<td>Servis sınıfı sayısı</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Toplam terim sayısı</td>
+<td>850</td>
+</tr>
+<tr>
+<td>Kategori sayısı</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Quiz soru sayısı</td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dosya Boyutları:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Dosya/Klasör</th>
+<th>Boyut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src/</td>
+<td>~500 KB</td>
+</tr>
+<tr>
+<td>node_modules/</td>
+<td>~200 MB</td>
+</tr>
+<tr>
+<td>assets/</td>
+<td>~5 MB</td>
+</tr>
+<tr>
+<td>Toplam proje</td>
+<td>~210 MB</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="ek-5-kurulum-ve-çalıştırma-talimatları">EK-5: Kurulum ve
+Çalıştırma Talimatları</h3>
+<p><strong>Gereksinimler:</strong></p>
+<ul>
+<li>Node.js 18 veya üzeri</li>
+<li>Yarn veya npm</li>
+<li>Expo CLI</li>
+<li>iOS Simulator (macOS) veya Android Emulator</li>
+<li>Expo Go uygulaması (fiziksel cihaz için)</li>
+</ul>
+<p><strong>Kurulum Adımları:</strong></p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Projeyi klonlayın</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="pp">[</span><span class="ss">kullanici</span><span class="pp">]</span>/pharmadict.git</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Proje dizinine gidin</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pharmadict</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Bağımlılıkları yükleyin</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="ex">yarn</span> install</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Uygulamayı başlatın</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> expo start</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. QR kodu Expo Go ile tarayın veya simulator&#39;da açın</span></span></code></pre></div>
+<p><strong>Geliştirme Komutları:</strong></p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># iOS simulator&#39;da çalıştır</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> expo start <span class="at">--ios</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Android emulator&#39;da çalıştır</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> expo start <span class="at">--android</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Web&#39;de çalıştır</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> expo start <span class="at">--web</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Cache temizleyerek başlat</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> expo start <span class="at">--clear</span></span></code></pre></div>
+<hr />
+<p><em>Bu bitirme projesi, [Üniversite Adı] [Fakülte Adı] [Bölüm Adı]
+lisans programı kapsamında hazırlanmıştır.</em></p>
+<p><em>Aralık 2024</em></p>
+</body>
+</html>

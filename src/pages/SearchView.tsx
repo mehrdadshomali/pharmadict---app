@@ -142,7 +142,7 @@ const SearchView = () => {
               placeholderTextColor={colors.placeholder}
               autoFocus={false}
             />
-            {searchText ? (
+            {searchText && (
               <TouchableOpacity
                 onPress={() => {
                   setSearchText("");
@@ -155,10 +155,6 @@ const SearchView = () => {
                   size={20}
                   color={colors.textTertiary}
                 />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.clearBtn}>
-                <Ionicons name="mic-outline" size={20} color={colors.primary} />
               </TouchableOpacity>
             )}
           </View>
