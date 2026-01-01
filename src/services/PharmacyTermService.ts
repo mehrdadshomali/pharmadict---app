@@ -12,6 +12,8 @@ import { allDiseasesData } from "../data/diseasesData";
 import { allInsectsData } from "../data/insectsData";
 import { allComponentsData } from "../data/componentsData";
 import { allAnatomyData } from "../data/anatomyData";
+// Genişletilmiş veritabanı
+import extendedDatabase from "../data/extendedTermsDatabase.json";
 
 const BOOKMARKS_STORAGE_KEY = "pharmadict_bookmarks";
 
@@ -638,8 +640,6 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
 
   private async loadManualJSONData(): Promise<PharmacyTerm[]> {
     try {
-      // Load JSON data file
-      const jsonData = require("../data/pharmacyTerms.json");
       const terms: PharmacyTerm[] = [];
 
       // Map category names to TermCategory enum
@@ -654,10 +654,16 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         anatomy: TermCategory.ANATOMY,
       };
 
-      // Process each category
+      // Load extended database (genişletilmiş veritabanı)
+      const extendedData = extendedDatabase as any;
+
+      // Process each category from extended database
       for (const [categoryKey, categoryValue] of Object.entries(categoryMap)) {
-        if (jsonData[categoryKey] && Array.isArray(jsonData[categoryKey])) {
-          jsonData[categoryKey].forEach((item: any) => {
+        if (
+          extendedData[categoryKey] &&
+          Array.isArray(extendedData[categoryKey])
+        ) {
+          extendedData[categoryKey].forEach((item: any) => {
             terms.push(
               this.createTerm({
                 latinName: item.latinName,
@@ -679,16 +685,55 @@ class PharmacyTermService implements PharmacyTermServiceProtocol {
         }
       }
 
-      console.log(`📁 JSON data loaded: ${terms.length} terms`);
+      // Also try to load pharmacyTerms.json if exists
+      try {
+        const jsonData = require("../data/pharmacyTerms.json");
+        for (const [categoryKey, categoryValue] of Object.entries(
+          categoryMap
+        )) {
+          if (jsonData[categoryKey] && Array.isArray(jsonData[categoryKey])) {
+            jsonData[categoryKey].forEach((item: any) => {
+              // Check for duplicates
+              const exists = terms.some(
+                (t) =>
+                  t.latinName.toLowerCase() === item.latinName?.toLowerCase()
+              );
+              if (!exists && item.latinName) {
+                terms.push(
+                  this.createTerm({
+                    latinName: item.latinName,
+                    turkishName: item.turkishName,
+                    category: categoryValue,
+                    definition: item.definition || "",
+                    components: item.components || [],
+                    relatedTerms: item.relatedTerms || [],
+                    etymology: item.etymology,
+                    usage: item.usage,
+                    sideEffects: item.sideEffects || [],
+                    dosage: item.dosage,
+                    contraindications: item.contraindications || [],
+                    interactions: item.interactions || [],
+                    synonyms: item.synonyms || [],
+                  })
+                );
+              }
+            });
+          }
+        }
+      } catch (e) {
+        // pharmacyTerms.json not found, continue
+      }
+
+      console.log(`📁 Extended database loaded: ${terms.length} terms`);
       if (terms.length > 0) {
         console.log(
-          `📋 Sample JSON terms:`,
+          `📋 Sample terms:`,
           terms.slice(0, 3).map((t) => `${t.latinName} (${t.category})`)
         );
       }
       return terms;
     } catch (error) {
-      console.warn("⚠️ Could not load JSON data file:", error);
+      console.warn("⚠️ Could not load extended database:", error);
       return [];
     }
   }

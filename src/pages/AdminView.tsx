@@ -1,5 +1,5 @@
 // AdminView.tsx - Admin panel for adding and managing terms
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,11 @@ import { useTheme } from "../context/ThemeContext";
 import { geminiService } from "../services/GeminiService";
 import { firebaseService } from "../services/FirebaseService";
 import { TermCategory } from "../types/models";
+import {
+  uploadAllTermsToFirebase,
+  getFirebaseTermCount,
+  clearAllTermsFromFirebase,
+} from "../scripts/uploadToFirebase";
 
 const AdminView: React.FC = () => {
   const { colors, isDark } = useTheme();
@@ -27,11 +32,94 @@ const AdminView: React.FC = () => {
   const [termName, setTermName] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [firebaseCount, setFirebaseCount] = useState<number | null>(null);
+  const [uploadStats, setUploadStats] = useState<any>(null);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
+
+  // Firebase terim sayısını al
+  useEffect(() => {
+    loadFirebaseCount();
+  }, []);
+
+  const loadFirebaseCount = async () => {
+    const count = await getFirebaseTermCount();
+    setFirebaseCount(count);
+  };
+
+  // Toplu Firebase yükleme
+  const handleBulkUpload = async () => {
+    Alert.alert(
+      "Toplu Yükleme",
+      "Tüm mevcut terimler Firebase'e yüklenecek. Duplicate'ler otomatik atlanacak. Devam etmek istiyor musunuz?",
+      [
+        { text: "İptal", style: "cancel" },
+        {
+          text: "Yükle",
+          onPress: async () => {
+            setIsUploading(true);
+            setMessage(null);
+            setUploadStats(null);
+
+            try {
+              const result = await uploadAllTermsToFirebase((progress) => {
+                console.log(
+                  `İlerleme: ${progress.currentCategory} - ${progress.uploaded}/${progress.total}`
+                );
+              });
+
+              if (result.success) {
+                setUploadStats(result.stats);
+                setMessage({
+                  type: "success",
+                  text: `✅ ${result.stats.total.uploaded} terim yüklendi, ${result.stats.total.skipped} duplicate atlandı`,
+                });
+                loadFirebaseCount();
+              } else {
+                setMessage({ type: "error", text: "Yükleme başarısız oldu" });
+              }
+            } catch (error) {
+              console.error("Upload error:", error);
+              setMessage({ type: "error", text: "Yükleme hatası oluştu" });
+            } finally {
+              setIsUploading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Firebase'i temizle
+  const handleClearFirebase = async () => {
+    Alert.alert(
+      "⚠️ Dikkat!",
+      "Firebase'deki TÜM terimler silinecek! Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
+      [
+        { text: "İptal", style: "cancel" },
+        {
+          text: "Sil",
+          style: "destructive",
+          onPress: async () => {
+            setIsUploading(true);
+            try {
+              await clearAllTermsFromFirebase();
+              setMessage({ type: "success", text: "Tüm terimler silindi" });
+              loadFirebaseCount();
+            } catch (error) {
+              setMessage({ type: "error", text: "Silme hatası" });
+            } finally {
+              setIsUploading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const handleAnalyze = async () => {
     if (!termName.trim()) {
@@ -175,6 +263,120 @@ const AdminView: React.FC = () => {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Firebase Management Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="cloud" size={20} color="#F59E0B" />
+            <Text style={styles.sectionTitle}>Firebase Yönetimi</Text>
+          </View>
+
+          <View style={styles.firebaseStats}>
+            <View style={styles.statCard}>
+              <Ionicons name="server" size={24} color={colors.primary} />
+              <Text style={styles.statNumber}>
+                {firebaseCount !== null ? firebaseCount : "..."}
+              </Text>
+              <Text style={styles.statLabel}>Firebase'deki Terim</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.uploadButton, isUploading && styles.buttonDisabled]}
+            onPress={handleBulkUpload}
+            disabled={isUploading}
+          >
+            <LinearGradient
+              colors={["#F59E0B", "#D97706"]}
+              style={styles.buttonGradient}
+            >
+              {isUploading ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <>
+                  <Ionicons name="cloud-upload" size={20} color="#FFFFFF" />
+                  <Text style={styles.buttonText}>
+                    Tüm Terimleri Firebase'e Yükle
+                  </Text>
+                </>
+              )}
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.dangerButton, isUploading && styles.buttonDisabled]}
+            onPress={handleClearFirebase}
+            disabled={isUploading}
+          >
+            <View style={styles.dangerButtonInner}>
+              <Ionicons name="trash" size={20} color="#EF4444" />
+              <Text style={[styles.dangerButtonText]}>Firebase'i Temizle</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Upload Stats */}
+          {uploadStats && (
+            <View style={styles.statsContainer}>
+              <Text style={styles.statsTitle}>Yükleme Sonuçları:</Text>
+              <View style={styles.statsGrid}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>İlaçlar</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.drugs?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Bitkiler</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.plants?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Vitaminler</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.vitamins?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Mineraller</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.minerals?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Hastalıklar</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.diseases?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Böcekler</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.insects?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Bileşenler</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.components?.uploaded || 0}
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statItemLabel}>Anatomi</Text>
+                  <Text style={styles.statItemValue}>
+                    {uploadStats.anatomy?.uploaded || 0}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.totalStats}>
+                <Text style={styles.totalText}>
+                  Toplam: {uploadStats.total?.uploaded || 0} yüklendi,{" "}
+                  {uploadStats.total?.skipped || 0} atlandı
+                </Text>
+              </View>
+            </View>
+          )}
+        </View>
+
         {/* AI Analysis Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -590,6 +792,102 @@ const createStyles = (colors: any, isDark: boolean) =>
     manualButtonText: {
       fontSize: 16,
       fontWeight: "600",
+    },
+    firebaseStats: {
+      flexDirection: "row",
+      justifyContent: "center",
+      marginBottom: 16,
+    },
+    statCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      padding: 20,
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: colors.border,
+      minWidth: 150,
+    },
+    statNumber: {
+      fontSize: 32,
+      fontWeight: "700",
+      color: colors.primary,
+      marginTop: 8,
+    },
+    statLabel: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 4,
+    },
+    uploadButton: {
+      borderRadius: 12,
+      overflow: "hidden",
+      marginBottom: 12,
+    },
+    dangerButton: {
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: "#EF4444",
+      overflow: "hidden",
+    },
+    dangerButtonInner: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 14,
+      gap: 8,
+      backgroundColor: "rgba(239, 68, 68, 0.1)",
+    },
+    dangerButtonText: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: "#EF4444",
+    },
+    statsContainer: {
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      marginTop: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    statsTitle: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: colors.text,
+      marginBottom: 12,
+    },
+    statsGrid: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    statItem: {
+      backgroundColor: colors.primaryGlow,
+      borderRadius: 8,
+      padding: 8,
+      minWidth: "22%",
+      alignItems: "center",
+    },
+    statItemLabel: {
+      fontSize: 10,
+      color: colors.textSecondary,
+    },
+    statItemValue: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: colors.primary,
+    },
+    totalStats: {
+      marginTop: 12,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    totalText: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: colors.text,
+      textAlign: "center",
     },
   });
 

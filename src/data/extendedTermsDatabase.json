@@ -1,0 +1,2397 @@
+{
+  "version": "2.1",
+  "description": "Duplicate'lerden temizlenmiş genişletilmiş veritabanı",
+  "lastUpdated": "2025-12-31",
+  "drugs": [
+    {
+      "id": "drug_0001",
+      "latinName": "Acetaminophen",
+      "turkishName": "Asetaminofen",
+      "definition": "Ağrı kesici ve ateş düşürücü"
+    },
+    {
+      "id": "drug_0002",
+      "latinName": "Aspirin",
+      "turkishName": "Aspirin",
+      "definition": "NSAID grubu ağrı kesici"
+    },
+    {
+      "id": "drug_0011",
+      "latinName": "Ketoprofen",
+      "turkishName": "Ketoprofen",
+      "definition": "Profen grubu NSAID"
+    },
+    {
+      "id": "drug_0012",
+      "latinName": "Sulindac",
+      "turkishName": "Sulindak",
+      "definition": "Prodrug NSAID"
+    },
+    {
+      "id": "drug_0013",
+      "latinName": "Etodolac",
+      "turkishName": "Etodolak",
+      "definition": "COX-2 tercihli NSAID"
+    },
+    {
+      "id": "drug_0014",
+      "latinName": "Nabumetone",
+      "turkishName": "Nabumeton",
+      "definition": "Prodrug NSAID"
+    },
+    {
+      "id": "drug_0015",
+      "latinName": "Oxaprozin",
+      "turkishName": "Oksaprozin",
+      "definition": "Uzun etkili NSAID"
+    },
+    {
+      "id": "drug_0016",
+      "latinName": "Fenoprofen",
+      "turkishName": "Fenoprofen",
+      "definition": "Profen grubu NSAID"
+    },
+    {
+      "id": "drug_0017",
+      "latinName": "Flurbiprofen",
+      "turkishName": "Flurbiprofen",
+      "definition": "Profen grubu NSAID"
+    },
+    {
+      "id": "drug_0018",
+      "latinName": "Mefenamic acid",
+      "turkishName": "Mefenamik asit",
+      "definition": "Fenamat grubu NSAID"
+    },
+    {
+      "id": "drug_0019",
+      "latinName": "Meclofenamate",
+      "turkishName": "Meklofenamat",
+      "definition": "Fenamat grubu NSAID"
+    },
+    {
+      "id": "drug_0020",
+      "latinName": "Diflunisal",
+      "turkishName": "Diflunisal",
+      "definition": "Salisilik asit türevi"
+    },
+    {
+      "id": "drug_0026",
+      "latinName": "Hydrocodone",
+      "turkishName": "Hidrokodon",
+      "definition": "Yarı sentetik opioid"
+    },
+    {
+      "id": "drug_0027",
+      "latinName": "Hydromorphone",
+      "turkishName": "Hidromorfon",
+      "definition": "Güçlü opioid"
+    },
+    {
+      "id": "drug_0028",
+      "latinName": "Meperidine",
+      "turkishName": "Meperidin",
+      "definition": "Sentetik opioid"
+    },
+    {
+      "id": "drug_0029",
+      "latinName": "Methadone",
+      "turkishName": "Metadon",
+      "definition": "Uzun etkili opioid"
+    },
+    {
+      "id": "drug_0030",
+      "latinName": "Buprenorphine",
+      "turkishName": "Buprenorfin",
+      "definition": "Parsiyel agonist"
+    },
+    {
+      "id": "drug_0031",
+      "latinName": "Tapentadol",
+      "turkishName": "Tapentadol",
+      "definition": "Dual mekanizmalı analjezik"
+    },
+    {
+      "id": "drug_0032",
+      "latinName": "Levorphanol",
+      "turkishName": "Levorfanol",
+      "definition": "Uzun etkili opioid"
+    },
+    {
+      "id": "drug_0033",
+      "latinName": "Oxymorphone",
+      "turkishName": "Oksimorfon",
+      "definition": "Güçlü opioid"
+    },
+    {
+      "id": "drug_0034",
+      "latinName": "Sufentanil",
+      "turkishName": "Sufentanil",
+      "definition": "Çok güçlü opioid"
+    },
+    {
+      "id": "drug_0035",
+      "latinName": "Alfentanil",
+      "turkishName": "Alfentanil",
+      "definition": "Kısa etkili opioid"
+    },
+    {
+      "id": "drug_0036",
+      "latinName": "Remifentanil",
+      "turkishName": "Remifentanil",
+      "definition": "Ultra kısa etkili opioid"
+    },
+    {
+      "id": "drug_0037",
+      "latinName": "Nalbuphine",
+      "turkishName": "Nalbufin",
+      "definition": "Agonist-antagonist opioid"
+    },
+    {
+      "id": "drug_0038",
+      "latinName": "Butorphanol",
+      "turkishName": "Butorfanol",
+      "definition": "Agonist-antagonist opioid"
+    },
+    {
+      "id": "drug_0039",
+      "latinName": "Pentazocine",
+      "turkishName": "Pentazosin",
+      "definition": "Agonist-antagonist opioid"
+    },
+    {
+      "id": "drug_0040",
+      "latinName": "Dezocine",
+      "turkishName": "Dezosin",
+      "definition": "Agonist-antagonist opioid"
+    },
+    {
+      "id": "drug_0042",
+      "latinName": "Ampicillin",
+      "turkishName": "Ampisilin",
+      "definition": "Aminopenisilin"
+    },
+    {
+      "id": "drug_0043",
+      "latinName": "Penicillin G",
+      "turkishName": "Penisilin G",
+      "definition": "Doğal penisilin"
+    },
+    {
+      "id": "drug_0044",
+      "latinName": "Penicillin V",
+      "turkishName": "Penisilin V",
+      "definition": "Oral penisilin"
+    },
+    {
+      "id": "drug_0045",
+      "latinName": "Piperacillin",
+      "turkishName": "Piperasilin",
+      "definition": "Antipseudomonal penisilin"
+    },
+    {
+      "id": "drug_0046",
+      "latinName": "Ticarcillin",
+      "turkishName": "Tikarslin",
+      "definition": "Antipseudomonal penisilin"
+    },
+    {
+      "id": "drug_0047",
+      "latinName": "Oxacillin",
+      "turkishName": "Oksasilin",
+      "definition": "Penisilinaz dirençli"
+    },
+    {
+      "id": "drug_0048",
+      "latinName": "Nafcillin",
+      "turkishName": "Nafsilin",
+      "definition": "Antistaf penisilin"
+    },
+    {
+      "id": "drug_0049",
+      "latinName": "Dicloxacillin",
+      "turkishName": "Dikloksasilin",
+      "definition": "Oral antistaf"
+    },
+    {
+      "id": "drug_0051",
+      "latinName": "Erythromycin",
+      "turkishName": "Eritromisin",
+      "definition": "Makrolid antibiyotik"
+    },
+    {
+      "id": "drug_0055",
+      "latinName": "Moxifloxacin",
+      "turkishName": "Moksifloksasin",
+      "definition": "4. kuşak florokinolon"
+    },
+    {
+      "id": "drug_0056",
+      "latinName": "Ofloxacin",
+      "turkishName": "Ofloksasin",
+      "definition": "Florokinolon"
+    },
+    {
+      "id": "drug_0057",
+      "latinName": "Norfloxacin",
+      "turkishName": "Norfloksasin",
+      "definition": "İdrar yolu florokinolonu"
+    },
+    {
+      "id": "drug_0058",
+      "latinName": "Gemifloxacin",
+      "turkishName": "Gemifloksasin",
+      "definition": "Respiratuar florokinolon"
+    },
+    {
+      "id": "drug_0060",
+      "latinName": "Tetracycline",
+      "turkishName": "Tetrasiklin",
+      "definition": "Tetrasiklin antibiyotik"
+    },
+    {
+      "id": "drug_0061",
+      "latinName": "Minocycline",
+      "turkishName": "Minosiklin",
+      "definition": "Tetrasiklin"
+    },
+    {
+      "id": "drug_0062",
+      "latinName": "Tigecycline",
+      "turkishName": "Tigesiklin",
+      "definition": "Glisisiklin"
+    },
+    {
+      "id": "drug_0064",
+      "latinName": "Clindamycin",
+      "turkishName": "Klindamisin",
+      "definition": "Linkozamid"
+    },
+    {
+      "id": "drug_0065",
+      "latinName": "Linezolid",
+      "turkishName": "Linezolid",
+      "definition": "Oksazolidinon"
+    },
+    {
+      "id": "drug_0066",
+      "latinName": "Vancomycin",
+      "turkishName": "Vankomisin",
+      "definition": "Glikopeptid"
+    },
+    {
+      "id": "drug_0067",
+      "latinName": "Teicoplanin",
+      "turkishName": "Teikoplanin",
+      "definition": "Glikopeptid"
+    },
+    {
+      "id": "drug_0068",
+      "latinName": "Daptomycin",
+      "turkishName": "Daptomisin",
+      "definition": "Lipopeptid"
+    },
+    {
+      "id": "drug_0069",
+      "latinName": "Cephalexin",
+      "turkishName": "Sefaleksin",
+      "definition": "1. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0070",
+      "latinName": "Cefazolin",
+      "turkishName": "Sefazolin",
+      "definition": "1. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0071",
+      "latinName": "Cefuroxime",
+      "turkishName": "Sefuroksim",
+      "definition": "2. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0072",
+      "latinName": "Cefaclor",
+      "turkishName": "Sefaklor",
+      "definition": "2. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0073",
+      "latinName": "Ceftriaxone",
+      "turkishName": "Seftriakson",
+      "definition": "3. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0074",
+      "latinName": "Cefotaxime",
+      "turkishName": "Sefotaksim",
+      "definition": "3. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0075",
+      "latinName": "Ceftazidime",
+      "turkishName": "Seftazidim",
+      "definition": "3. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0076",
+      "latinName": "Cefepime",
+      "turkishName": "Sefepim",
+      "definition": "4. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0077",
+      "latinName": "Ceftaroline",
+      "turkishName": "Seftarolin",
+      "definition": "5. kuşak sefalosporin"
+    },
+    {
+      "id": "drug_0078",
+      "latinName": "Gentamicin",
+      "turkishName": "Gentamisin",
+      "definition": "Aminoglikozid"
+    },
+    {
+      "id": "drug_0079",
+      "latinName": "Tobramycin",
+      "turkishName": "Tobramisin",
+      "definition": "Aminoglikozid"
+    },
+    {
+      "id": "drug_0080",
+      "latinName": "Amikacin",
+      "turkishName": "Amikasin",
+      "definition": "Aminoglikozid"
+    },
+    {
+      "id": "drug_0081",
+      "latinName": "Streptomycin",
+      "turkishName": "Streptomisin",
+      "definition": "Aminoglikozid"
+    },
+    {
+      "id": "drug_0082",
+      "latinName": "Neomycin",
+      "turkishName": "Neomisin",
+      "definition": "Aminoglikozid"
+    },
+    {
+      "id": "drug_0083",
+      "latinName": "Trimethoprim",
+      "turkishName": "Trimetoprim",
+      "definition": "Folat antagonisti"
+    },
+    {
+      "id": "drug_0084",
+      "latinName": "Sulfamethoxazole",
+      "turkishName": "Sülfametoksazol",
+      "definition": "Sulfonamid"
+    },
+    {
+      "id": "drug_0085",
+      "latinName": "Nitrofurantoin",
+      "turkishName": "Nitrofurantoin",
+      "definition": "İdrar yolu antiseptiği"
+    },
+    {
+      "id": "drug_0086",
+      "latinName": "Fosfomycin",
+      "turkishName": "Fosfomisin",
+      "definition": "Fosfonik asit türevi"
+    },
+    {
+      "id": "drug_0087",
+      "latinName": "Rifampin",
+      "turkishName": "Rifampin",
+      "definition": "Rifamisin"
+    },
+    {
+      "id": "drug_0088",
+      "latinName": "Rifabutin",
+      "turkishName": "Rifabutin",
+      "definition": "Rifamisin"
+    },
+    {
+      "id": "drug_0089",
+      "latinName": "Isoniazid",
+      "turkishName": "İzoniazid",
+      "definition": "Antitüberküloz"
+    },
+    {
+      "id": "drug_0090",
+      "latinName": "Pyrazinamide",
+      "turkishName": "Pirazinamid",
+      "definition": "Antitüberküloz"
+    },
+    {
+      "id": "drug_0092",
+      "latinName": "Simvastatin",
+      "turkishName": "Simvastatin",
+      "definition": "Statin"
+    },
+    {
+      "id": "drug_0094",
+      "latinName": "Pravastatin",
+      "turkishName": "Pravastatin",
+      "definition": "Statin"
+    },
+    {
+      "id": "drug_0095",
+      "latinName": "Lovastatin",
+      "turkishName": "Lovastatin",
+      "definition": "Statin"
+    },
+    {
+      "id": "drug_0096",
+      "latinName": "Fluvastatin",
+      "turkishName": "Fluvastatin",
+      "definition": "Statin"
+    },
+    {
+      "id": "drug_0097",
+      "latinName": "Pitavastatin",
+      "turkishName": "Pitavastatin",
+      "definition": "Statin"
+    },
+    {
+      "id": "drug_0100",
+      "latinName": "Gemfibrozil",
+      "turkishName": "Gemfibrozil",
+      "definition": "Fibrat"
+    },
+    {
+      "id": "drug_0101",
+      "latinName": "Niacin",
+      "turkishName": "Niasin",
+      "definition": "Vitamin B3, lipid düşürücü"
+    },
+    {
+      "id": "drug_0106",
+      "latinName": "Captopril",
+      "turkishName": "Kaptopril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0107",
+      "latinName": "Benazepril",
+      "turkishName": "Benazepril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0108",
+      "latinName": "Fosinopril",
+      "turkishName": "Fosinopril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0109",
+      "latinName": "Quinapril",
+      "turkishName": "Kinapril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0110",
+      "latinName": "Perindopril",
+      "turkishName": "Perindopril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0111",
+      "latinName": "Trandolapril",
+      "turkishName": "Trandolapril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0112",
+      "latinName": "Moexipril",
+      "turkishName": "Moeksipril",
+      "definition": "ACE inhibitörü"
+    },
+    {
+      "id": "drug_0115",
+      "latinName": "Irbesartan",
+      "turkishName": "İrbesartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0116",
+      "latinName": "Candesartan",
+      "turkishName": "Kandesartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0117",
+      "latinName": "Olmesartan",
+      "turkishName": "Olmesartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0118",
+      "latinName": "Telmisartan",
+      "turkishName": "Telmisartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0119",
+      "latinName": "Eprosartan",
+      "turkishName": "Eprosartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0120",
+      "latinName": "Azilsartan",
+      "turkishName": "Azilsartan",
+      "definition": "ARB"
+    },
+    {
+      "id": "drug_0125",
+      "latinName": "Felodipine",
+      "turkishName": "Felodipin",
+      "definition": "Kalsiyum kanal blokeri"
+    },
+    {
+      "id": "drug_0126",
+      "latinName": "Nicardipine",
+      "turkishName": "Nikardipin",
+      "definition": "Kalsiyum kanal blokeri"
+    },
+    {
+      "id": "drug_0127",
+      "latinName": "Isradipine",
+      "turkishName": "İsradipin",
+      "definition": "Kalsiyum kanal blokeri"
+    },
+    {
+      "id": "drug_0128",
+      "latinName": "Nisoldipine",
+      "turkishName": "Nisoldipin",
+      "definition": "Kalsiyum kanal blokeri"
+    },
+    {
+      "id": "drug_0130",
+      "latinName": "Atenolol",
+      "turkishName": "Atenolol",
+      "definition": "Beta bloker"
+    },
+    {
+      "id": "drug_0134",
+      "latinName": "Nebivolol",
+      "turkishName": "Nebivolol",
+      "definition": "Beta bloker"
+    },
+    {
+      "id": "drug_0135",
+      "latinName": "Labetalol",
+      "turkishName": "Labetalol",
+      "definition": "Alfa-beta bloker"
+    },
+    {
+      "id": "drug_0136",
+      "latinName": "Nadolol",
+      "turkishName": "Nadolol",
+      "definition": "Beta bloker"
+    },
+    {
+      "id": "drug_0137",
+      "latinName": "Timolol",
+      "turkishName": "Timolol",
+      "definition": "Beta bloker"
+    },
+    {
+      "id": "drug_0138",
+      "latinName": "Acebutolol",
+      "turkishName": "Asebutolol",
+      "definition": "Beta bloker"
+    },
+    {
+      "id": "drug_0140",
+      "latinName": "Glipizide",
+      "turkishName": "Glipizid",
+      "definition": "Sülfonilüre"
+    },
+    {
+      "id": "drug_0141",
+      "latinName": "Glyburide",
+      "turkishName": "Glibürid",
+      "definition": "Sülfonilüre"
+    },
+    {
+      "id": "drug_0143",
+      "latinName": "Pioglitazone",
+      "turkishName": "Pioglitazon",
+      "definition": "Tiazolidindion"
+    },
+    {
+      "id": "drug_0144",
+      "latinName": "Rosiglitazone",
+      "turkishName": "Rosiglitazon",
+      "definition": "Tiazolidindion"
+    },
+    {
+      "id": "drug_0146",
+      "latinName": "Saxagliptin",
+      "turkishName": "Saksagliptin",
+      "definition": "DPP-4 inhibitörü"
+    },
+    {
+      "id": "drug_0147",
+      "latinName": "Linagliptin",
+      "turkishName": "Linagliptin",
+      "definition": "DPP-4 inhibitörü"
+    },
+    {
+      "id": "drug_0148",
+      "latinName": "Alogliptin",
+      "turkishName": "Alogliptin",
+      "definition": "DPP-4 inhibitörü"
+    },
+    {
+      "id": "drug_0149",
+      "latinName": "Canagliflozin",
+      "turkishName": "Kanagliflozin",
+      "definition": "SGLT2 inhibitörü"
+    },
+    {
+      "id": "drug_0150",
+      "latinName": "Dapagliflozin",
+      "turkishName": "Dapagliflozin",
+      "definition": "SGLT2 inhibitörü"
+    },
+    {
+      "id": "drug_0152",
+      "latinName": "Ertugliflozin",
+      "turkishName": "Ertugliflozin",
+      "definition": "SGLT2 inhibitörü"
+    },
+    {
+      "id": "drug_0154",
+      "latinName": "Exenatide",
+      "turkishName": "Eksenatid",
+      "definition": "GLP-1 agonisti"
+    },
+    {
+      "id": "drug_0155",
+      "latinName": "Dulaglutide",
+      "turkishName": "Dulaglutid",
+      "definition": "GLP-1 agonisti"
+    },
+    {
+      "id": "drug_0156",
+      "latinName": "Semaglutide",
+      "turkishName": "Semaglutid",
+      "definition": "GLP-1 agonisti"
+    },
+    {
+      "id": "drug_0158",
+      "latinName": "Insulin lispro",
+      "turkishName": "İnsülin lispro",
+      "definition": "Hızlı etkili insülin"
+    },
+    {
+      "id": "drug_0159",
+      "latinName": "Insulin aspart",
+      "turkishName": "İnsülin aspart",
+      "definition": "Hızlı etkili insülin"
+    },
+    {
+      "id": "drug_0160",
+      "latinName": "Insulin detemir",
+      "turkishName": "İnsülin detemir",
+      "definition": "Uzun etkili insülin"
+    },
+    {
+      "id": "drug_0161",
+      "latinName": "Insulin degludec",
+      "turkishName": "İnsülin degludek",
+      "definition": "Ultra uzun etkili insülin"
+    },
+    {
+      "id": "drug_0162",
+      "latinName": "Acarbose",
+      "turkishName": "Akarboz",
+      "definition": "Alfa-glukozidaz inhibitörü"
+    },
+    {
+      "id": "drug_0163",
+      "latinName": "Miglitol",
+      "turkishName": "Miglitol",
+      "definition": "Alfa-glukozidaz inhibitörü"
+    },
+    {
+      "id": "drug_0164",
+      "latinName": "Repaglinide",
+      "turkishName": "Repaglinid",
+      "definition": "Meglitinid"
+    },
+    {
+      "id": "drug_0165",
+      "latinName": "Nateglinide",
+      "turkishName": "Nateglinid",
+      "definition": "Meglitinid"
+    },
+    {
+      "id": "drug_0166",
+      "latinName": "Pramlintide",
+      "turkishName": "Pramlintid",
+      "definition": "Amilin analoğu"
+    },
+    {
+      "id": "drug_0167",
+      "latinName": "Colesevelam",
+      "turkishName": "Kolesevelam",
+      "definition": "Safra asidi bağlayıcı"
+    },
+    {
+      "id": "drug_0168",
+      "latinName": "Bromocriptine",
+      "turkishName": "Bromokriptin",
+      "definition": "Dopamin agonisti"
+    },
+    {
+      "id": "drug_0171",
+      "latinName": "Paroxetine",
+      "turkishName": "Paroksetin",
+      "definition": "SSRI antidepresan"
+    },
+    {
+      "id": "drug_0172",
+      "latinName": "Citalopram",
+      "turkishName": "Sitalopram",
+      "definition": "SSRI antidepresan"
+    },
+    {
+      "id": "drug_0174",
+      "latinName": "Fluvoxamine",
+      "turkishName": "Fluvoksamin",
+      "definition": "SSRI antidepresan"
+    },
+    {
+      "id": "drug_0177",
+      "latinName": "Desvenlafaxine",
+      "turkishName": "Desvenlafaksin",
+      "definition": "SNRI antidepresan"
+    },
+    {
+      "id": "drug_0178",
+      "latinName": "Levomilnacipran",
+      "turkishName": "Levomilnasipran",
+      "definition": "SNRI antidepresan"
+    },
+    {
+      "id": "drug_0179",
+      "latinName": "Bupropion",
+      "turkishName": "Bupropion",
+      "definition": "NDRI antidepresan"
+    },
+    {
+      "id": "drug_0180",
+      "latinName": "Mirtazapine",
+      "turkishName": "Mirtazapin",
+      "definition": "NaSSA antidepresan"
+    },
+    {
+      "id": "drug_0181",
+      "latinName": "Trazodone",
+      "turkishName": "Trazodon",
+      "definition": "SARI antidepresan"
+    },
+    {
+      "id": "drug_0182",
+      "latinName": "Nefazodone",
+      "turkishName": "Nefazodon",
+      "definition": "SARI antidepresan"
+    },
+    {
+      "id": "drug_0183",
+      "latinName": "Vilazodone",
+      "turkishName": "Vilazodon",
+      "definition": "SPARI antidepresan"
+    },
+    {
+      "id": "drug_0184",
+      "latinName": "Vortioxetine",
+      "turkishName": "Vortioksetin",
+      "definition": "Multimodal antidepresan"
+    },
+    {
+      "id": "drug_0185",
+      "latinName": "Amitriptyline",
+      "turkishName": "Amitriptilin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0186",
+      "latinName": "Nortriptyline",
+      "turkishName": "Nortriptilin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0187",
+      "latinName": "Imipramine",
+      "turkishName": "İmipramin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0188",
+      "latinName": "Desipramine",
+      "turkishName": "Desipramin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0189",
+      "latinName": "Clomipramine",
+      "turkishName": "Klomipramin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0190",
+      "latinName": "Doxepin",
+      "turkishName": "Doksepin",
+      "definition": "Trisiklik antidepresan"
+    },
+    {
+      "id": "drug_0191",
+      "latinName": "Phenelzine",
+      "turkishName": "Fenelzin",
+      "definition": "MAO inhibitörü"
+    },
+    {
+      "id": "drug_0192",
+      "latinName": "Tranylcypromine",
+      "turkishName": "Tranilsipromin",
+      "definition": "MAO inhibitörü"
+    },
+    {
+      "id": "drug_0193",
+      "latinName": "Selegiline",
+      "turkishName": "Selejilin",
+      "definition": "MAO-B inhibitörü"
+    },
+    {
+      "id": "drug_0198",
+      "latinName": "Ziprasidone",
+      "turkishName": "Ziprasidon",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0199",
+      "latinName": "Paliperidone",
+      "turkishName": "Paliperidon",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0200",
+      "latinName": "Lurasidone",
+      "turkishName": "Lurasidon",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0201",
+      "latinName": "Asenapine",
+      "turkishName": "Asenapin",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0202",
+      "latinName": "Iloperidone",
+      "turkishName": "İloperidon",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0203",
+      "latinName": "Brexpiprazole",
+      "turkishName": "Breksipiprazol",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0204",
+      "latinName": "Cariprazine",
+      "turkishName": "Kariprazin",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0205",
+      "latinName": "Clozapine",
+      "turkishName": "Klozapin",
+      "definition": "Atipik antipsikotik"
+    },
+    {
+      "id": "drug_0206",
+      "latinName": "Haloperidol",
+      "turkishName": "Haloperidol",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0207",
+      "latinName": "Chlorpromazine",
+      "turkishName": "Klorpromazin",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0208",
+      "latinName": "Fluphenazine",
+      "turkishName": "Flufenazin",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0209",
+      "latinName": "Perphenazine",
+      "turkishName": "Perfenazin",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0210",
+      "latinName": "Thioridazine",
+      "turkishName": "Tioridazin",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0211",
+      "latinName": "Thiothixene",
+      "turkishName": "Tiotiksen",
+      "definition": "Tipik antipsikotik"
+    },
+    {
+      "id": "drug_0214",
+      "latinName": "Clonazepam",
+      "turkishName": "Klonazepam",
+      "definition": "Benzodiazepin"
+    },
+    {
+      "id": "drug_0216",
+      "latinName": "Oxazepam",
+      "turkishName": "Oksazepam",
+      "definition": "Benzodiazepin"
+    },
+    {
+      "id": "drug_0217",
+      "latinName": "Temazepam",
+      "turkishName": "Temazepam",
+      "definition": "Benzodiazepin"
+    },
+    {
+      "id": "drug_0218",
+      "latinName": "Triazolam",
+      "turkishName": "Triazolam",
+      "definition": "Benzodiazepin"
+    }
+  ],
+  "plants": [
+    {
+      "id": "plant_0248",
+      "latinName": "Hamamelis virginiana",
+      "turkishName": "Cadı fındığı",
+      "definition": "Astrenjan ve anti-inflamatuar"
+    },
+    {
+      "id": "plant_0253",
+      "latinName": "Eleutherococcus senticosus",
+      "turkishName": "Sibirya ginsengi",
+      "definition": "Adaptojenik"
+    },
+    {
+      "id": "plant_0256",
+      "latinName": "Maca root",
+      "turkishName": "Maka kökü",
+      "definition": "Enerji ve libido artırıcı"
+    },
+    {
+      "id": "plant_0257",
+      "latinName": "Saw palmetto",
+      "turkishName": "Cüce palmiye",
+      "definition": "Prostat sağlığı destekleyici"
+    },
+    {
+      "id": "plant_0261",
+      "latinName": "Dong quai",
+      "turkishName": "Çin melekotu",
+      "definition": "Kadın sağlığı destekleyici"
+    },
+    {
+      "id": "plant_0262",
+      "latinName": "Evening primrose",
+      "turkishName": "Çuha çiçeği",
+      "definition": "GLA kaynağı, cilt sağlığı"
+    },
+    {
+      "id": "plant_0263",
+      "latinName": "Borage",
+      "turkishName": "Hodan",
+      "definition": "GLA kaynağı"
+    },
+    {
+      "id": "plant_0264",
+      "latinName": "Flaxseed",
+      "turkishName": "Keten tohumu",
+      "definition": "Omega-3 ve lif kaynağı"
+    },
+    {
+      "id": "plant_0265",
+      "latinName": "Psyllium",
+      "turkishName": "Psyllium",
+      "definition": "Lif kaynağı, kabızlık tedavisi"
+    },
+    {
+      "id": "plant_0266",
+      "latinName": "Senna",
+      "turkishName": "Sinameki",
+      "definition": "Laksatif"
+    },
+    {
+      "id": "plant_0267",
+      "latinName": "Cascara sagrada",
+      "turkishName": "Cascara",
+      "definition": "Laksatif"
+    },
+    {
+      "id": "plant_0268",
+      "latinName": "Rhubarb",
+      "turkishName": "Ravent",
+      "definition": "Laksatif ve sindirim düzenleyici"
+    }
+  ],
+  "vitamins": [
+    {
+      "id": "vitamin_0492",
+      "latinName": "Vitamin A",
+      "turkishName": "A Vitamini",
+      "definition": "Görme ve bağışıklık için gerekli yağda çözünen vitamin"
+    },
+    {
+      "id": "vitamin_0493",
+      "latinName": "Retinol",
+      "turkishName": "Retinol",
+      "definition": "A vitamini aktif formu"
+    },
+    {
+      "id": "vitamin_0495",
+      "latinName": "Vitamin B1",
+      "turkishName": "B1 Vitamini",
+      "definition": "Tiamin, enerji metabolizması"
+    },
+    {
+      "id": "vitamin_0496",
+      "latinName": "Thiamine",
+      "turkishName": "Tiamin",
+      "definition": "B1 vitamini"
+    },
+    {
+      "id": "vitamin_0497",
+      "latinName": "Vitamin B2",
+      "turkishName": "B2 Vitamini",
+      "definition": "Riboflavin, enerji üretimi"
+    },
+    {
+      "id": "vitamin_0498",
+      "latinName": "Riboflavin",
+      "turkishName": "Riboflavin",
+      "definition": "B2 vitamini"
+    },
+    {
+      "id": "vitamin_0499",
+      "latinName": "Vitamin B3",
+      "turkishName": "B3 Vitamini",
+      "definition": "Niasin, metabolizma"
+    },
+    {
+      "id": "vitamin_0500",
+      "latinName": "Niacin",
+      "turkishName": "Niasin",
+      "definition": "B3 vitamini"
+    },
+    {
+      "id": "vitamin_0501",
+      "latinName": "Nicotinamide",
+      "turkishName": "Nikotinamid",
+      "definition": "Niasin formu"
+    },
+    {
+      "id": "vitamin_0502",
+      "latinName": "Vitamin B5",
+      "turkishName": "B5 Vitamini",
+      "definition": "Pantotenik asit"
+    },
+    {
+      "id": "vitamin_0503",
+      "latinName": "Pantothenic acid",
+      "turkishName": "Pantotenik asit",
+      "definition": "B5 vitamini"
+    },
+    {
+      "id": "vitamin_0504",
+      "latinName": "Vitamin B6",
+      "turkishName": "B6 Vitamini",
+      "definition": "Piridoksin, protein metabolizması"
+    },
+    {
+      "id": "vitamin_0505",
+      "latinName": "Pyridoxine",
+      "turkishName": "Piridoksin",
+      "definition": "B6 vitamini"
+    },
+    {
+      "id": "vitamin_0506",
+      "latinName": "Vitamin B7",
+      "turkishName": "B7 Vitamini",
+      "definition": "Biotin, saç ve tırnak sağlığı"
+    },
+    {
+      "id": "vitamin_0507",
+      "latinName": "Biotin",
+      "turkishName": "Biotin",
+      "definition": "B7 vitamini"
+    },
+    {
+      "id": "vitamin_0508",
+      "latinName": "Vitamin B9",
+      "turkishName": "B9 Vitamini",
+      "definition": "Folik asit, hücre bölünmesi"
+    },
+    {
+      "id": "vitamin_0509",
+      "latinName": "Folic acid",
+      "turkishName": "Folik asit",
+      "definition": "B9 vitamini"
+    },
+    {
+      "id": "vitamin_0510",
+      "latinName": "Folate",
+      "turkishName": "Folat",
+      "definition": "Doğal B9 vitamini"
+    },
+    {
+      "id": "vitamin_0511",
+      "latinName": "Vitamin B12",
+      "turkishName": "B12 Vitamini",
+      "definition": "Kobalamin, sinir fonksiyonu"
+    },
+    {
+      "id": "vitamin_0512",
+      "latinName": "Cobalamin",
+      "turkishName": "Kobalamin",
+      "definition": "B12 vitamini"
+    },
+    {
+      "id": "vitamin_0513",
+      "latinName": "Cyanocobalamin",
+      "turkishName": "Siyanokobalamin",
+      "definition": "B12 vitamini formu"
+    },
+    {
+      "id": "vitamin_0515",
+      "latinName": "Vitamin C",
+      "turkishName": "C Vitamini",
+      "definition": "Askorbik asit, antioksidan"
+    },
+    {
+      "id": "vitamin_0516",
+      "latinName": "Ascorbic acid",
+      "turkishName": "Askorbik asit",
+      "definition": "C vitamini"
+    },
+    {
+      "id": "vitamin_0517",
+      "latinName": "Vitamin D",
+      "turkishName": "D Vitamini",
+      "definition": "Kalsiyum emilimi, kemik sağlığı"
+    },
+    {
+      "id": "vitamin_0518",
+      "latinName": "Cholecalciferol",
+      "turkishName": "Kolekalsiferol",
+      "definition": "D3 vitamini"
+    },
+    {
+      "id": "vitamin_0519",
+      "latinName": "Ergocalciferol",
+      "turkishName": "Ergokalsiferol",
+      "definition": "D2 vitamini"
+    },
+    {
+      "id": "vitamin_0520",
+      "latinName": "Calcitriol",
+      "turkishName": "Kalsitriol",
+      "definition": "Aktif D vitamini"
+    },
+    {
+      "id": "vitamin_0521",
+      "latinName": "Vitamin E",
+      "turkishName": "E Vitamini",
+      "definition": "Tokoferol, antioksidan"
+    },
+    {
+      "id": "vitamin_0522",
+      "latinName": "Alpha-tocopherol",
+      "turkishName": "Alfa-tokoferol",
+      "definition": "E vitamini aktif formu"
+    },
+    {
+      "id": "vitamin_0523",
+      "latinName": "Vitamin K",
+      "turkishName": "K Vitamini",
+      "definition": "Kan pıhtılaşması"
+    },
+    {
+      "id": "vitamin_0524",
+      "latinName": "Phylloquinone",
+      "turkishName": "Fillokinon",
+      "definition": "K1 vitamini"
+    },
+    {
+      "id": "vitamin_0525",
+      "latinName": "Menaquinone",
+      "turkishName": "Menakinon",
+      "definition": "K2 vitamini"
+    },
+    {
+      "id": "vitamin_0528",
+      "latinName": "PABA",
+      "turkishName": "PABA",
+      "definition": "Para-aminobenzoik asit"
+    },
+    {
+      "id": "vitamin_0529",
+      "latinName": "Lipoic acid",
+      "turkishName": "Lipoik asit",
+      "definition": "Antioksidan"
+    },
+    {
+      "id": "vitamin_0531",
+      "latinName": "Ubiquinone",
+      "turkishName": "Ubikinon",
+      "definition": "CoQ10"
+    }
+  ],
+  "minerals": [
+    {
+      "id": "mineral_0543",
+      "latinName": "Ferrous sulfate",
+      "turkishName": "Ferröz sülfat",
+      "definition": "Demir takviyesi"
+    },
+    {
+      "id": "mineral_0545",
+      "latinName": "Ferric iron",
+      "turkishName": "Ferrik demir",
+      "definition": "Üç değerlikli demir"
+    },
+    {
+      "id": "mineral_0565",
+      "latinName": "Bicarbonate",
+      "turkishName": "Bikarbonat",
+      "definition": "Asit-baz dengesi"
+    }
+  ],
+  "diseases": [
+    {
+      "id": "disease_0274",
+      "latinName": "Ventricular tachycardia",
+      "turkishName": "Ventriküler taşikardi",
+      "definition": "Hızlı kalp ritmi"
+    },
+    {
+      "id": "disease_0275",
+      "latinName": "Aortic stenosis",
+      "turkishName": "Aort stenozu",
+      "definition": "Aort kapağı daralması"
+    },
+    {
+      "id": "disease_0276",
+      "latinName": "Mitral regurgitation",
+      "turkishName": "Mitral yetersizlik",
+      "definition": "Mitral kapak kaçağı"
+    },
+    {
+      "id": "disease_0281",
+      "latinName": "Cardiomyopathy",
+      "turkishName": "Kardiyomiyopati",
+      "definition": "Kalp kası hastalığı"
+    },
+    {
+      "id": "disease_0282",
+      "latinName": "Endocarditis",
+      "turkishName": "Endokardit",
+      "definition": "Kalp iç zarı iltihabı"
+    },
+    {
+      "id": "disease_0283",
+      "latinName": "Pericarditis",
+      "turkishName": "Perikardit",
+      "definition": "Kalp zarı iltihabı"
+    },
+    {
+      "id": "disease_0285",
+      "latinName": "COPD",
+      "turkishName": "KOAH",
+      "definition": "Kronik obstrüktif akciğer hastalığı"
+    },
+    {
+      "id": "disease_0288",
+      "latinName": "Bronchitis",
+      "turkishName": "Bronşit",
+      "definition": "Bronş iltihabı"
+    },
+    {
+      "id": "disease_0289",
+      "latinName": "Emphysema",
+      "turkishName": "Amfizem",
+      "definition": "Akciğer dokusunun harabiyeti"
+    },
+    {
+      "id": "disease_0290",
+      "latinName": "Pulmonary fibrosis",
+      "turkishName": "Pulmoner fibrozis",
+      "definition": "Akciğer skarlaşması"
+    },
+    {
+      "id": "disease_0292",
+      "latinName": "Pleural effusion",
+      "turkishName": "Plevral efüzyon",
+      "definition": "Akciğer zarında sıvı"
+    },
+    {
+      "id": "disease_0293",
+      "latinName": "Pneumothorax",
+      "turkishName": "Pnömotoraks",
+      "definition": "Akciğer çökmesi"
+    },
+    {
+      "id": "disease_0297",
+      "latinName": "Pulmonary hypertension",
+      "turkishName": "Pulmoner hipertansiyon",
+      "definition": "Akciğer damar basıncı yüksekliği"
+    },
+    {
+      "id": "disease_0298",
+      "latinName": "Gastroesophageal reflux",
+      "turkishName": "Gastroözofageal reflü",
+      "definition": "Mide asidi geri kaçışı"
+    },
+    {
+      "id": "disease_0299",
+      "latinName": "Peptic ulcer",
+      "turkishName": "Peptik ülser",
+      "definition": "Mide veya duodenum ülseri"
+    },
+    {
+      "id": "disease_0302",
+      "latinName": "Crohn disease",
+      "turkishName": "Crohn hastalığı",
+      "definition": "Kronik bağırsak iltihabı"
+    },
+    {
+      "id": "disease_0309",
+      "latinName": "Cholelithiasis",
+      "turkishName": "Kolelitiazis",
+      "definition": "Safra taşı"
+    },
+    {
+      "id": "disease_0311",
+      "latinName": "Hepatitis",
+      "turkishName": "Hepatit",
+      "definition": "Karaciğer iltihabı"
+    },
+    {
+      "id": "disease_0318",
+      "latinName": "Graves disease",
+      "turkishName": "Graves hastalığı",
+      "definition": "Otoimmün hipertiroidizm"
+    },
+    {
+      "id": "disease_0319",
+      "latinName": "Hashimoto thyroiditis",
+      "turkishName": "Hashimoto tiroiditi",
+      "definition": "Otoimmün hipotiroidizm"
+    },
+    {
+      "id": "disease_0321",
+      "latinName": "Addison disease",
+      "turkishName": "Addison hastalığı",
+      "definition": "Adrenal yetmezlik"
+    },
+    {
+      "id": "disease_0325",
+      "latinName": "Diabetes insipidus",
+      "turkishName": "Diabetes insipidus",
+      "definition": "ADH eksikliği"
+    },
+    {
+      "id": "disease_0326",
+      "latinName": "Hyperparathyroidism",
+      "turkishName": "Hiperparatiroidizm",
+      "definition": "Paratiroid fazla çalışması"
+    },
+    {
+      "id": "disease_0327",
+      "latinName": "Hypoparathyroidism",
+      "turkishName": "Hipoparatiroidizm",
+      "definition": "Paratiroid az çalışması"
+    },
+    {
+      "id": "disease_0331",
+      "latinName": "Parkinson disease",
+      "turkishName": "Parkinson hastalığı",
+      "definition": "Hareket bozukluğu"
+    },
+    {
+      "id": "disease_0332",
+      "latinName": "Alzheimer disease",
+      "turkishName": "Alzheimer hastalığı",
+      "definition": "Demans"
+    },
+    {
+      "id": "disease_0335",
+      "latinName": "Tension headache",
+      "turkishName": "Gerilim tipi baş ağrısı",
+      "definition": "Yaygın baş ağrısı"
+    },
+    {
+      "id": "disease_0336",
+      "latinName": "Cluster headache",
+      "turkishName": "Küme baş ağrısı",
+      "definition": "Şiddetli tek taraflı baş ağrısı"
+    },
+    {
+      "id": "disease_0340",
+      "latinName": "Peripheral neuropathy",
+      "turkishName": "Periferik nöropati",
+      "definition": "Sinir hasarı"
+    },
+    {
+      "id": "disease_0341",
+      "latinName": "Guillain-Barre syndrome",
+      "turkishName": "Guillain-Barre sendromu",
+      "definition": "Otoimmün nöropati"
+    },
+    {
+      "id": "disease_0343",
+      "latinName": "ALS",
+      "turkishName": "ALS",
+      "definition": "Amyotrofik lateral skleroz"
+    },
+    {
+      "id": "disease_0344",
+      "latinName": "Huntington disease",
+      "turkishName": "Huntington hastalığı",
+      "definition": "Genetik nörodejeneratif hastalık"
+    },
+    {
+      "id": "disease_0349",
+      "latinName": "Social anxiety disorder",
+      "turkishName": "Sosyal anksiyete bozukluğu",
+      "definition": "Sosyal fobi"
+    },
+    {
+      "id": "disease_0350",
+      "latinName": "Obsessive-compulsive disorder",
+      "turkishName": "Obsesif kompulsif bozukluk",
+      "definition": "OKB"
+    },
+    {
+      "id": "disease_0351",
+      "latinName": "Post-traumatic stress disorder",
+      "turkishName": "Travma sonrası stres bozukluğu",
+      "definition": "TSSB"
+    },
+    {
+      "id": "disease_0355",
+      "latinName": "Anorexia nervosa",
+      "turkishName": "Anoreksiya nervoza",
+      "definition": "Yeme bozukluğu"
+    },
+    {
+      "id": "disease_0356",
+      "latinName": "Bulimia nervosa",
+      "turkishName": "Bulimiya nervoza",
+      "definition": "Yeme bozukluğu"
+    },
+    {
+      "id": "disease_0358",
+      "latinName": "Substance use disorder",
+      "turkishName": "Madde kullanım bozukluğu",
+      "definition": "Bağımlılık"
+    },
+    {
+      "id": "disease_0359",
+      "latinName": "Alcohol use disorder",
+      "turkishName": "Alkol kullanım bozukluğu",
+      "definition": "Alkolizm"
+    }
+  ],
+  "insects": [
+    {
+      "id": "insect_0663",
+      "latinName": "Camponotus herculeanus",
+      "turkishName": "Dev karınca",
+      "definition": "Büyük karınca türü"
+    },
+    {
+      "id": "insect_0673",
+      "latinName": "Pediculus humanus",
+      "turkishName": "Baş biti",
+      "definition": "İnsan paraziti"
+    },
+    {
+      "id": "insect_0683",
+      "latinName": "Dermatophagoides pteronyssinus",
+      "turkishName": "Ev tozu akarı",
+      "definition": "Alerjen kaynak"
+    },
+    {
+      "id": "insect_0684",
+      "latinName": "Latrodectus mactans",
+      "turkishName": "Kara dul örümcek",
+      "definition": "Zehirli örümcek"
+    },
+    {
+      "id": "insect_0685",
+      "latinName": "Loxosceles reclusa",
+      "turkishName": "Kahverengi münzevi örümcek",
+      "definition": "Nekrotik zehir"
+    },
+    {
+      "id": "insect_0686",
+      "latinName": "Phoneutria nigriventer",
+      "turkishName": "Brezilya gezgin örümceği",
+      "definition": "Çok zehirli örümcek"
+    },
+    {
+      "id": "insect_0687",
+      "latinName": "Centruroides sculpturatus",
+      "turkishName": "Arizona akrebi",
+      "definition": "Zehirli akrep"
+    },
+    {
+      "id": "insect_0688",
+      "latinName": "Androctonus australis",
+      "turkishName": "Sarı akrep",
+      "definition": "Çok zehirli akrep"
+    },
+    {
+      "id": "insect_0689",
+      "latinName": "Leiurus quinquestriatus",
+      "turkishName": "Ölüm takipçisi akrep",
+      "definition": "En zehirli akrep"
+    },
+    {
+      "id": "insect_0690",
+      "latinName": "Scolopendra gigantea",
+      "turkishName": "Dev kırkayak",
+      "definition": "Zehirli kırkayak"
+    },
+    {
+      "id": "insect_0693",
+      "latinName": "Blattella germanica",
+      "turkishName": "Alman hamamböceği",
+      "definition": "Yaygın hamamböceği"
+    },
+    {
+      "id": "insect_0698",
+      "latinName": "Leptinotarsa decemlineata",
+      "turkishName": "Patates böceği",
+      "definition": "Tarım zararlısı"
+    },
+    {
+      "id": "insect_0699",
+      "latinName": "Diabrotica virgifera",
+      "turkishName": "Mısır kök kurdu",
+      "definition": "Mısır zararlısı"
+    },
+    {
+      "id": "insect_0701",
+      "latinName": "Danaus plexippus",
+      "turkishName": "Kral kelebeği",
+      "definition": "Göçmen kelebek"
+    },
+    {
+      "id": "insect_0702",
+      "latinName": "Papilio machaon",
+      "turkishName": "Kırlangıçkuyruk",
+      "definition": "Süs kelebeği"
+    },
+    {
+      "id": "insect_0703",
+      "latinName": "Pieris brassicae",
+      "turkishName": "Büyük beyaz kelebek",
+      "definition": "Lahana zararlısı"
+    }
+  ],
+  "components": [
+    {
+      "id": "component_0569",
+      "latinName": "Nicotine",
+      "turkishName": "Nikotin",
+      "definition": "Tütün alkaloidi"
+    },
+    {
+      "id": "component_0572",
+      "latinName": "Papaverine",
+      "turkishName": "Papaverin",
+      "definition": "Düz kas gevşetici"
+    },
+    {
+      "id": "component_0573",
+      "latinName": "Atropine",
+      "turkishName": "Atropin",
+      "definition": "Antikolinerjik alkaloid"
+    },
+    {
+      "id": "component_0574",
+      "latinName": "Scopolamine",
+      "turkishName": "Skopolamin",
+      "definition": "Antikolinerjik alkaloid"
+    },
+    {
+      "id": "component_0575",
+      "latinName": "Ephedrine",
+      "turkishName": "Efedrin",
+      "definition": "Sempatomimetik alkaloid"
+    },
+    {
+      "id": "component_0576",
+      "latinName": "Pseudoephedrine",
+      "turkishName": "Psödoefedrin",
+      "definition": "Dekonjestan"
+    },
+    {
+      "id": "component_0577",
+      "latinName": "Quinine",
+      "turkishName": "Kinin",
+      "definition": "Antimalaryal alkaloid"
+    },
+    {
+      "id": "component_0578",
+      "latinName": "Quinidine",
+      "turkishName": "Kinidin",
+      "definition": "Antiaritmik alkaloid"
+    },
+    {
+      "id": "component_0579",
+      "latinName": "Colchicine",
+      "turkishName": "Kolşisin",
+      "definition": "Gut tedavisi alkaloidi"
+    },
+    {
+      "id": "component_0580",
+      "latinName": "Vincristine",
+      "turkishName": "Vinkristin",
+      "definition": "Antineoplastik alkaloid"
+    },
+    {
+      "id": "component_0581",
+      "latinName": "Vinblastine",
+      "turkishName": "Vinblastin",
+      "definition": "Antineoplastik alkaloid"
+    },
+    {
+      "id": "component_0582",
+      "latinName": "Reserpine",
+      "turkishName": "Rezerpin",
+      "definition": "Antihipertansif alkaloid"
+    },
+    {
+      "id": "component_0583",
+      "latinName": "Ergotamine",
+      "turkishName": "Ergotamin",
+      "definition": "Migren tedavisi"
+    },
+    {
+      "id": "component_0584",
+      "latinName": "Pilocarpine",
+      "turkishName": "Pilokarpin",
+      "definition": "Kolinerjik alkaloid"
+    },
+    {
+      "id": "component_0585",
+      "latinName": "Physostigmine",
+      "turkishName": "Fizostigmin",
+      "definition": "Kolinesteraz inhibitörü"
+    },
+    {
+      "id": "component_0594",
+      "latinName": "Catechin",
+      "turkishName": "Kateşin",
+      "definition": "Yeşil çay flavonoidi"
+    },
+    {
+      "id": "component_0595",
+      "latinName": "Epicatechin",
+      "turkishName": "Epikateşin",
+      "definition": "Kakao flavonoidi"
+    },
+    {
+      "id": "component_0596",
+      "latinName": "EGCG",
+      "turkishName": "EGCG",
+      "definition": "Yeşil çay polifenolü"
+    },
+    {
+      "id": "component_0603",
+      "latinName": "Camphor",
+      "turkishName": "Kafur",
+      "definition": "Aromatik terpen"
+    },
+    {
+      "id": "component_0604",
+      "latinName": "Eucalyptol",
+      "turkishName": "Ökaliptol",
+      "definition": "Okaliptüs terpeni"
+    },
+    {
+      "id": "component_0612",
+      "latinName": "Borneol",
+      "turkishName": "Borneol",
+      "definition": "Aromatik terpen"
+    },
+    {
+      "id": "component_0613",
+      "latinName": "Cineole",
+      "turkishName": "Sineol",
+      "definition": "Ökaliptüs bileşeni"
+    },
+    {
+      "id": "component_0614",
+      "latinName": "Digoxin",
+      "turkishName": "Digoksin",
+      "definition": "Kardiyak glikozid"
+    },
+    {
+      "id": "component_0615",
+      "latinName": "Digitoxin",
+      "turkishName": "Dijitoksin",
+      "definition": "Kardiyak glikozid"
+    },
+    {
+      "id": "component_0616",
+      "latinName": "Ouabain",
+      "turkishName": "Ouabain",
+      "definition": "Kardiyak glikozid"
+    },
+    {
+      "id": "component_0617",
+      "latinName": "Salicin",
+      "turkishName": "Salisin",
+      "definition": "Söğüt glikozidi"
+    },
+    {
+      "id": "component_0618",
+      "latinName": "Amygdalin",
+      "turkishName": "Amigdalin",
+      "definition": "Siyanojenik glikozid"
+    },
+    {
+      "id": "component_0619",
+      "latinName": "Sinigrin",
+      "turkishName": "Sinigrin",
+      "definition": "Hardal glikozidi"
+    },
+    {
+      "id": "component_0623",
+      "latinName": "Alanine",
+      "turkishName": "Alanin",
+      "definition": "Alifatik amino asit"
+    },
+    {
+      "id": "component_0624",
+      "latinName": "Valine",
+      "turkishName": "Valin",
+      "definition": "Dallı zincirli amino asit"
+    },
+    {
+      "id": "component_0625",
+      "latinName": "Leucine",
+      "turkishName": "Lösin",
+      "definition": "Dallı zincirli amino asit"
+    },
+    {
+      "id": "component_0626",
+      "latinName": "Isoleucine",
+      "turkishName": "İzolösin",
+      "definition": "Dallı zincirli amino asit"
+    },
+    {
+      "id": "component_0627",
+      "latinName": "Proline",
+      "turkishName": "Prolin",
+      "definition": "Halkalı amino asit"
+    },
+    {
+      "id": "component_0628",
+      "latinName": "Phenylalanine",
+      "turkishName": "Fenilalanin",
+      "definition": "Aromatik amino asit"
+    },
+    {
+      "id": "component_0630",
+      "latinName": "Tryptophan",
+      "turkishName": "Triptofan",
+      "definition": "Serotonin öncüsü"
+    },
+    {
+      "id": "component_0631",
+      "latinName": "Serine",
+      "turkishName": "Serin",
+      "definition": "Hidroksil amino asit"
+    },
+    {
+      "id": "component_0632",
+      "latinName": "Threonine",
+      "turkishName": "Treonin",
+      "definition": "Hidroksil amino asit"
+    },
+    {
+      "id": "component_0633",
+      "latinName": "Cysteine",
+      "turkishName": "Sistein",
+      "definition": "Kükürtlü amino asit"
+    },
+    {
+      "id": "component_0634",
+      "latinName": "Methionine",
+      "turkishName": "Metiyonin",
+      "definition": "Kükürtlü amino asit"
+    },
+    {
+      "id": "component_0635",
+      "latinName": "Asparagine",
+      "turkishName": "Asparagin",
+      "definition": "Amid amino asit"
+    },
+    {
+      "id": "component_0637",
+      "latinName": "Lysine",
+      "turkishName": "Lizin",
+      "definition": "Bazik amino asit"
+    },
+    {
+      "id": "component_0639",
+      "latinName": "Histidine",
+      "turkishName": "Histidin",
+      "definition": "Bazik amino asit"
+    },
+    {
+      "id": "component_0640",
+      "latinName": "Aspartic acid",
+      "turkishName": "Aspartik asit",
+      "definition": "Asidik amino asit"
+    },
+    {
+      "id": "component_0641",
+      "latinName": "Glutamic acid",
+      "turkishName": "Glutamik asit",
+      "definition": "Asidik amino asit"
+    },
+    {
+      "id": "component_0642",
+      "latinName": "Omega-3",
+      "turkishName": "Omega-3",
+      "definition": "Esansiyel yağ asidi"
+    },
+    {
+      "id": "component_0643",
+      "latinName": "EPA",
+      "turkishName": "EPA",
+      "definition": "Eikosapentaenoik asit"
+    },
+    {
+      "id": "component_0644",
+      "latinName": "DHA",
+      "turkishName": "DHA",
+      "definition": "Dokosaheksaenoik asit"
+    },
+    {
+      "id": "component_0645",
+      "latinName": "ALA",
+      "turkishName": "ALA",
+      "definition": "Alfa-linolenik asit"
+    },
+    {
+      "id": "component_0646",
+      "latinName": "Omega-6",
+      "turkishName": "Omega-6",
+      "definition": "Esansiyel yağ asidi"
+    },
+    {
+      "id": "component_0647",
+      "latinName": "Linoleic acid",
+      "turkishName": "Linoleik asit",
+      "definition": "Omega-6 yağ asidi"
+    },
+    {
+      "id": "component_0648",
+      "latinName": "GLA",
+      "turkishName": "GLA",
+      "definition": "Gama-linolenik asit"
+    },
+    {
+      "id": "component_0649",
+      "latinName": "Arachidonic acid",
+      "turkishName": "Araşidonik asit",
+      "definition": "Prostaglandin öncüsü"
+    },
+    {
+      "id": "component_0650",
+      "latinName": "Oleic acid",
+      "turkishName": "Oleik asit",
+      "definition": "Omega-9 yağ asidi"
+    },
+    {
+      "id": "component_0651",
+      "latinName": "Palmitic acid",
+      "turkishName": "Palmitik asit",
+      "definition": "Doymuş yağ asidi"
+    },
+    {
+      "id": "component_0652",
+      "latinName": "Stearic acid",
+      "turkishName": "Stearik asit",
+      "definition": "Doymuş yağ asidi"
+    },
+    {
+      "id": "component_0653",
+      "latinName": "Lauric acid",
+      "turkishName": "Laurik asit",
+      "definition": "Hindistancevizi yağı"
+    },
+    {
+      "id": "component_0654",
+      "latinName": "Caprylic acid",
+      "turkishName": "Kaprilik asit",
+      "definition": "Orta zincirli yağ asidi"
+    },
+    {
+      "id": "component_0655",
+      "latinName": "Butyric acid",
+      "turkishName": "Bütirik asit",
+      "definition": "Kısa zincirli yağ asidi"
+    }
+  ],
+  "anatomy": [
+    {
+      "id": "anatomy_0361",
+      "latinName": "Frontal bone",
+      "turkishName": "Frontal kemik",
+      "definition": "Alın kemiği"
+    },
+    {
+      "id": "anatomy_0362",
+      "latinName": "Parietal bone",
+      "turkishName": "Parietal kemik",
+      "definition": "Yan kafatası kemiği"
+    },
+    {
+      "id": "anatomy_0363",
+      "latinName": "Temporal bone",
+      "turkishName": "Temporal kemik",
+      "definition": "Şakak kemiği"
+    },
+    {
+      "id": "anatomy_0364",
+      "latinName": "Occipital bone",
+      "turkishName": "Oksipital kemik",
+      "definition": "Ense kemiği"
+    },
+    {
+      "id": "anatomy_0365",
+      "latinName": "Sphenoid bone",
+      "turkishName": "Sfenoid kemik",
+      "definition": "Kelebek kemik"
+    },
+    {
+      "id": "anatomy_0366",
+      "latinName": "Ethmoid bone",
+      "turkishName": "Etmoid kemik",
+      "definition": "Kalbur kemik"
+    },
+    {
+      "id": "anatomy_0369",
+      "latinName": "Zygomatic bone",
+      "turkishName": "Zigomatik kemik",
+      "definition": "Elmacık kemiği"
+    },
+    {
+      "id": "anatomy_0370",
+      "latinName": "Nasal bone",
+      "turkishName": "Nazal kemik",
+      "definition": "Burun kemiği"
+    },
+    {
+      "id": "anatomy_0372",
+      "latinName": "Cervical vertebrae",
+      "turkishName": "Servikal vertebra",
+      "definition": "Boyun omurları"
+    },
+    {
+      "id": "anatomy_0373",
+      "latinName": "Thoracic vertebrae",
+      "turkishName": "Torasik vertebra",
+      "definition": "Göğüs omurları"
+    },
+    {
+      "id": "anatomy_0374",
+      "latinName": "Lumbar vertebrae",
+      "turkishName": "Lomber vertebra",
+      "definition": "Bel omurları"
+    },
+    {
+      "id": "anatomy_0375",
+      "latinName": "Sacrum",
+      "turkishName": "Sakrum",
+      "definition": "Kuyruk sokumu kemiği"
+    },
+    {
+      "id": "anatomy_0376",
+      "latinName": "Coccyx",
+      "turkishName": "Koksiks",
+      "definition": "Kuyruk kemiği"
+    },
+    {
+      "id": "anatomy_0382",
+      "latinName": "Carpal bones",
+      "turkishName": "Karpal kemikler",
+      "definition": "El bileği kemikleri"
+    },
+    {
+      "id": "anatomy_0383",
+      "latinName": "Metacarpal bones",
+      "turkishName": "Metakarpal kemikler",
+      "definition": "El tarağı kemikleri"
+    },
+    {
+      "id": "anatomy_0384",
+      "latinName": "Phalanges",
+      "turkishName": "Falankslar",
+      "definition": "Parmak kemikleri"
+    },
+    {
+      "id": "anatomy_0386",
+      "latinName": "Ribs",
+      "turkishName": "Kaburgalar",
+      "definition": "Göğüs kafesi kemikleri"
+    },
+    {
+      "id": "anatomy_0388",
+      "latinName": "Ilium",
+      "turkishName": "İlium",
+      "definition": "Kalça kemiği"
+    },
+    {
+      "id": "anatomy_0389",
+      "latinName": "Ischium",
+      "turkishName": "İskium",
+      "definition": "Oturak kemiği"
+    },
+    {
+      "id": "anatomy_0390",
+      "latinName": "Pubis",
+      "turkishName": "Pubis",
+      "definition": "Kasık kemiği"
+    },
+    {
+      "id": "anatomy_0395",
+      "latinName": "Tarsal bones",
+      "turkishName": "Tarsal kemikler",
+      "definition": "Ayak bileği kemikleri"
+    },
+    {
+      "id": "anatomy_0396",
+      "latinName": "Metatarsal bones",
+      "turkishName": "Metatarsal kemikler",
+      "definition": "Ayak tarağı kemikleri"
+    },
+    {
+      "id": "anatomy_0399",
+      "latinName": "Deltoid",
+      "turkishName": "Deltoid",
+      "definition": "Omuz kası"
+    },
+    {
+      "id": "anatomy_0405",
+      "latinName": "Internal oblique",
+      "turkishName": "İnternal oblik",
+      "definition": "İç eğik karın kası"
+    },
+    {
+      "id": "anatomy_0406",
+      "latinName": "Transversus abdominis",
+      "turkishName": "Transversus abdominis",
+      "definition": "Enine karın kası"
+    },
+    {
+      "id": "anatomy_0407",
+      "latinName": "Quadriceps femoris",
+      "turkishName": "Kuadriseps femoris",
+      "definition": "Ön uyluk kası"
+    },
+    {
+      "id": "anatomy_0408",
+      "latinName": "Hamstrings",
+      "turkishName": "Hamstringler",
+      "definition": "Arka uyluk kasları"
+    },
+    {
+      "id": "anatomy_0415",
+      "latinName": "Intercostal muscles",
+      "turkishName": "İnterkostal kaslar",
+      "definition": "Kaburgalar arası kaslar"
+    },
+    {
+      "id": "anatomy_0416",
+      "latinName": "Brain",
+      "turkishName": "Beyin",
+      "definition": "Merkezi sinir sistemi organı"
+    },
+    {
+      "id": "anatomy_0419",
+      "latinName": "Brainstem",
+      "turkishName": "Beyin sapı",
+      "definition": "Beyin gövdesi"
+    },
+    {
+      "id": "anatomy_0422",
+      "latinName": "Midbrain",
+      "turkishName": "Orta beyin",
+      "definition": "Mezensefalon"
+    },
+    {
+      "id": "anatomy_0429",
+      "latinName": "Cranial nerves",
+      "turkishName": "Kraniyal sinirler",
+      "definition": "Kafa çiftleri"
+    },
+    {
+      "id": "anatomy_0430",
+      "latinName": "Olfactory nerve",
+      "turkishName": "Olfaktör sinir",
+      "definition": "Koku siniri"
+    },
+    {
+      "id": "anatomy_0432",
+      "latinName": "Oculomotor nerve",
+      "turkishName": "Okülomotor sinir",
+      "definition": "Göz hareket siniri"
+    },
+    {
+      "id": "anatomy_0433",
+      "latinName": "Trochlear nerve",
+      "turkishName": "Troklear sinir",
+      "definition": "Makara siniri"
+    },
+    {
+      "id": "anatomy_0434",
+      "latinName": "Trigeminal nerve",
+      "turkishName": "Trigeminal sinir",
+      "definition": "Üçlü sinir"
+    },
+    {
+      "id": "anatomy_0435",
+      "latinName": "Abducens nerve",
+      "turkishName": "Abdusens sinir",
+      "definition": "Dış göz kası siniri"
+    },
+    {
+      "id": "anatomy_0437",
+      "latinName": "Vestibulocochlear nerve",
+      "turkishName": "Vestibulokoklear sinir",
+      "definition": "Denge-işitme siniri"
+    },
+    {
+      "id": "anatomy_0438",
+      "latinName": "Glossopharyngeal nerve",
+      "turkishName": "Glossofaringeal sinir",
+      "definition": "Dil-yutak siniri"
+    },
+    {
+      "id": "anatomy_0440",
+      "latinName": "Accessory nerve",
+      "turkishName": "Aksesuar sinir",
+      "definition": "Yardımcı sinir"
+    },
+    {
+      "id": "anatomy_0441",
+      "latinName": "Hypoglossal nerve",
+      "turkishName": "Hipoglossal sinir",
+      "definition": "Dil altı siniri"
+    },
+    {
+      "id": "anatomy_0443",
+      "latinName": "Right atrium",
+      "turkishName": "Sağ atriyum",
+      "definition": "Sağ kulakçık"
+    },
+    {
+      "id": "anatomy_0444",
+      "latinName": "Left atrium",
+      "turkishName": "Sol atriyum",
+      "definition": "Sol kulakçık"
+    },
+    {
+      "id": "anatomy_0445",
+      "latinName": "Right ventricle",
+      "turkishName": "Sağ ventrikül",
+      "definition": "Sağ karıncık"
+    },
+    {
+      "id": "anatomy_0446",
+      "latinName": "Left ventricle",
+      "turkishName": "Sol ventrikül",
+      "definition": "Sol karıncık"
+    },
+    {
+      "id": "anatomy_0449",
+      "latinName": "Pulmonary vein",
+      "turkishName": "Pulmoner ven",
+      "definition": "Akciğer toplardamarı"
+    },
+    {
+      "id": "anatomy_0450",
+      "latinName": "Superior vena cava",
+      "turkishName": "Süperior vena kava",
+      "definition": "Üst ana toplardamar"
+    },
+    {
+      "id": "anatomy_0451",
+      "latinName": "Inferior vena cava",
+      "turkishName": "İnferior vena kava",
+      "definition": "Alt ana toplardamar"
+    },
+    {
+      "id": "anatomy_0453",
+      "latinName": "Carotid artery",
+      "turkishName": "Karotis arter",
+      "definition": "Şah damarı"
+    },
+    {
+      "id": "anatomy_0454",
+      "latinName": "Jugular vein",
+      "turkishName": "Juguler ven",
+      "definition": "Boyun toplardamarı"
+    },
+    {
+      "id": "anatomy_0455",
+      "latinName": "Subclavian artery",
+      "turkishName": "Subklavyan arter",
+      "definition": "Köprücük altı atardamarı"
+    },
+    {
+      "id": "anatomy_0456",
+      "latinName": "Brachial artery",
+      "turkishName": "Brakiyal arter",
+      "definition": "Kol atardamarı"
+    },
+    {
+      "id": "anatomy_0457",
+      "latinName": "Radial artery",
+      "turkishName": "Radiyal arter",
+      "definition": "Önkol atardamarı"
+    },
+    {
+      "id": "anatomy_0458",
+      "latinName": "Femoral artery",
+      "turkishName": "Femoral arter",
+      "definition": "Uyluk atardamarı"
+    },
+    {
+      "id": "anatomy_0459",
+      "latinName": "Popliteal artery",
+      "turkishName": "Popliteal arter",
+      "definition": "Diz arkası atardamarı"
+    },
+    {
+      "id": "anatomy_0463",
+      "latinName": "Bronchioles",
+      "turkishName": "Bronşiyoller",
+      "definition": "Küçük hava yolları"
+    },
+    {
+      "id": "anatomy_0465",
+      "latinName": "Pleura",
+      "turkishName": "Plevra",
+      "definition": "Akciğer zarı"
+    },
+    {
+      "id": "anatomy_0468",
+      "latinName": "Nasal cavity",
+      "turkishName": "Burun boşluğu",
+      "definition": "Nazal kavite"
+    },
+    {
+      "id": "anatomy_0469",
+      "latinName": "Sinuses",
+      "turkishName": "Sinüsler",
+      "definition": "Paranazal sinüsler"
+    },
+    {
+      "id": "anatomy_0470",
+      "latinName": "Epiglottis",
+      "turkishName": "Epiglottis",
+      "definition": "Gırtlak kapağı"
+    },
+    {
+      "id": "anatomy_0471",
+      "latinName": "Vocal cords",
+      "turkishName": "Vokal kordlar",
+      "definition": "Ses telleri"
+    },
+    {
+      "id": "anatomy_0472",
+      "latinName": "Mouth",
+      "turkishName": "Ağız",
+      "definition": "Oral kavite"
+    },
+    {
+      "id": "anatomy_0474",
+      "latinName": "Teeth",
+      "turkishName": "Dişler",
+      "definition": "Çiğneme organları"
+    },
+    {
+      "id": "anatomy_0479",
+      "latinName": "Duodenum",
+      "turkishName": "Duodenum",
+      "definition": "Onikiparmak bağırsağı"
+    },
+    {
+      "id": "anatomy_0480",
+      "latinName": "Jejunum",
+      "turkishName": "Jejunum",
+      "definition": "Boş bağırsak"
+    },
+    {
+      "id": "anatomy_0481",
+      "latinName": "Ileum",
+      "turkishName": "İleum",
+      "definition": "Kıvrım bağırsak"
+    },
+    {
+      "id": "anatomy_0483",
+      "latinName": "Cecum",
+      "turkishName": "Çekum",
+      "definition": "Kör bağırsak"
+    },
+    {
+      "id": "anatomy_0484",
+      "latinName": "Appendix",
+      "turkishName": "Apendiks",
+      "definition": "Apandis"
+    },
+    {
+      "id": "anatomy_0485",
+      "latinName": "Colon",
+      "turkishName": "Kolon",
+      "definition": "Kalın bağırsak"
+    },
+    {
+      "id": "anatomy_0486",
+      "latinName": "Rectum",
+      "turkishName": "Rektum",
+      "definition": "Düz bağırsak"
+    },
+    {
+      "id": "anatomy_0487",
+      "latinName": "Anus",
+      "turkishName": "Anüs",
+      "definition": "Dışkılama açıklığı"
+    }
+  ]
+}
