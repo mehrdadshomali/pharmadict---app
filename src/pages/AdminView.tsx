@@ -52,6 +52,33 @@ const AdminView: React.FC = () => {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  
+  // Manuel ekleme için detaylı form state'leri
+  const [showManualForm, setShowManualForm] = useState(false);
+  const [manualForm, setManualForm] = useState({
+    latinName: "",
+    turkishName: "",
+    category: TermCategory.DRUG,
+    definition: "",
+    etymology: "",
+    usage: "",
+    dosage: "",
+    sideEffects: "",
+    contraindications: "",
+    interactions: "",
+    components: "",
+    relatedTerms: "",
+  });
+
+  const categoryOptions = [
+    { value: TermCategory.DRUG, label: "İlaç", icon: "medical" },
+    { value: TermCategory.PLANT, label: "Bitki", icon: "leaf" },
+    { value: TermCategory.DISEASE, label: "Hastalık", icon: "fitness" },
+    { value: TermCategory.ANATOMY, label: "Anatomi", icon: "body" },
+    { value: TermCategory.VITAMIN, label: "Vitamin", icon: "nutrition" },
+    { value: TermCategory.INSECT, label: "Böcek", icon: "bug" },
+    { value: TermCategory.COMPONENT, label: "Bileşen", icon: "flask" },
+  ];
 
   // Firebase terim sayısını al
   useEffect(() => {
@@ -180,28 +207,62 @@ const AdminView: React.FC = () => {
     }
   };
 
-  // Manuel terim ekleme
+  // Manuel terim ekleme - detaylı form aç
   const handleManualAdd = () => {
-    if (!termName.trim()) {
-      setMessage({ type: "error", text: "Lütfen bir terim adı girin" });
+    setShowManualForm(true);
+    setManualForm({
+      latinName: termName.trim() || "",
+      turkishName: termName.trim() || "",
+      category: TermCategory.DRUG,
+      definition: "",
+      etymology: "",
+      usage: "",
+      dosage: "",
+      sideEffects: "",
+      contraindications: "",
+      interactions: "",
+      components: "",
+      relatedTerms: "",
+    });
+    setMessage(null);
+  };
+
+  // Manuel form'dan terim oluştur
+  const handleCreateFromManualForm = () => {
+    if (!manualForm.latinName.trim()) {
+      setMessage({ type: "error", text: "Lütfen Latince/İngilizce ad girin" });
       return;
     }
 
+    // String'leri array'e çevir (virgülle ayrılmış)
+    const parseToArray = (str: string) => 
+      str.split(",").map(s => s.trim()).filter(s => s.length > 0);
+
     setAnalysisResult({
-      latinName: termName.trim(),
-      turkishName: termName.trim(),
-      category: TermCategory.DRUG,
-      definition: "Manuel olarak eklendi - tanım girilmedi",
-      etymology: "",
-      usage: "",
-      sideEffects: [],
-      relatedTerms: [],
-      components: [],
+      latinName: manualForm.latinName.trim(),
+      turkishName: manualForm.turkishName.trim() || manualForm.latinName.trim(),
+      category: manualForm.category,
+      definition: manualForm.definition.trim() || "Tanım girilmedi",
+      etymology: manualForm.etymology.trim(),
+      usage: manualForm.usage.trim(),
+      dosage: manualForm.dosage.trim(),
+      contraindications: manualForm.contraindications.trim(),
+      interactions: manualForm.interactions.trim(),
+      sideEffects: parseToArray(manualForm.sideEffects),
+      components: parseToArray(manualForm.components),
+      relatedTerms: parseToArray(manualForm.relatedTerms),
     });
+    
+    setShowManualForm(false);
     setMessage({
       type: "success",
-      text: "Manuel terim oluşturuldu. Düzenleyip kaydedebilirsiniz.",
+      text: "Terim oluşturuldu! Aşağıda önizleme yapıp Firebase'e kaydedebilirsiniz.",
     });
+  };
+
+  // Form input değişikliği
+  const updateManualForm = (field: string, value: string) => {
+    setManualForm(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSaveToFirebase = async () => {
@@ -481,6 +542,176 @@ const AdminView: React.FC = () => {
           </View>
         )}
 
+        {/* Manuel Ekleme Formu */}
+        {showManualForm && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="create" size={20} color="#22C55E" />
+              <Text style={styles.sectionTitle}>Detaylı Manuel Ekleme</Text>
+              <TouchableOpacity 
+                onPress={() => setShowManualForm(false)}
+                style={styles.closeFormButton}
+              >
+                <Ionicons name="close" size={20} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Kategori Seçimi */}
+            <Text style={styles.formLabel}>Kategori *</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+              {categoryOptions.map((cat) => (
+                <TouchableOpacity
+                  key={cat.value}
+                  style={[
+                    styles.categoryOption,
+                    manualForm.category === cat.value && styles.categoryOptionSelected,
+                    { borderColor: getCategoryColor(cat.value) }
+                  ]}
+                  onPress={() => updateManualForm("category", cat.value)}
+                >
+                  <Ionicons 
+                    name={cat.icon as any} 
+                    size={16} 
+                    color={manualForm.category === cat.value ? "#FFFFFF" : getCategoryColor(cat.value)} 
+                  />
+                  <Text style={[
+                    styles.categoryOptionText,
+                    manualForm.category === cat.value && styles.categoryOptionTextSelected
+                  ]}>
+                    {cat.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            {/* Temel Bilgiler */}
+            <Text style={styles.formLabel}>Latince/İngilizce Ad *</Text>
+            <TextInput
+              style={styles.formInput}
+              value={manualForm.latinName}
+              onChangeText={(v) => updateManualForm("latinName", v)}
+              placeholder="Örn: Aspirin, Chamomile"
+              placeholderTextColor={colors.placeholder}
+            />
+
+            <Text style={styles.formLabel}>Türkçe Ad</Text>
+            <TextInput
+              style={styles.formInput}
+              value={manualForm.turkishName}
+              onChangeText={(v) => updateManualForm("turkishName", v)}
+              placeholder="Örn: Aspirin, Papatya"
+              placeholderTextColor={colors.placeholder}
+            />
+
+            <Text style={styles.formLabel}>Tanım / Açıklama</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.definition}
+              onChangeText={(v) => updateManualForm("definition", v)}
+              placeholder="Bu terim nedir? Ne işe yarar?"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={3}
+            />
+
+            <Text style={styles.formLabel}>Kullanım Alanı / Endikasyon</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.usage}
+              onChangeText={(v) => updateManualForm("usage", v)}
+              placeholder="Hangi durumlarda kullanılır?"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={2}
+            />
+
+            <Text style={styles.formLabel}>Dozaj / Kullanım Şekli</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.dosage}
+              onChangeText={(v) => updateManualForm("dosage", v)}
+              placeholder="Örn: Günde 2-3 kez, 500mg"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={2}
+            />
+
+            <Text style={styles.formLabel}>Yan Etkiler (virgülle ayırın)</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.sideEffects}
+              onChangeText={(v) => updateManualForm("sideEffects", v)}
+              placeholder="Örn: Baş ağrısı, Mide bulantısı, Uyuşukluk"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={2}
+            />
+
+            <Text style={styles.formLabel}>Kontrendikasyonlar (Kimler Kullanmamalı)</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.contraindications}
+              onChangeText={(v) => updateManualForm("contraindications", v)}
+              placeholder="Örn: Hamileler, böbrek hastaları kullanmamalı"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={2}
+            />
+
+            <Text style={styles.formLabel}>İlaç Etkileşimleri</Text>
+            <TextInput
+              style={[styles.formInput, styles.formTextArea]}
+              value={manualForm.interactions}
+              onChangeText={(v) => updateManualForm("interactions", v)}
+              placeholder="Hangi ilaçlarla birlikte kullanılmamalı?"
+              placeholderTextColor={colors.placeholder}
+              multiline
+              numberOfLines={2}
+            />
+
+            <Text style={styles.formLabel}>Bileşenler / İçerik (virgülle ayırın)</Text>
+            <TextInput
+              style={styles.formInput}
+              value={manualForm.components}
+              onChangeText={(v) => updateManualForm("components", v)}
+              placeholder="Örn: Asetilsalisilik asit, Kafein"
+              placeholderTextColor={colors.placeholder}
+            />
+
+            <Text style={styles.formLabel}>Etimoloji / Köken</Text>
+            <TextInput
+              style={styles.formInput}
+              value={manualForm.etymology}
+              onChangeText={(v) => updateManualForm("etymology", v)}
+              placeholder="Kelimenin kökeni"
+              placeholderTextColor={colors.placeholder}
+            />
+
+            <Text style={styles.formLabel}>İlişkili Terimler (virgülle ayırın)</Text>
+            <TextInput
+              style={styles.formInput}
+              value={manualForm.relatedTerms}
+              onChangeText={(v) => updateManualForm("relatedTerms", v)}
+              placeholder="Örn: Parasetamol, İbuprofen"
+              placeholderTextColor={colors.placeholder}
+            />
+
+            {/* Oluştur Butonu */}
+            <TouchableOpacity
+              style={styles.createButton}
+              onPress={handleCreateFromManualForm}
+            >
+              <LinearGradient
+                colors={["#22C55E", "#16A34A"]}
+                style={styles.buttonGradient}
+              >
+                <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+                <Text style={styles.buttonText}>Terimi Oluştur</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Analysis Result */}
         {analysisResult && (
           <View style={styles.resultSection}>
@@ -532,8 +763,32 @@ const AdminView: React.FC = () => {
               {/* Usage */}
               {analysisResult.usage && (
                 <>
-                  <Text style={styles.resultLabel}>Kullanım:</Text>
+                  <Text style={styles.resultLabel}>Kullanım Alanı:</Text>
                   <Text style={styles.resultValue}>{analysisResult.usage}</Text>
+                </>
+              )}
+
+              {/* Dosage */}
+              {analysisResult.dosage && (
+                <>
+                  <Text style={styles.resultLabel}>Dozaj:</Text>
+                  <Text style={styles.resultValue}>{analysisResult.dosage}</Text>
+                </>
+              )}
+
+              {/* Contraindications */}
+              {analysisResult.contraindications && (
+                <>
+                  <Text style={styles.resultLabel}>Kontrendikasyonlar:</Text>
+                  <Text style={[styles.resultValue, styles.warningText]}>{analysisResult.contraindications}</Text>
+                </>
+              )}
+
+              {/* Interactions */}
+              {analysisResult.interactions && (
+                <>
+                  <Text style={styles.resultLabel}>İlaç Etkileşimleri:</Text>
+                  <Text style={[styles.resultValue, styles.warningText]}>{analysisResult.interactions}</Text>
                 </>
               )}
 
@@ -900,6 +1155,66 @@ const createStyles = (colors: any, isDark: boolean) =>
       fontWeight: "600",
       color: colors.text,
       textAlign: "center",
+    },
+    // Manuel Form Stilleri
+    formLabel: {
+      fontSize: 13,
+      fontWeight: "600",
+      color: colors.textSecondary,
+      marginTop: 12,
+      marginBottom: 6,
+    },
+    formInput: {
+      backgroundColor: colors.surface,
+      borderRadius: 10,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      fontSize: 15,
+      color: colors.text,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    formTextArea: {
+      minHeight: 70,
+      textAlignVertical: "top",
+    },
+    categoryScroll: {
+      marginBottom: 8,
+    },
+    categoryOption: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1.5,
+      marginRight: 8,
+      gap: 6,
+      backgroundColor: colors.surface,
+    },
+    categoryOptionSelected: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    categoryOptionText: {
+      fontSize: 13,
+      fontWeight: "500",
+      color: colors.text,
+    },
+    categoryOptionTextSelected: {
+      color: "#FFFFFF",
+    },
+    closeFormButton: {
+      marginLeft: "auto",
+      padding: 4,
+    },
+    createButton: {
+      borderRadius: 12,
+      overflow: "hidden",
+      marginTop: 20,
+    },
+    warningText: {
+      color: "#F59E0B",
     },
   });
 
