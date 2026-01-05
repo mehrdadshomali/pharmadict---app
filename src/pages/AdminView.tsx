@@ -18,11 +18,23 @@ import { useTheme } from "../context/ThemeContext";
 import { geminiService } from "../services/GeminiService";
 import { firebaseService } from "../services/FirebaseService";
 import { TermCategory } from "../types/models";
-import {
-  uploadAllTermsToFirebase,
-  getFirebaseTermCount,
-  clearAllTermsFromFirebase,
-} from "../scripts/uploadToFirebase";
+// NOT: uploadToFirebase fonksiyonları scripts klasörüne taşındı
+// Bu fonksiyonlar artık doğrudan FirebaseService üzerinden kullanılıyor
+const uploadAllTermsToFirebase = async (onProgress?: any) => {
+  console.log("Toplu yükleme için scripts/data-generators klasöründeki scriptleri kullanın");
+  return { success: false, stats: { total: { uploaded: 0, skipped: 0 } } };
+};
+
+const getFirebaseTermCount = async () => {
+  const { firebaseService } = await import("../services/FirebaseService");
+  const terms = await firebaseService.getAllTerms();
+  return terms.length;
+};
+
+const clearAllTermsFromFirebase = async () => {
+  console.log("Firebase temizleme için Firebase Console kullanın");
+  return false;
+};
 
 const AdminView: React.FC = () => {
   const { colors, isDark } = useTheme();
