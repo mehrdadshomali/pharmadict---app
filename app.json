@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Pharmadict",
+    "slug": "pharmadict",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pharmadict.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.pharmadict.app"
+    },
+    "scheme": "pharmadict",
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
