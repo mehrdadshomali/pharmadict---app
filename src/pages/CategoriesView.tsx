@@ -197,10 +197,7 @@ const CategoriesView = () => {
                   <View style={styles.decorativeCircle1} />
                   <View style={styles.decorativeCircle2} />
 
-                  {/* Count Badge */}
-                  <View style={styles.countBadge}>
-                    <Text style={styles.countText}>{count}</Text>
-                  </View>
+
 
                   {/* Content */}
                   <View style={styles.cardContent}>
