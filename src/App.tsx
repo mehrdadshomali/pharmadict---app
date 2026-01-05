@@ -1,26 +1,54 @@
-// Pharmadict - Premium UI App
+/**
+ * ============================================================================
+ * PHARMADICT - ANA UYGULAMA DOSYASI (App.tsx)
+ * ============================================================================
+ * 
+ * Bu dosya uygulamanın ana giriş noktasıdır. Tüm uygulama buradan başlar.
+ * 
+ * TEMEL GÖREVLER:
+ * 1. Splash Screen (Açılış Ekranı) - Uygulama açılırken gösterilen animasyonlu logo
+ * 2. Navigation (Sayfa Yönlendirme) - Sayfalar arası geçişi yönetir
+ * 3. Tab Bar (Alt Menü) - Ana Sayfa, Arama, Kategoriler, Favoriler sekmeleri
+ * 4. Theme & Context Provider - Tema ve veri yönetimi sağlayıcıları
+ * 
+ * KULLANILAN TEKNOLOJİLER:
+ * - React Native: Mobil uygulama geliştirme framework'ü
+ * - Expo: React Native için geliştirme araçları
+ * - React Navigation: Sayfa yönlendirme kütüphanesi
+ * - Linear Gradient: Renk geçişli arka planlar
+ * - Animated API: Animasyonlar için React Native API'si
+ * ============================================================================
+ */
+
 import React, { useState, useEffect, useRef } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StatusBar } from "expo-status-bar";
-import { View, StyleSheet, Animated, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { PharmacyProvider } from "./context/PharmacyContext";
-import { ThemeProvider, useTheme } from "./context/ThemeContext";
-import HomeView from "./pages/HomeView";
-import SearchView from "./pages/SearchView";
-import CategoriesView from "./pages/CategoriesView";
-import BookmarksView from "./pages/BookmarksView";
-import TermDetailView from "./pages/TermDetailView";
-import CategoryDetailView from "./pages/CategoryDetailView";
-import AdminView from "./pages/AdminView";
+import { NavigationContainer } from "@react-navigation/native"; // Sayfa yönlendirme container'ı
+import { createNativeStackNavigator } from "@react-navigation/native-stack"; // Stack navigasyon (sayfa üstüne sayfa)
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // Alt tab menüsü
+import { StatusBar } from "expo-status-bar"; // Üst durum çubuğu
+import { View, StyleSheet, Animated, Image } from "react-native"; // Temel React Native bileşenleri
+import { Ionicons } from "@expo/vector-icons"; // İkon kütüphanesi
+import { LinearGradient } from "expo-linear-gradient"; // Renk geçişli arka plan
+import { PharmacyProvider } from "./context/PharmacyContext"; // Eczacılık verileri için context
+import { ThemeProvider, useTheme } from "./context/ThemeContext"; // Tema yönetimi (açık/koyu mod)
+import HomeView from "./pages/HomeView"; // Ana sayfa
+import SearchView from "./pages/SearchView"; // Arama sayfası
+import CategoriesView from "./pages/CategoriesView"; // Kategoriler sayfası
+import BookmarksView from "./pages/BookmarksView"; // Favoriler sayfası
+import TermDetailView from "./pages/TermDetailView"; // Terim detay sayfası
+import CategoryDetailView from "./pages/CategoryDetailView"; // Kategori detay sayfası
+import AdminView from "./pages/AdminView"; // Admin paneli (terim ekleme)
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+// Navigator'ları oluştur - React Navigation için gerekli
+const Tab = createBottomTabNavigator(); // Alt menü için tab navigator
+const Stack = createNativeStackNavigator(); // Sayfa geçişleri için stack navigator
 
-// Splash Screen Component
+/**
+ * SPLASH SCREEN (AÇILIŞ EKRANI)
+ * --------------------------------
+ * Uygulama açıldığında gösterilen animasyonlu ekran.
+ * Logo ve "Merhaba" yazısı animasyonlu şekilde görünür.
+ * 2.5 saniye sonra otomatik olarak ana sayfaya geçer.
+ */
 function SplashScreen({ onFinish }: { onFinish: () => void }) {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const logoScale = useRef(new Animated.Value(0.8)).current;
@@ -182,8 +210,17 @@ const splashStyles = StyleSheet.create({
   },
 });
 
+/**
+ * MAIN TABS (ALT MENÜ SEKMELERİ)
+ * --------------------------------
+ * Uygulamanın alt kısmındaki 4 ana sekmeyi oluşturur:
+ * 1. Ana Sayfa (Home) - Öne çıkan terimler ve kategoriler
+ * 2. Arama (Search) - Terim arama fonksiyonu
+ * 3. Kategoriler (Categories) - Tüm kategorilerin listesi
+ * 4. Favoriler (Bookmarks) - Kullanıcının kaydettiği terimler
+ */
 function MainTabs() {
-  const { colors, isDark } = useTheme();
+  const { colors, isDark } = useTheme(); // Tema renklerini al
 
   return (
     <Tab.Navigator
@@ -256,6 +293,13 @@ function MainTabs() {
   );
 }
 
+/**
+ * APP CONTENT (UYGULAMA İÇERİĞİ)
+ * --------------------------------
+ * Ana navigasyon yapısını oluşturur.
+ * Stack Navigator ile sayfa geçişlerini yönetir.
+ * Main (Tab'lar), TermDetail, CategoryDetail ve Admin sayfalarını içerir.
+ */
 function AppContent() {
   const { colors, isDark } = useTheme();
 
@@ -288,13 +332,27 @@ function AppContent() {
   );
 }
 
+/**
+ * APP (ANA UYGULAMA BİLEŞENİ)
+ * --------------------------------
+ * Uygulamanın en üst seviye bileşeni.
+ * 
+ * ÇALIŞMA MANTIĞI:
+ * 1. Uygulama açılınca showSplash = true, Splash Screen gösterilir
+ * 2. Splash Screen bitince showSplash = false olur
+ * 3. ThemeProvider: Tema (açık/koyu mod) yönetimini sağlar
+ * 4. PharmacyProvider: Eczacılık verilerini tüm uygulamaya sağlar
+ * 5. AppContent: Ana içerik ve navigasyon
+ */
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(true); // Splash ekranı göster/gizle
 
+  // Splash ekranı gösteriliyorsa
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
+  // Ana uygulama - Provider'lar ile sarmalanmış
   return (
     <ThemeProvider>
       <PharmacyProvider>

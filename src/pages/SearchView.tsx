@@ -1,4 +1,24 @@
-// SearchView.tsx - Premium Search Experience
+/**
+ * ============================================================================
+ * SEARCH VIEW - ARAMA SAYFASI
+ * ============================================================================
+ * 
+ * Kullanıcıların terim araması yapabildiği sayfa.
+ * 
+ * ÖZELLİKLER:
+ * 1. Gerçek zamanlı arama (yazarken sonuçlar güncellenir)
+ * 2. Arama geçmişi (AsyncStorage'da saklanır)
+ * 3. Popüler aramalar
+ * 4. Otomatik tamamlama önerileri
+ * 5. Arama sonuçları listesi
+ * 
+ * ARAMA MANTIĞI:
+ * - Latince isim, Türkçe isim, tanım ve eşanlamlılarda arar
+ * - Büyük/küçük harf duyarsız
+ * - 2 karakterden sonra öneriler gösterilir
+ * ============================================================================
+ */
+
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   View,
@@ -15,30 +35,43 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Yerel depolama
 import { usePharmacy } from "../context/PharmacyContext";
 import { useTheme } from "../context/ThemeContext";
 import type { SearchResult, PharmacyTerm } from "../types/models";
 import TermCard from "../components/TermCard";
 
+/**
+ * SEARCH VIEW BİLEŞENİ
+ * --------------------------------
+ * Arama sayfası ana bileşeni
+ */
 const SearchView = () => {
+  // HOOK'LAR
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
-  const { searchText, setSearchText, searchResults, searchTerms, terms } =
-    usePharmacy();
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [suggestions, setSuggestions] = useState<PharmacyTerm[]>([]);
-  const [trendingSearches, setTrendingSearches] = useState<string[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const inputRef = useRef<TextInput>(null);
+  const { searchText, setSearchText, searchResults, searchTerms, terms } = usePharmacy();
+  
+  // STATE'LER
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);      // Arama geçmişi
+  const [suggestions, setSuggestions] = useState<PharmacyTerm[]>([]);    // Öneriler
+  const [trendingSearches, setTrendingSearches] = useState<string[]>([]); // Popüler aramalar
+  const [isSearching, setIsSearching] = useState(false);                  // Aranıyor mu?
+  const [showSuggestions, setShowSuggestions] = useState(false);          // Önerileri göster
+  const inputRef = useRef<TextInput>(null);                               // Input referansı
 
+  /**
+   * SAYFA AÇILDIĞINDA GEÇMİŞ VE POPÜLER ARAMALARI YÜKLE
+   */
   useEffect(() => {
     loadHistory();
     loadTrendingSearches();
   }, []);
 
+  /**
+   * ARAMA METNİ DEĞİŞTİĞİNDE ÖNERİLER OLUŞTUR
+   */
   useEffect(() => {
     if (searchText && searchText.length >= 2) {
       generateSuggestions(searchText);
@@ -49,6 +82,10 @@ const SearchView = () => {
     }
   }, [searchText]);
 
+  /**
+   * ARAMA GEÇMİŞİNİ YÜKLE
+   * AsyncStorage'dan önceki aramaları çeker
+   */
   const loadHistory = async () => {
     try {
       const history = await AsyncStorage.getItem("searchHistory");

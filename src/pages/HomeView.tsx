@@ -1,3 +1,28 @@
+/**
+ * ============================================================================
+ * HOME VIEW - ANA SAYFA
+ * ============================================================================
+ * 
+ * Uygulamanın ana sayfası. Kullanıcı uygulamayı açtığında ilk gördüğü ekran.
+ * 
+ * İÇERİK:
+ * 1. Header: Logo, tema değiştirme butonu, admin butonu
+ * 2. Hero Card: Hoş geldin kartı ve istatistikler
+ * 3. Arama Çubuğu: Hızlı arama için
+ * 4. Kategoriler: Yatay kaydırmalı kategori listesi
+ * 5. Öne Çıkanlar: En çok ziyaret edilen terimler
+ * 6. Mini Quiz: Günlük quiz kartı
+ * 7. Son Eklenenler: En son eklenen terimler
+ * 
+ * KULLANILAN HOOK'LAR:
+ * - usePharmacy: Terim verilerine erişim
+ * - useTheme: Tema renklerine erişim
+ * - useNavigation: Sayfa yönlendirme
+ * - useState/useEffect: React state yönetimi
+ * - useRef: Animasyon referansları
+ * ============================================================================
+ */
+
 import React, { useEffect, useState, useRef } from "react";
 import {
   View,
@@ -31,17 +56,29 @@ import TermCard from "../components/TermCard";
 import MiniQuizCard from "../components/MiniQuizCard";
 import CategoryCarousel from "../components/CategoryCarousel";
 
+/**
+ * HOME VIEW BİLEŞENİ
+ * --------------------------------
+ * Ana sayfa bileşeni. Tüm ana sayfa içeriğini render eder.
+ */
 const HomeView = () => {
-  const navigation = useNavigation();
-  const { colors, isDark, toggleTheme } = useTheme();
-  const { terms, isLoading, setSearchText, searchTerms } = usePharmacy();
-  const [recentTerms, setRecentTerms] = useState<PharmacyTerm[]>([]);
-  const [featuredTerms, setFeaturedTerms] = useState<PharmacyTerm[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const rotateAnim = useRef(new Animated.Value(0)).current;
-  const insets = useSafeAreaInsets();
+  // HOOK'LAR
+  const navigation = useNavigation();                    // Sayfa yönlendirme
+  const { colors, isDark, toggleTheme } = useTheme();   // Tema
+  const { terms, isLoading, setSearchText, searchTerms } = usePharmacy(); // Veri
+  
+  // STATE'LER
+  const [recentTerms, setRecentTerms] = useState<PharmacyTerm[]>([]);    // Son eklenenler
+  const [featuredTerms, setFeaturedTerms] = useState<PharmacyTerm[]>([]); // Öne çıkanlar
+  const [searchQuery, setSearchQuery] = useState("");                     // Arama metni
+  
+  // ANİMASYON REF'LERİ
+  const pulseAnim = useRef(new Animated.Value(1)).current;  // Nabız animasyonu
+  const rotateAnim = useRef(new Animated.Value(0)).current; // Döndürme animasyonu
+  
+  const insets = useSafeAreaInsets(); // Güvenli alan (notch, vb.)
 
+  // Font yükleme
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -50,8 +87,12 @@ const HomeView = () => {
     Poppins_700Bold,
   });
 
-  const HEADER_HEIGHT = insets.top + 64;
+  const HEADER_HEIGHT = insets.top + 64; // Header yüksekliği
 
+  /**
+   * VERİLERİ YÜKLE
+   * Son eklenen ve öne çıkan terimleri hazırlar
+   */
   const loadData = async () => {
     console.log("🏠 HomeView loadData - terms count:", terms?.length || 0);
 

@@ -1,20 +1,51 @@
-// Pharmacy Context - React Context API for state management
-// Xcode ve Swift'ten tamamen bağımsız - Pure React + JavaScript
+/**
+ * ============================================================================
+ * PHARMACY CONTEXT - ECZACILIK VERİ YÖNETİMİ
+ * ============================================================================
+ * 
+ * Bu dosya React Context API kullanarak uygulama genelinde veri yönetimi sağlar.
+ * Tüm bileşenler bu context üzerinden verilere erişir.
+ * 
+ * CONTEXT API NEDİR?
+ * - React'ın global state yönetim çözümü
+ * - Props drilling (prop'ları her seviyeye geçirme) sorununu çözer
+ * - Tüm alt bileşenler verilere doğrudan erişebilir
+ * 
+ * SAĞLANAN VERİLER:
+ * - terms: Tüm eczacılık terimleri
+ * - isLoading: Yükleme durumu
+ * - error: Hata mesajı
+ * - searchText: Arama metni
+ * - searchResults: Arama sonuçları
+ * - filter: Filtreleme seçenekleri
+ * 
+ * SAĞLANAN FONKSİYONLAR:
+ * - setSearchText: Arama metnini güncelle
+ * - searchTerms: Arama yap
+ * - getTermsByCategory: Kategoriye göre terimleri getir
+ * - toggleBookmark: Favori durumunu değiştir
+ * - getBookmarkedTerms: Favorileri getir
+ * - refresh: Verileri yenile
+ * - loadDrugsFromAPI: API'den ilaç verisi yükle
+ * ============================================================================
+ */
+
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { pharmacyTermService } from '../services/PharmacyTermService';
 import type { PharmacyTerm, TermCategory, SearchResult, TermFilter } from '../types/models';
 import { createDefaultFilter } from '../types/models';
 
+// Context için TypeScript tip tanımı
 interface PharmacyContextType {
-  // State
-  terms: PharmacyTerm[];
-  isLoading: boolean;
-  error: string | null;
-  searchText: string;
-  searchResults: SearchResult[];
-  filter: TermFilter;
+  // STATE (Durum Verileri)
+  terms: PharmacyTerm[];           // Tüm terimler
+  isLoading: boolean;              // Yükleniyor mu?
+  error: string | null;            // Hata mesajı
+  searchText: string;              // Arama metni
+  searchResults: SearchResult[];   // Arama sonuçları
+  filter: TermFilter;              // Filtre ayarları
   
-  // Actions
+  // ACTIONS (Eylemler/Fonksiyonlar)
   setSearchText: (text: string) => void;
   setFilter: (filter: TermFilter) => void;
   searchTerms: (query: string) => Promise<void>;
@@ -25,22 +56,36 @@ interface PharmacyContextType {
   loadDrugsFromAPI: (limit?: number) => Promise<number>;
 }
 
+// Context oluştur (başlangıçta undefined)
 const PharmacyContext = createContext<PharmacyContextType | undefined>(undefined);
 
+/**
+ * PHARMACY PROVIDER
+ * --------------------------------
+ * Context verilerini sağlayan ana bileşen.
+ * App.tsx'de tüm uygulamayı sarar.
+ */
 export const PharmacyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [terms, setTerms] = useState<PharmacyTerm[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [filter, setFilter] = useState<TermFilter>(createDefaultFilter());
+  // STATE TANIMLARI
+  const [terms, setTerms] = useState<PharmacyTerm[]>([]);        // Terimler listesi
+  const [isLoading, setIsLoading] = useState(false);              // Yükleme durumu
+  const [error, setError] = useState<string | null>(null);        // Hata mesajı
+  const [searchText, setSearchText] = useState("");               // Arama metni
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]); // Arama sonuçları
+  const [filter, setFilter] = useState<TermFilter>(createDefaultFilter()); // Filtre
 
-  // Load all terms on mount
+  /**
+   * UYGULAMA AÇILDIĞINDA TERİMLERİ YÜKLE
+   * useEffect hook'u component mount olduğunda çalışır
+   */
   useEffect(() => {
     loadAllTerms();
   }, []);
 
-  // Debounced search
+  /**
+   * ARAMA METNİ DEĞİŞTİĞİNDE OTOMATİK ARAMA YAP
+   * 300ms debounce ile gereksiz API çağrılarını önler
+   */
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchText && searchText.trim().length > 0) {
@@ -48,11 +93,15 @@ export const PharmacyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       } else {
         setSearchResults([]);
       }
-    }, 300);
+    }, 300); // 300ms bekle (debounce)
 
-    return () => clearTimeout(timeoutId);
+    return () => clearTimeout(timeoutId); // Cleanup
   }, [searchText]);
 
+  /**
+   * TÜM TERİMLERİ YÜKLE
+   * Firebase'den tüm terimleri çeker ve state'e kaydeder
+   */
   const loadAllTerms = async () => {
     setIsLoading(true);
     setError(null);
@@ -212,6 +261,14 @@ export const PharmacyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 };
 
+/**
+ * usePharmacy HOOK
+ * --------------------------------
+ * Context'e erişim sağlayan custom hook.
+ * Herhangi bir bileşende kullanılabilir:
+ * 
+ * const { terms, searchTerms, toggleBookmark } = usePharmacy();
+ */
 export const usePharmacy = () => {
   const context = useContext(PharmacyContext);
   if (context === undefined) {

@@ -1,28 +1,57 @@
-// Firebase Service - Firestore CRUD operations for Pharmadict
+/**
+ * ============================================================================
+ * FIREBASE SERVICE - VERİTABANI SERVİSİ
+ * ============================================================================
+ * 
+ * Bu dosya Firebase Firestore veritabanı ile iletişimi sağlar.
+ * Tüm CRUD (Create, Read, Update, Delete) işlemleri burada yapılır.
+ * 
+ * TEMEL FONKSİYONLAR:
+ * - getAllTerms(): Tüm terimleri getir
+ * - getTermsByCategory(): Kategoriye göre terimleri getir
+ * - getTermById(): ID'ye göre tek terim getir
+ * - addTerm(): Yeni terim ekle
+ * - updateTerm(): Terim güncelle
+ * - deleteTerm(): Terim sil
+ * - toggleBookmark(): Favori durumunu değiştir
+ * - searchTerms(): Terim ara
+ * - batchAddTerms(): Toplu terim ekleme (ilk veri yüklemesi için)
+ * 
+ * FIREBASE FIRESTORE:
+ * - NoSQL veritabanı (JSON benzeri dökümanlar)
+ * - Gerçek zamanlı senkronizasyon
+ * - Ölçeklenebilir bulut veritabanı
+ * ============================================================================
+ */
+
 import {
-  collection,
-  doc,
-  getDocs,
-  getDoc,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  Timestamp,
-  writeBatch,
+  collection,      // Koleksiyon referansı oluştur
+  doc,             // Döküman referansı oluştur
+  getDocs,         // Birden fazla döküman getir
+  getDoc,          // Tek döküman getir
+  addDoc,          // Yeni döküman ekle
+  updateDoc,       // Döküman güncelle
+  deleteDoc,       // Döküman sil
+  query,           // Sorgu oluştur
+  where,           // Filtreleme koşulu
+  orderBy,         // Sıralama
+  limit,           // Sonuç limiti
+  Timestamp,       // Firebase zaman damgası
+  writeBatch,      // Toplu yazma işlemi
 } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { db } from "../config/firebase"; // Firebase bağlantısı
 import type { PharmacyTerm } from "../types/models";
 import { TermCategory } from "../types/models";
 
-// Collection names
-const TERMS_COLLECTION = "terms";
-const CATEGORIES_COLLECTION = "categories";
+// Koleksiyon isimleri (Firestore'daki tablo isimleri)
+const TERMS_COLLECTION = "terms";           // Terimler koleksiyonu
+const CATEGORIES_COLLECTION = "categories"; // Kategoriler koleksiyonu
 
-// Convert Firestore document to PharmacyTerm
+/**
+ * FIRESTORE DÖKÜMANINI PHARMACYTERM'E DÖNÜŞTÜR
+ * --------------------------------
+ * Firestore'dan gelen ham veriyi uygulama modelimize çevirir.
+ */
 const docToTerm = (doc: any): PharmacyTerm => {
   const data = doc.data();
   return {
@@ -46,7 +75,11 @@ const docToTerm = (doc: any): PharmacyTerm => {
   };
 };
 
-// Convert PharmacyTerm to Firestore document
+/**
+ * PHARMACYTERM'İ FIRESTORE DÖKÜMANINA DÖNÜŞTÜR
+ * --------------------------------
+ * Uygulama modelimizi Firestore'a kaydedilecek formata çevirir.
+ */
 const termToDoc = (term: Partial<PharmacyTerm>) => {
   return {
     latinName: term.latinName || "",
@@ -70,8 +103,17 @@ const termToDoc = (term: Partial<PharmacyTerm>) => {
   };
 };
 
+/**
+ * FIREBASE SERVICE SINIFI
+ * --------------------------------
+ * Tüm veritabanı işlemlerini içeren ana servis sınıfı.
+ * Singleton pattern ile tek bir instance kullanılır.
+ */
 class FirebaseService {
-  // Get all terms
+  /**
+   * TÜM TERİMLERİ GETİR
+   * Firestore'dan tüm terimleri alfabetik sırayla çeker.
+   */
   async getAllTerms(): Promise<PharmacyTerm[]> {
     try {
       console.log("🔥 Firebase: Fetching all terms...");
@@ -88,7 +130,11 @@ class FirebaseService {
     }
   }
 
-  // Get terms by category
+  /**
+   * KATEGORİYE GÖRE TERİMLERİ GETİR
+   * Belirli bir kategorideki tüm terimleri çeker.
+   * @param category - Kategori türü (İlaçlar, Bitkiler, vb.)
+   */
   async getTermsByCategory(category: TermCategory): Promise<PharmacyTerm[]> {
     try {
       console.log(`🔥 Firebase: Fetching terms for category: ${category}`);
@@ -105,7 +151,11 @@ class FirebaseService {
     }
   }
 
-  // Get single term by ID
+  /**
+   * ID'YE GÖRE TEK TERİM GETİR
+   * Belirli bir terimin detaylarını çeker.
+   * @param id - Terimin benzersiz ID'si
+   */
   async getTermById(id: string): Promise<PharmacyTerm | null> {
     try {
       const docRef = doc(db, TERMS_COLLECTION, id);
@@ -121,7 +171,12 @@ class FirebaseService {
     }
   }
 
-  // Add new term
+  /**
+   * YENİ TERİM EKLE
+   * Veritabanına yeni bir terim ekler.
+   * @param term - Eklenecek terim verisi
+   * @returns Eklenen terimin ID'si veya null
+   */
   async addTerm(term: Partial<PharmacyTerm>): Promise<string | null> {
     try {
       console.log("🔥 Firebase: Adding new term:", term.latinName);
@@ -135,7 +190,12 @@ class FirebaseService {
     }
   }
 
-  // Update term
+  /**
+   * TERİM GÜNCELLE
+   * Mevcut bir terimi günceller.
+   * @param id - Güncellenecek terimin ID'si
+   * @param updates - Güncellenecek alanlar
+   */
   async updateTerm(
     id: string,
     updates: Partial<PharmacyTerm>
@@ -155,7 +215,11 @@ class FirebaseService {
     }
   }
 
-  // Delete term
+  /**
+   * TERİM SİL
+   * Veritabanından bir terimi kalıcı olarak siler.
+   * @param id - Silinecek terimin ID'si
+   */
   async deleteTerm(id: string): Promise<boolean> {
     try {
       console.log("🔥 Firebase: Deleting term:", id);
@@ -169,7 +233,12 @@ class FirebaseService {
     }
   }
 
-  // Toggle bookmark
+  /**
+   * FAVORİ DURUMUNU DEĞİŞTİR
+   * Bir terimi favorilere ekler veya çıkarır.
+   * @param id - Terimin ID'si
+   * @returns Yeni favori durumu (true/false)
+   */
   async toggleBookmark(id: string): Promise<boolean> {
     try {
       const term = await this.getTermById(id);
@@ -185,7 +254,10 @@ class FirebaseService {
     }
   }
 
-  // Get bookmarked terms
+  /**
+   * FAVORİ TERİMLERİ GETİR
+   * Kullanıcının favorilere eklediği tüm terimleri çeker.
+   */
   async getBookmarkedTerms(): Promise<PharmacyTerm[]> {
     try {
       const termsRef = collection(db, TERMS_COLLECTION);
@@ -198,7 +270,12 @@ class FirebaseService {
     }
   }
 
-  // Search terms
+  /**
+   * TERİM ARA
+   * Latince isim, Türkçe isim, tanım ve eşanlamlılarda arama yapar.
+   * NOT: Firestore tam metin araması desteklemediği için client-side filtreleme yapılır.
+   * @param searchQuery - Arama metni
+   */
   async searchTerms(searchQuery: string): Promise<PharmacyTerm[]> {
     try {
       // Firestore doesn't support full-text search natively
@@ -219,7 +296,13 @@ class FirebaseService {
     }
   }
 
-  // Batch add terms (for initial data upload)
+  /**
+   * TOPLU TERİM EKLEME
+   * Birden fazla terimi tek seferde ekler (ilk veri yüklemesi için).
+   * Firestore batch limiti 500 olduğu için otomatik bölünür.
+   * @param terms - Eklenecek terimler dizisi
+   * @returns Eklenen terim sayısı
+   */
   async batchAddTerms(terms: Partial<PharmacyTerm>[]): Promise<number> {
     try {
       console.log(`🔥 Firebase: Batch adding ${terms.length} terms...`);
@@ -248,7 +331,11 @@ class FirebaseService {
     }
   }
 
-  // Get category statistics
+  /**
+   * KATEGORİ İSTATİSTİKLERİ
+   * Her kategorideki terim sayısını hesaplar.
+   * @returns Kategori adı -> terim sayısı eşleşmesi
+   */
   async getCategoryStats(): Promise<Record<string, number>> {
     try {
       const allTerms = await this.getAllTerms();

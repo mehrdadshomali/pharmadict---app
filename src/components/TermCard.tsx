@@ -1,4 +1,25 @@
-// TermCard.tsx - Premium Design Component
+/**
+ * ============================================================================
+ * TERM CARD - TERİM KARTI BİLEŞENİ
+ * ============================================================================
+ * 
+ * Bu bileşen, eczacılık terimlerini kart formatında gösterir.
+ * Ana sayfa, arama sonuçları ve kategori detaylarında kullanılır.
+ * 
+ * ÖZELLİKLER:
+ * - Kategori bazlı renk kodlaması (İlaç=mavi, Bitki=yeşil, vb.)
+ * - İki farklı görünüm: "default" (liste) ve "featured" (öne çıkan)
+ * - Latince ve Türkçe isim gösterimi
+ * - Bileşen sayısı badge'i
+ * - Tıklanabilir kart yapısı
+ * 
+ * PROPS (Parametreler):
+ * - term: PharmacyTerm - Gösterilecek terim verisi
+ * - onPress: () => void - Karta tıklandığında çalışacak fonksiyon
+ * - variant: "default" | "featured" - Kart görünüm tipi
+ * ============================================================================
+ */
+
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,59 +28,66 @@ import { useTheme } from "../context/ThemeContext";
 import type { PharmacyTerm } from "../types/models";
 import { TermCategory } from "../types/models";
 
+// Bileşen props tanımı (TypeScript interface)
 interface TermCardProps {
-  term: PharmacyTerm;
-  onPress: () => void;
-  variant?: "default" | "featured" | "compact";
+  term: PharmacyTerm;        // Terim verisi
+  onPress: () => void;       // Tıklama fonksiyonu
+  variant?: "default" | "featured" | "compact"; // Görünüm tipi
 }
 
+/**
+ * KATEGORİ YAPILANDIRMASI
+ * --------------------------------
+ * Her kategori için ikon, renk ve gradient tanımları.
+ * Bu sayede her kategori farklı renkte görünür.
+ */
 const getCategoryConfig = (category: TermCategory) => {
   const configs = {
     [TermCategory.DRUG]: {
-      icon: "medical",
-      gradient: ["#3B82F6", "#1D4ED8"],
-      lightBg: "rgba(59, 130, 246, 0.1)",
-      color: "#3B82F6",
+      icon: "medical",                           // İlaç ikonu
+      gradient: ["#3B82F6", "#1D4ED8"],         // Mavi gradient
+      lightBg: "rgba(59, 130, 246, 0.1)",       // Açık mavi arka plan
+      color: "#3B82F6",                          // Ana renk
     },
     [TermCategory.PLANT]: {
-      icon: "leaf",
-      gradient: ["#10B981", "#059669"],
+      icon: "leaf",                              // Yaprak ikonu
+      gradient: ["#10B981", "#059669"],         // Yeşil gradient
       lightBg: "rgba(16, 185, 129, 0.1)",
       color: "#10B981",
     },
     [TermCategory.VITAMIN]: {
-      icon: "flask",
-      gradient: ["#F59E0B", "#D97706"],
+      icon: "flask",                             // Şişe ikonu
+      gradient: ["#F59E0B", "#D97706"],         // Turuncu gradient
       lightBg: "rgba(245, 158, 11, 0.1)",
       color: "#F59E0B",
     },
     [TermCategory.MINERAL]: {
-      icon: "diamond",
-      gradient: ["#8B5CF6", "#7C3AED"],
+      icon: "diamond",                           // Elmas ikonu
+      gradient: ["#8B5CF6", "#7C3AED"],         // Mor gradient
       lightBg: "rgba(139, 92, 246, 0.1)",
       color: "#8B5CF6",
     },
     [TermCategory.INSECT]: {
-      icon: "bug",
-      gradient: ["#F97316", "#EA580C"],
+      icon: "bug",                               // Böcek ikonu
+      gradient: ["#F97316", "#EA580C"],         // Turuncu gradient
       lightBg: "rgba(249, 115, 22, 0.1)",
       color: "#F97316",
     },
     [TermCategory.COMPONENT]: {
-      icon: "nuclear",
-      gradient: ["#EF4444", "#DC2626"],
+      icon: "nuclear",                           // Atom ikonu
+      gradient: ["#EF4444", "#DC2626"],         // Kırmızı gradient
       lightBg: "rgba(239, 68, 68, 0.1)",
       color: "#EF4444",
     },
     [TermCategory.DISEASE]: {
-      icon: "fitness",
-      gradient: ["#EC4899", "#DB2777"],
+      icon: "fitness",                           // Sağlık ikonu
+      gradient: ["#EC4899", "#DB2777"],         // Pembe gradient
       lightBg: "rgba(236, 72, 153, 0.1)",
       color: "#EC4899",
     },
     [TermCategory.ANATOMY]: {
-      icon: "body",
-      gradient: ["#6366F1", "#4F46E5"],
+      icon: "body",                              // Vücut ikonu
+      gradient: ["#6366F1", "#4F46E5"],         // İndigo gradient
       lightBg: "rgba(99, 102, 241, 0.1)",
       color: "#6366F1",
     },
@@ -67,16 +95,22 @@ const getCategoryConfig = (category: TermCategory) => {
   return configs[category] || configs[TermCategory.DRUG];
 };
 
+/**
+ * TERM CARD BİLEŞENİ
+ * --------------------------------
+ * Ana kart bileşeni. variant prop'una göre farklı görünümler sunar.
+ */
 const TermCard: React.FC<TermCardProps> = ({
   term,
   onPress,
   variant = "default",
 }) => {
-  const { colors, isDark } = useTheme();
-  const categoryConfig = getCategoryConfig(term.category);
-  const componentCount = term.components?.length || 0;
-  const displayComponents = term.components?.slice(0, 2) || [];
+  const { colors, isDark } = useTheme(); // Tema renklerini al
+  const categoryConfig = getCategoryConfig(term.category); // Kategori yapılandırmasını al
+  const componentCount = term.components?.length || 0; // Bileşen sayısı
+  const displayComponents = term.components?.slice(0, 2) || []; // İlk 2 bileşeni göster
 
+  // ÖNE ÇIKAN (FEATURED) GÖRÜNÜM - Yatay kaydırmalı kartlar için
   if (variant === "featured") {
     return (
       <TouchableOpacity
